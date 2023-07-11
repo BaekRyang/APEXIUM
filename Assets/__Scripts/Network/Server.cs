@@ -110,21 +110,21 @@ public class Server : MonoBehaviour
         Debug.Log($"{PREFIX} New Client Connected - {_newConnection.RemoteEndPoint}");
 
         //클라이언트 ID를 증가시키고, 클라이언트에게 ID를 보낸다.
-        Send(_newConnection, new byte[] { (byte)(_clientID++) }, PacketType.GiveID, ConnectType.TCP, PlacePlayer);
+        Send(_newConnection, new byte[] { (byte)(_clientID++) }, PacketType.GiveID, ConnectType.TCP);
 
 
         Debug.Log($"{PREFIX} {_clientID - 1} ID is given to new client");
     }
 
-    private void PlacePlayer(IAsyncResult p_result)
+    private void SendPlacePlayer(int p_playerID)
     {
         Debug.Log($"{PREFIX} Response Received");
 
         //해당 클라이언트 플레이어 객체 생성 메세지를 뿌린다. (접속중인 모든 플레이어에게)
         foreach (var _socket in _clientSocketList)
         {
-            Debug.Log($"{PREFIX} {_clientID - 1} Object instantiate packet sent to {_socket.RemoteEndPoint}");
-            Send(_socket, new byte[] { (byte)(_clientID - 1) }, PacketType.PlacePlayer, ConnectType.TCP);
+            Debug.Log($"{PREFIX} {p_playerID} Object instantiate packet sent to {_socket.RemoteEndPoint}");
+            Send(_socket, new byte[] { (byte)(p_playerID) }, PacketType.PlacePlayer, ConnectType.TCP);
         }
     }
 
@@ -166,6 +166,12 @@ public class Server : MonoBehaviour
                     Debug.Log($"{PREFIX} Packet Contents : {_receivedClickPosition}");
                 }
 
+                if (_packetType == PacketType.CheckOK)
+                {
+                    int _receivedID = _pureData[0];
+                    SendPlacePlayer(_receivedID);
+                }
+
                 foreach (var _byte in _pureData)
                     Debug.Log($"{PREFIX} Packet Contents : {_byte}");
             }
@@ -176,7 +182,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    private async Task Send(Socket p_socket, byte[] p_data, PacketType p_type, ConnectType p_connectType, AsyncCallback p_callback = null)
+    private async Task Send(Socket p_socket, byte[] p_data, PacketType p_type, ConnectType p_connectType)
     {
         switch (p_connectType)
         {
@@ -193,11 +199,6 @@ public class Server : MonoBehaviour
 
                 await p_socket.SendAsync(_fullPacket, SocketFlags.None); //데이터를 보낸다.
                 
-                if (p_callback is not null) //콜백을 등록했다면 플레이어가 응답을 하면 콜백을 실행시킨다.
-                {
-                    Debug.Log($"{PREFIX} Waiting for response...");
-                    p_socket.BeginReceive(new byte[1024], 0, 1024, 0, p_callback, p_socket);
-                }
                 Debug.Log($"{PREFIX} Packet Sent : {p_data.Length} bytes / Type : {p_type}( {(byte)p_type} )");
             }
                 break;

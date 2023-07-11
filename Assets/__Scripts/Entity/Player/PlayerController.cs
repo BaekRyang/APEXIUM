@@ -8,7 +8,6 @@ public struct InputValues
     public bool  jumpDown,   jumpUp;
 }
 
-
 public class PlayerController : MonoBehaviour
 {
     private const float JUMP_GRACE_TIME           = 0.1f;
@@ -16,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private const float DISABLE_LADDER_CLIMB_TIME = 0.2f;
 
     public Player player;
-    
+
     private InputValues _input;
 
     private Rigidbody2D   _rigidbody2D;
@@ -28,7 +27,6 @@ public class PlayerController : MonoBehaviour
     private float JumpHeight   => playerStats.JumpHeight;
     private int   MaxJumpCount => playerStats.MaxJumpCount;
 
-
     private void Awake()
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
@@ -37,15 +35,14 @@ public class PlayerController : MonoBehaviour
 
     void LoadSetting()
     {
-        
     }
-
 
     private void Update()
     {
-        if (player.clientID != GameManager.Instance.playerID)
-            return;
-        
+        // if (player.clientID != GameManager.Instance.playerID)
+        //     return;
+        //멀티 플레이어 환경
+
         var _position = transform.position;
         jumpGraceTimer -= Time.deltaTime;
         jumpBuffer     -= Time.deltaTime;
@@ -54,6 +51,7 @@ public class PlayerController : MonoBehaviour
 
         //점프중일때(상승) 바닥을 뚫고 올라갈 수 있게 해준다.
         _boxCollider2D.isTrigger = _rigidbody2D.velocity.y > 0 || climbLadder;
+
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
         _rigidbody2D.gravityScale = climbLadder ? 0 : 2;
 
@@ -63,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
         ClampVelocity();
 
-        SetZPosition();
+        ResetJump();
     }
 
     private void FixedUpdate()
@@ -73,7 +71,6 @@ public class PlayerController : MonoBehaviour
 
         Move();
     }
-
 
     private void OnCollisionEnter2D(Collision2D p_other)
     {
@@ -101,8 +98,8 @@ public class PlayerController : MonoBehaviour
     {
         if (p_other.gameObject.CompareTag("Ladder"))
         {
-            onLadder                   = false;
-            climbLadder                = false;
+            onLadder                  = false;
+            climbLadder               = false;
             _rigidbody2D.gravityScale = 1;
             _boxCollider2D.isTrigger  = false;
         }
@@ -113,12 +110,20 @@ public class PlayerController : MonoBehaviour
     private void GetInput()
     {
         _input = new InputValues
-                  {
-                      horizontal = Input.GetAxisRaw("Horizontal"),
-                      vertical   = Input.GetAxisRaw("Vertical"),
-                      jumpDown   = Input.GetButtonDown("Jump"),
-                      jumpUp     = Input.GetButtonUp("Jump")
-                  };
+                 {
+                     horizontal = Input.GetAxisRaw("Horizontal"),
+                     vertical   = Input.GetAxisRaw("Vertical"),
+                     jumpDown   = Input.GetButtonDown("Jump"),
+                     jumpUp     = Input.GetButtonUp("Jump")
+                 };
+
+        // _input = new InputValues
+        //          {
+        //              horizontal = VJoystick.MovementDirection,
+        //              vertical   = Input.GetAxisRaw("Vertical"),
+        //              jumpDown   = Input.GetButtonDown("Jump"),
+        //              jumpUp     = Input.GetButtonUp("Jump")
+        //          };
     }
 
 #endregion
@@ -137,6 +142,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int   jumpCount;
     [SerializeField] private float jumpBuffer;     //Buffering Time
     [SerializeField] private float jumpGraceTimer; //Coyote Time
+
+    public int _jumpDir;
 
     private void Jump()
     {
@@ -157,6 +164,8 @@ public class PlayerController : MonoBehaviour
 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
 
+            _jumpDir = _input.horizontal == 0 ? 0 : _input.horizontal > 0 ? 1 : -1;
+
             if (climbLadder)
                 climbLadder = false;
         }
@@ -164,45 +173,64 @@ public class PlayerController : MonoBehaviour
 
 #endregion
 
-#region LadderAction
+#region ResetJump
 
-    [SerializeField] private Vector3 ladderPos;
-    [SerializeField] private bool    onLadder;
-    [SerializeField] private bool    climbLadder;
-
-    private void ClimbLadder(Vector3 p_position)
+    private void ResetJump()
     {
-        if (climbLadder && _input.vertical == 0)
-            _rigidbody2D.velocity = Vector2.zero;
-
         //상하 움직임이 없거나, 사다리를 타고 있을 때
         if (Mathf.Abs(_rigidbody2D.velocity.y) < 0.001f || climbLadder)
         {
             //코요테 타임 및 점프 카운트 초기화 
             jumpGraceTimer = JUMP_GRACE_TIME;
             jumpCount      = 0;
+            _jumpDir       = -2;
         }
+    }
 
+#endregion
 
-        if (_input.vertical == 0) return;
+#region LadderAction
 
-        //처음 사다리에 타는 액션 : 사다리에 닿아있지만 타는중은 아닐때 그리고 "점프한지 0.2초 이내일때"
-        //사다리에서 위나 아래키를 누르면서 점프를 할때 사다리에 다시 타지 않도록 DISABLE_LADDER_CLIMB_TIME초의 딜레이를 준다.
-        if (onLadder && !climbLadder && jumpBuffer <= -DISABLE_LADDER_CLIMB_TIME)
+    [SerializeField] private Vector2 ladderPos;
+    [SerializeField] private bool    onLadder;
+    [SerializeField] private bool    climbLadder;
+
+    public int _nowDir;
+    private void ClimbLadder(Vector3 p_position)
+    {
+        //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
+        if (climbLadder && _input.vertical == 0)
+            _rigidbody2D.velocity = Vector2.zero;
+
+        //상하이동이 없거나 사다리를 타고있지 않으면 리턴
+        if (_input.vertical == 0 || !onLadder) return;
+
+        //만약 _jumpDir이랑 내가 가고있는 방향이 같다면 사다리를 타지 않는다.
+        //즉 내릴 마음으로 점프를 했다면 사다리를 타지 않는다.
+        _nowDir = _input.horizontal == 0 ? 0 : _input.horizontal > 0 ? 1 : -1;
+        if (_jumpDir == _nowDir)
+            return;
+        
+        Bounds  _collider = _boxCollider2D.bounds;
+        Vector2 _mdPoint  = new Vector2(_collider.center.x, _collider.min.y);
+        if (_input.vertical > 0 &&
+            !Physics2D.Raycast(_mdPoint, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider.IsUnityNull())
+            //사다리 위에서 윗 키를 눌렀을때 사다리를 타지 않도록 해준다.
+            return;
+
+        climbLadder           = true;
+        transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
+        _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
+
+        //사다리에서 나갈때 틩기는 현상을 막기위해 velocity사용을 하지 않게 변경
+        // if (climbLadder) //타고있는중에는 상하 이동만 해준다.
+        //     _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, Input.GetAxis("Vertical") * Speed);
+
+        if (climbLadder)
         {
-            if (_input.vertical > 0 &&
-                !Physics2D.Raycast(transform.position, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider
-                         .IsUnityNull())
-                //사다리 위에서 윗 키를 눌렀을때 사다리를 타지 않도록 해준다.
-                return;
-
-            climbLadder            = true;
-            transform.position     = new Vector3(ladderPos.x, p_position.y, ladderPos.z - .1f); //사다리에 붙여주고
-            _rigidbody2D.velocity = Vector2.zero;                                            //가속 초기화
+            float deltaY = _input.vertical * Speed * Time.deltaTime;
+            transform.position += new Vector3(0, deltaY, 0);
         }
-
-        if (climbLadder) //타고있는중에는 상하 이동만 해준다.
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, Input.GetAxis("Vertical") * Speed);
     }
 
 #endregion
@@ -216,26 +244,6 @@ public class PlayerController : MonoBehaviour
         //하강속도 제한
         if (_rigidbody2D.velocity.y < -maxFallSpeed)
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, -maxFallSpeed);
-    }
-
-#endregion
-
-#region zPositionSetting
-
-    private void SetZPosition()
-    {
-        if (jumpBuffer > -0.2f || climbLadder) return;
-
-        var _transform = transform;
-        var _position   = _transform.position;
-
-        var _raycast  = Physics2D.Raycast(_position, Vector2.down, 1f, LayerMask.GetMask("Floor"));
-        Debug.DrawRay(_position, Vector2.down, Color.red);
-        if (!_raycast.collider.IsUnityNull())
-        {
-            _transform.position =
-                new Vector3(transform.position.x, _position.y, _raycast.transform.position.z);
-        }
     }
 
 #endregion
