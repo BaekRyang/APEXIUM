@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Debug = UnityEngine.Debug;
 
 public struct InputValues
 {
@@ -27,6 +28,9 @@ public class PlayerController : MonoBehaviour
 
     public readonly PlayerStats playerStats = new PlayerStats();
 
+    public JumpDire _jumpDirection;
+    public JumpDire _lastLadderJumpDirection;
+
     private float Speed        => playerStats.Speed;
     private float JumpHeight   => playerStats.JumpHeight;
     private int   MaxJumpCount => playerStats.MaxJumpCount;
@@ -39,7 +43,6 @@ public class PlayerController : MonoBehaviour
 
     void LoadSetting()
     {
-        
     }
 
     private void Update()
@@ -67,6 +70,8 @@ public class PlayerController : MonoBehaviour
         ClampVelocity();
 
         ResetJump();
+
+        _jumpDirection = GetNowJumpDirection();
     }
 
     private void FixedUpdate()
@@ -148,8 +153,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpBuffer;     //Buffering Time
     [SerializeField] private float jumpGraceTimer; //Coyote Time
 
-    public int _jumpDir;
-
     private void Jump()
     {
         if (!_input.jumpDown) return;
@@ -169,8 +172,6 @@ public class PlayerController : MonoBehaviour
 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
 
-            _jumpDir = _input.horizontal == 0 ? 0 : _input.horizontal > 0 ? 1 : -1;
-
             if (climbLadder)
                 climbLadder = false;
         }
@@ -188,11 +189,12 @@ public class PlayerController : MonoBehaviour
             //코요테 타임 및 점프 카운트 초기화 
             jumpGraceTimer = JUMP_GRACE_TIME;
             jumpCount      = 0;
-            _jumpDir       = -2;
+            _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
         }
 
         int i = 0;
     }
+
 #endregion
 
 #region LadderAction
@@ -201,7 +203,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool    onLadder;
     [SerializeField] private bool    climbLadder;
 
-    public int _nowDir;
+    [Serializable]
+    public enum JumpDire
+    {
+        None,
+        Up, Down,
+        Left, Right
+    }
+
     private void ClimbLadder(Vector3 p_position)
     {
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
@@ -213,16 +222,23 @@ public class PlayerController : MonoBehaviour
 
         //만약 _jumpDir이랑 내가 가고있는 방향이 같다면 사다리를 타지 않는다.
         //즉 내릴 마음으로 점프를 했다면 사다리를 타지 않는다.
-        _nowDir = _input.horizontal == 0 ? 0 : _input.horizontal > 0 ? 1 : -1;
-        if (_jumpDir == _nowDir)
-            return;
-        
+        if (climbLadder && _input.jumpDown)
+            _lastLadderJumpDirection = GetNowJumpDirection();
+
+        if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
+            return;                                     //사다리에 다시 붙지 못하도록 한다.
+
         Bounds  _collider = _boxCollider2D.bounds;
         Vector2 _mdPoint  = new Vector2(_collider.center.x, _collider.min.y);
         if (_input.vertical > 0 &&
+            !climbLadder        &&
             !Physics2D.Raycast(_mdPoint, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider.IsUnityNull())
+
             //사다리 위에서 윗 키를 눌렀을때 사다리를 타지 않도록 해준다.
+        {
+            Debug.Log("Disable Ladder Jump");
             return;
+        }
 
         climbLadder           = true;
         transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
@@ -237,6 +253,18 @@ public class PlayerController : MonoBehaviour
             float deltaY = _input.vertical * Speed * Time.deltaTime;
             transform.position += new Vector3(0, deltaY, 0);
         }
+    }
+
+    private JumpDire GetNowJumpDirection()
+    {
+        return _input switch
+        {
+            { horizontal: > 0 }              => JumpDire.Right,
+            { horizontal: < 0 }              => JumpDire.Left,
+            { horizontal: 0, vertical: > 0 } => JumpDire.Up,
+            { horizontal: 0, vertical: < 0 } => JumpDire.Down,
+            _                                => JumpDire.None
+        };
     }
 
 #endregion
@@ -254,4 +282,3 @@ public class PlayerController : MonoBehaviour
 
 #endregion
 }
-
