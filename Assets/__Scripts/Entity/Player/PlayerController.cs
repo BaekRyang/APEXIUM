@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -35,6 +39,7 @@ public class PlayerController : MonoBehaviour
 
     void LoadSetting()
     {
+        
     }
 
     private void Update()
@@ -185,8 +190,9 @@ public class PlayerController : MonoBehaviour
             jumpCount      = 0;
             _jumpDir       = -2;
         }
-    }
 
+        int i = 0;
+    }
 #endregion
 
 #region LadderAction
@@ -248,3 +254,4 @@ public class PlayerController : MonoBehaviour
 
 #endregion
 }
+
