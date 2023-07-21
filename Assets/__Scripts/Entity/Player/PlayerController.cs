@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
 public struct InputValues
@@ -19,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_BUFFER               = 0.1f;
     private const float DISABLE_LADDER_CLIMB_TIME = 0.2f;
 
+    public Tilemap _ladderTilemap;
+
     public Player player;
 
     private InputValues _input;
@@ -26,19 +29,21 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
 
-    public readonly PlayerStats playerStats = new PlayerStats();
+    public PlayerStats playerStats = new PlayerStats();
 
-    public JumpDire _jumpDirection;
-    public JumpDire _lastLadderJumpDirection;
+    private int      _jumpCountOffset;
+    public  JumpDire _jumpDirection;
+    public  JumpDire _lastLadderJumpDirection;
 
     private float Speed        => playerStats.Speed;
     private float JumpHeight   => playerStats.JumpHeight;
-    private int   MaxJumpCount => playerStats.MaxJumpCount;
+    private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
     private void Awake()
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
+        _ladderTilemap = GameObject.Find("Grid").transform.Find("Ladder").GetComponent<Tilemap>();
     }
 
     void LoadSetting()
@@ -61,8 +66,11 @@ public class PlayerController : MonoBehaviour
         _boxCollider2D.isTrigger = _rigidbody2D.velocity.y > 0 || climbLadder;
 
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
-        _rigidbody2D.gravityScale = climbLadder ? 0 : 2;
+        _rigidbody2D.gravityScale = climbLadder ? 0 : 3;
 
+        _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
+
+        SetLadderStatus();
         ClimbLadder(_position);
 
         Jump();
@@ -95,25 +103,25 @@ public class PlayerController : MonoBehaviour
     {
     }
 
-    private void OnTriggerEnter2D(Collider2D p_other)
-    {
-        if (p_other.gameObject.CompareTag("Ladder"))
-        {
-            onLadder  = true;
-            ladderPos = p_other.transform.position;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D p_other)
-    {
-        if (p_other.gameObject.CompareTag("Ladder"))
-        {
-            onLadder                  = false;
-            climbLadder               = false;
-            _rigidbody2D.gravityScale = 1;
-            _boxCollider2D.isTrigger  = false;
-        }
-    }
+    // private void OnTriggerEnter2D(Collider2D p_other)
+    // {
+    //     if (p_other.gameObject.CompareTag("Ladder"))
+    //     {
+    //         onLadder  = true;
+    //         ladderPos = p_other.transform.position;
+    //     }
+    // }
+    //
+    // private void OnTriggerExit2D(Collider2D p_other)
+    // {
+    //     if (p_other.gameObject.CompareTag("Ladder"))
+    //     {
+    //         onLadder                  = false;
+    //         climbLadder               = false;
+    //         _rigidbody2D.gravityScale = 1;
+    //         _boxCollider2D.isTrigger  = false;
+    //     }
+    // }
 
 #region Input
 
@@ -161,19 +169,21 @@ public class PlayerController : MonoBehaviour
         jumpBuffer = JUMP_BUFFER;
 
         //coyoteTimer가 0보다 크고 남은 점프횟수가 있다면 점프
-        if (jumpGraceTimer > 0 && jumpCount < MaxJumpCount)
+        if (jumpCount < MaxJumpCount)
         {
             //사다리용 : 아래키 누르고 점프하면 위로 가속하지 않게 해준다.
-            var _jumpHeight = _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
-
-            jumpBuffer     = 0;
-            jumpGraceTimer = 0;
+            var _jumpHeight = climbLadder && _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
+            jumpBuffer = 0;
             jumpCount++;
+            GameManager.Instance._cellSlider.value = MaxJumpCount - jumpCount;
 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
 
             if (climbLadder)
                 climbLadder = false;
+
+            if (jumpGraceTimer > 0)
+                jumpGraceTimer = 100;
         }
     }
 
@@ -187,9 +197,10 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(_rigidbody2D.velocity.y) < 0.001f || climbLadder)
         {
             //코요테 타임 및 점프 카운트 초기화 
-            jumpGraceTimer = JUMP_GRACE_TIME;
-            jumpCount      = 0;
-            _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
+            jumpGraceTimer                         = JUMP_GRACE_TIME;
+            jumpCount                              = 0;
+            GameManager.Instance._cellSlider.value = MaxJumpCount;
+            _jumpDirection                         = _lastLadderJumpDirection = JumpDire.None;
         }
 
         int i = 0;
@@ -207,8 +218,10 @@ public class PlayerController : MonoBehaviour
     public enum JumpDire
     {
         None,
-        Up, Down,
-        Left, Right
+        Up,
+        Down,
+        Left,
+        Right
     }
 
     private void ClimbLadder(Vector3 p_position)
@@ -267,11 +280,39 @@ public class PlayerController : MonoBehaviour
         };
     }
 
+    private void SetLadderStatus()
+    {
+        if (HasLadderTile())
+            onLadder = true;
+        else
+        {
+            if (!onLadder) return;
+            onLadder                  = false;
+            climbLadder               = false;
+            _rigidbody2D.gravityScale = 1;
+            _boxCollider2D.isTrigger  = false;
+        }
+    }
+
+    private bool HasLadderTile()
+    {
+        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
+                                                  Mathf.FloorToInt(transform.position.y));
+
+        if (_ladderTilemap.HasTile(_tilePosition))
+        {
+            ladderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
+            return true;
+        }
+
+        return false;
+    }
+
 #endregion
 
 #region Gravity
 
-    [SerializeField] private float maxFallSpeed = 10;
+    [SerializeField] private float maxFallSpeed = 15;
 
     private void ClampVelocity()
     {

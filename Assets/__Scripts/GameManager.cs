@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public int playerID = -1;
 
     public Statistics statistics;
+    
+    public CellSlider _cellSlider;
 
     [SerializeField] private List<Player> players;
     [SerializeField] private GameObject   playerPrefab;
