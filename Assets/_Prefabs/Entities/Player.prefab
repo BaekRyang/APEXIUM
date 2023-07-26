@@ -136,8 +136,18 @@ PrefabInstance:
     - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917554750849969010, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 1f4554724d7301e48ad5e41e5cefbb80, type: 2}
     - target: {fileID: 5917554750849969010, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_CollisionDetection

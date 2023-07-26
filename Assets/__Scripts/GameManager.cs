@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,21 +9,25 @@ public class GameManager : MonoBehaviour
     public int playerID = -1;
 
     public Statistics statistics;
-    
+
     public CellSlider _cellSlider;
 
-    [SerializeField] private List<Player> players;
-    [SerializeField] private GameObject   playerPrefab;
+    [SerializeField] private Dictionary<int, Player> players = new Dictionary<int, Player>();
+    [SerializeField] private GameObject              playerPrefab;
 
-    public Player RandomPlayer
+    public CinemachineVirtualCamera virtualCamera;
+
+    public Player RandomPlayer()
     {
-        get
-        {
-            if (players.Count <= 0)
-                return null;
+        if (players.Count <= 0)
+            return null;
 
-            return players[Random.Range(0, players.Count)];
-        }
+        return players[Random.Range(0, players.Count)];
+    }
+
+    public Player GetLocalPlayer()
+    {
+        return players[playerID];
     }
 
     private void Awake()
@@ -35,8 +40,8 @@ public class GameManager : MonoBehaviour
     {
         GameObject _player = Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
         _player.transform.name = $"Player {p_newPlayerID}";
-        
+
         _player.GetComponent<Player>().clientID = p_newPlayerID;
-        players.Add(_player.GetComponent<Player>());
+        players.Add(p_newPlayerID, _player.GetComponent<Player>());
     }
 }

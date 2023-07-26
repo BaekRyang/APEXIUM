@@ -22,9 +22,11 @@ public class EnemyAI : MonoBehaviour
 
     private Stats _stats;
 
+    private bool _stunned;
+
     public void Initialize(EnemyBase p_enemyBase)
     {
-        targetPlayer = GameManager.Instance.RandomPlayer;
+        targetPlayer = GameManager.Instance.RandomPlayer();
         thisCollider = GetComponent<Collider2D>();
         _stats       = p_enemyBase.stats;
         _transform   = transform;
@@ -50,9 +52,9 @@ public class EnemyAI : MonoBehaviour
 
     public void Update()
     {
-        var _bounds = thisCollider.bounds;
-        _colliderEdgeLeft  = _bounds.min;
-        _colliderEdgeRight = _bounds.min + Vector3.right * _bounds.size.x;
+        var bounds = thisCollider.bounds;
+        _colliderEdgeLeft  = bounds.min;
+        _colliderEdgeRight = bounds.min + Vector3.right * bounds.size.x;
 
         if (CLIFF_DETECT_DISTANCE > 0)
         {
@@ -62,11 +64,10 @@ public class EnemyAI : MonoBehaviour
                 -1 => Vector3.right,
                 _  => _targetDirection
             };
-            
-            Debug.Log(CliffDetect());
         }
 
-        _transform.position += _targetDirection * (Time.deltaTime * _stats.Speed);
+        if (_stunned) return;
+        _transform.position += _targetDirection * (Time.deltaTime * _stats.speed);
     }
 
 #region CliffDetect

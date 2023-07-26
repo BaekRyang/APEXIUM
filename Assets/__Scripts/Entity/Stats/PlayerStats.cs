@@ -1,21 +1,14 @@
 using System;
+using UnityEngine.Serialization;
 
+[Serializable]
 public class PlayerStats : Stats
 {
-    private    int _health = 100;
+    public  int   maxJumpCount = 5;
+    public  float jumpHeight   = 10f;
 
-    public new int Health
+    public PlayerStats()
     {
-        get => _health;
-        set
-        {
-            _health = value;
-        }
+        Health       = 100;
     }
-
-    public new float Speed { get; set; } = 4f;
-
-    public int MaxJumpCount { get; set; } = 5;
-
-    public float JumpHeight { get; set; } = 10f;
 }

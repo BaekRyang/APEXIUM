@@ -10,8 +10,10 @@ using Debug = UnityEngine.Debug;
 
 public struct InputValues
 {
-    public float horizontal, vertical;
-    public bool  jumpDown,   jumpUp;
+    public float horizontal,   vertical;
+    public bool  jumpDown,     jumpUp;
+    public bool  primarySkill, secondarySkill, movementSkill, ultimateSkill;
+    public bool  specialSkill, itemSkill;
 }
 
 public class PlayerController : MonoBehaviour
@@ -35,15 +37,20 @@ public class PlayerController : MonoBehaviour
     public  JumpDire _jumpDirection;
     public  JumpDire _lastLadderJumpDirection;
 
-    private float Speed        => playerStats.Speed;
-    private float JumpHeight   => playerStats.JumpHeight;
-    private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
+    private float Speed        => playerStats.speed;
+    private float JumpHeight   => playerStats.jumpHeight;
+    private int   MaxJumpCount => playerStats.maxJumpCount + _jumpCountOffset;
+    
+    public int PlayerFacing => transform.localScale.x > 0 ? 1 : -1;
+    
 
     private void Awake()
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _ladderTilemap = GameObject.Find("Grid").transform.Find("Ladder").GetComponent<Tilemap>();
+
+        GameManager.Instance.virtualCamera.Follow = transform;
     }
 
     void LoadSetting()
@@ -80,6 +87,10 @@ public class PlayerController : MonoBehaviour
         ResetJump();
 
         _jumpDirection = GetNowJumpDirection();
+        
+        UseSkill();
+        
+        
     }
 
     private void FixedUpdate()
@@ -132,7 +143,14 @@ public class PlayerController : MonoBehaviour
                      horizontal = Input.GetAxisRaw("Horizontal"),
                      vertical   = Input.GetAxisRaw("Vertical"),
                      jumpDown   = Input.GetButtonDown("Jump"),
-                     jumpUp     = Input.GetButtonUp("Jump")
+                     jumpUp     = Input.GetButtonUp("Jump"),
+
+                     primarySkill   = Input.GetButtonDown("PrimarySkill"),
+                     secondarySkill = Input.GetButtonDown("SecondarySkill"),
+                     movementSkill  = Input.GetButtonDown("MovementSkill"),
+                     ultimateSkill  = Input.GetButtonDown("UltimateSkill"),
+                     specialSkill   = Input.GetButtonDown("SpecialSkill"),
+                     itemSkill      = Input.GetButtonDown("ItemSkill")
                  };
 
         // _input = new InputValues
@@ -151,6 +169,20 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
+        FlipSprite();
+    }
+    
+    //이동 방향에 따라서 스프라이트를 뒤집어준다.
+    private void FlipSprite()
+    {
+        Transform _transformCache = transform;
+        
+        _transformCache.localScale = _input.horizontal switch
+        {
+            > 0 => new Vector3(1, 1, 1),
+            < 0 => new Vector3(-1, 1, 1),
+            _   => _transformCache.localScale
+        };
     }
 
 #endregion
@@ -202,8 +234,6 @@ public class PlayerController : MonoBehaviour
             GameManager.Instance._cellSlider.value = MaxJumpCount;
             _jumpDirection                         = _lastLadderJumpDirection = JumpDire.None;
         }
-
-        int i = 0;
     }
 
 #endregion
@@ -241,8 +271,8 @@ public class PlayerController : MonoBehaviour
         if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
             return;                                     //사다리에 다시 붙지 못하도록 한다.
 
-        Bounds  _collider = _boxCollider2D.bounds;
-        Vector2 _mdPoint  = new Vector2(_collider.center.x, _collider.min.y);
+        Bounds  _bounds = _boxCollider2D.bounds;
+        Vector2 _mdPoint  = new Vector2(_bounds.center.x, _bounds.min.y);
         if (_input.vertical > 0 &&
             !climbLadder        &&
             !Physics2D.Raycast(_mdPoint, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider.IsUnityNull())
@@ -263,8 +293,8 @@ public class PlayerController : MonoBehaviour
 
         if (climbLadder)
         {
-            float deltaY = _input.vertical * Speed * Time.deltaTime;
-            transform.position += new Vector3(0, deltaY, 0);
+            float _deltaY = _input.vertical * Speed * Time.deltaTime;
+            transform.position += new Vector3(0, _deltaY, 0);
         }
     }
 
@@ -280,9 +310,13 @@ public class PlayerController : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Player status for ladder.
+    /// </summary>
     private void SetLadderStatus()
     {
-        if (HasLadderTile())
+        //현재 서있는 곳이 사다리인지 확인한다. (아래쪽으로 가는 경우에는 한칸 아래를 조사한다.)
+        if (HasLadderTile(_input.vertical < 0))
             onLadder = true;
         else
         {
@@ -294,10 +328,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool HasLadderTile()
+    /// <summary>
+    /// Check if there is a ladder tile at the player position.
+    /// </summary>
+    /// <param name="p_isDown">Check one tile down.</param>
+    /// <returns>True if there is a ladder tile.</returns>
+    private bool HasLadderTile(bool p_isDown = false)
     {
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
-                                                  Mathf.FloorToInt(transform.position.y));
+                                                 Mathf.FloorToInt(transform.position.y - (p_isDown ? 1 : 0)));
 
         if (_ladderTilemap.HasTile(_tilePosition))
         {
@@ -320,6 +359,40 @@ public class PlayerController : MonoBehaviour
         if (_rigidbody2D.velocity.y < -maxFallSpeed)
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, -maxFallSpeed);
     }
+
+#endregion
+
+#region SkillUse
+
+    private void UseSkill()
+    {
+        if (_input.primarySkill)
+        {
+            player.skills[0].Play(1);
+            Debug.Log("PrimarySkill");
+        } else if (_input.secondarySkill)
+        {
+            player.skills[1].Play(1);
+            Debug.Log("SecondarySkill");
+        } else if (_input.movementSkill)
+        {
+            player.skills[2].Play(1);
+            Debug.Log("MovementSkill");
+        } else if (_input.ultimateSkill)
+        {
+            player.skills[3].Play(1);
+            Debug.Log("UltimateSkill");
+        } else if (_input.specialSkill)
+        {
+            player.skills[4].Play(1);
+            Debug.Log("SpecialSkill");
+        } else if (_input.itemSkill)
+        {
+            player.skills[5].Play(1);
+            Debug.Log("ItemSkill");
+        }
+    }
+    
 
 #endregion
 }
