@@ -9,6 +9,6 @@ public class PlayerStats : Stats
 
     public PlayerStats()
     {
-        Health       = 100;
+        health       = 100;
     }
 }

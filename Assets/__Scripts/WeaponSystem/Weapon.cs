@@ -1,14 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Facing = PlayerController.Facing;
 
-public abstract class Weapon : MonoBehaviour, IAttackable
+public class Weapon : MonoBehaviour, IAttackable
 {
     protected Player player;
+    protected float? cooldown;
+    private   float  _lastAttackTime;
 
-    protected void  Start() => player = GetComponent<Player>();
-    protected int   Facing  => player.Controller.PlayerFacing;
-    public    float Damage  => GameManager.Instance.GetLocalPlayer().Stats.attackDamage;
+    protected void   Start() => player = GetComponent<Player>();
+    protected Facing Facing  => player.Controller.PlayerFacing;
+    protected float  Damage  => GameManager.Instance.GetLocalPlayer().Stats.attackDamage;
 
-    public abstract void Play(int p_damageMultiplier);
+    public virtual bool Play(int p_damageMultiplier)
+    {
+        if (Time.time - _lastAttackTime < cooldown) return false; //쿨타임
+        _lastAttackTime = Time.time;
+        return true;
+    }
 }

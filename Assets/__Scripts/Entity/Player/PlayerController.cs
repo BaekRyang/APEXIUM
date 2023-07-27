@@ -41,8 +41,13 @@ public class PlayerController : MonoBehaviour
     private float JumpHeight   => playerStats.jumpHeight;
     private int   MaxJumpCount => playerStats.maxJumpCount + _jumpCountOffset;
     
-    public int PlayerFacing => transform.localScale.x > 0 ? 1 : -1;
+    public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
     
+    public enum Facing
+    {
+        Left  = -1,
+        Right = 1
+    }
 
     private void Awake()
     {
@@ -145,12 +150,12 @@ public class PlayerController : MonoBehaviour
                      jumpDown   = Input.GetButtonDown("Jump"),
                      jumpUp     = Input.GetButtonUp("Jump"),
 
-                     primarySkill   = Input.GetButtonDown("PrimarySkill"),
-                     secondarySkill = Input.GetButtonDown("SecondarySkill"),
-                     movementSkill  = Input.GetButtonDown("MovementSkill"),
-                     ultimateSkill  = Input.GetButtonDown("UltimateSkill"),
-                     specialSkill   = Input.GetButtonDown("SpecialSkill"),
-                     itemSkill      = Input.GetButtonDown("ItemSkill")
+                     primarySkill   = Input.GetButton("PrimarySkill"),
+                     secondarySkill = Input.GetButton("SecondarySkill"),
+                     movementSkill  = Input.GetButton("MovementSkill"),
+                     ultimateSkill  = Input.GetButton("UltimateSkill"),
+                     specialSkill   = Input.GetButton("SpecialSkill"),
+                     itemSkill      = Input.GetButton("ItemSkill")
                  };
 
         // _input = new InputValues
@@ -179,8 +184,8 @@ public class PlayerController : MonoBehaviour
         
         _transformCache.localScale = _input.horizontal switch
         {
-            > 0 => new Vector3(1, 1, 1),
-            < 0 => new Vector3(-1, 1, 1),
+            > 0 => new Vector3(-1, 1, 1),
+            < 0 => new Vector3(1, 1, 1),
             _   => _transformCache.localScale
         };
     }

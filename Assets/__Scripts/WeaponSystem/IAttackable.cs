@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IAttackable
 {
-    public void Play(int p_damageMultiplier);
+    public bool Play(int p_damageMultiplier);
 }
