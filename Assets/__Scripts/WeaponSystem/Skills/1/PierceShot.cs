@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PierceShot : Weapon
+public class PierceShot : AttackableSkill
 {
     private const float RANGE             = 20f;
     private const float COOLDOWN          = 6f;
@@ -12,14 +12,15 @@ public class PierceShot : Weapon
 
     public void OnEnable()
     {
-        cooldown    ??= COOLDOWN;
-        skillDamage =   DAMAGE_MULTIPLIER;
+        skillType   = SkillTypes.Secondary;
+        cooldown    = COOLDOWN;
+        skillDamage = DAMAGE_MULTIPLIER;
     }
 
     public override bool Play()
     {
         if (!base.Play()) return false; //쿨타임 체크
-        
+
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
 

@@ -5,7 +5,7 @@ using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class RevolverShot : Weapon
+public class RevolverShot : AttackableSkill
 {
     private const float RANGE             = 20f;
     private const float COOLDOWN          = .25f;
@@ -14,7 +14,8 @@ public class RevolverShot : Weapon
 
     public void OnEnable()
     {
-        cooldown ??= COOLDOWN;
+        skillType   = SkillTypes.Primary;
+        cooldown    = COOLDOWN;
         skillDamage = DAMAGE_MULTIPLIER;
     }
 

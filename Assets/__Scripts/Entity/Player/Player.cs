@@ -9,8 +9,8 @@ public class Player : MonoBehaviour
     private                 PlayerController _playerController;
     private                 PlayerStats      _stats;
     public                  Vector3          PlayerPosition => transform.position;
-    
-    public readonly List<IAttackable> skills = new List<IAttackable>();
+
+    public readonly Dictionary<SkillTypes, Skill> skills = new Dictionary<SkillTypes, Skill>();
 
     public PlayerController Controller => _playerController;
 
@@ -21,9 +21,10 @@ public class Player : MonoBehaviour
         _playerController = gameObject.AddComponent<PlayerController>();
         Controller.player = this;
         _stats            = Controller.playerStats;
-        
-        skills.Add(gameObject.AddComponent<RevolverShot>());
-        skills.Add(gameObject.AddComponent<PierceShot>());
+
+        skills.Add(SkillTypes.Primary, gameObject.AddComponent<RevolverShot>());
+        skills.Add(SkillTypes.Secondary, gameObject.AddComponent<PierceShot>());
+        skills.Add(SkillTypes.Utility, gameObject.AddComponent<Roll>());
         yield break;
     }
 

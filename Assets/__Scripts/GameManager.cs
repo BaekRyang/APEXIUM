@@ -10,8 +10,6 @@ public class GameManager : MonoBehaviour
 
     public Statistics statistics;
 
-    public CellSlider _cellSlider;
-
     [SerializeField] private Dictionary<int, Player> players = new Dictionary<int, Player>();
     [SerializeField] private GameObject              playerPrefab;
 
