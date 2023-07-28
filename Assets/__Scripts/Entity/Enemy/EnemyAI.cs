@@ -27,7 +27,7 @@ public class EnemyAI : MonoBehaviour
     private                  Transform _transform;
     private                  Vector3   _targetPosition;
 
-    private Stats _stats;
+    private MonsterStats _stats;
 
     private bool  _stunned,  _dazed;
     private float _stunTime, _dazeTime;

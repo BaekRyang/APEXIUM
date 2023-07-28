@@ -27,6 +27,6 @@ public class Skill : MonoBehaviour
         _remainingCooldown = cooldown - (Time.time - _lastUsedTime);
 
         if (skillType != SkillTypes.Primary)
-            UIElements.Instance.skillBlocks[skillType].SetCoolDown(_remainingCooldown);
+            UIElements.Instance.SetCoolDown(skillType, _remainingCooldown);
     }
 }

@@ -18,13 +18,23 @@ public class Player : MonoBehaviour
 
     private IEnumerator LoadSettings()
     {
-        _playerController = gameObject.AddComponent<PlayerController>();
-        Controller.player = this;
-        _stats            = Controller.playerStats;
+        _stats = new PlayerStats()
+                 .SetHealth(100)
+                 .SetAttackDamage(10)
+                 .SetSpeed(4f)
+                 .SetDefense(0)
+                 .SetAttackSpeed(1f)
+                 .SetMaxJumpCount(1)
+                 .SetJumpHeight(10);
 
-        skills.Add(SkillTypes.Primary, gameObject.AddComponent<RevolverShot>());
+
+        _playerController      = gameObject.AddComponent<PlayerController>();
+        Controller.player      = this;
+        Controller.playerStats = _stats;
+
+        skills.Add(SkillTypes.Primary,   gameObject.AddComponent<RevolverShot>());
         skills.Add(SkillTypes.Secondary, gameObject.AddComponent<PierceShot>());
-        skills.Add(SkillTypes.Utility, gameObject.AddComponent<Roll>());
+        skills.Add(SkillTypes.Utility,   gameObject.AddComponent<Roll>());
         yield break;
     }
 

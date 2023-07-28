@@ -8,7 +8,7 @@ public class EnemyBase : MonoBehaviour
 {
     private EnemyAI          _enemyAI;
     public  MMF_Player       _damageFeedback;
-    public  Stats            stats = Stats.CreateInstance();
+    public  MonsterStats            stats;
     public  MMF_FloatingText _floatingText;
 
     private void Start()
@@ -17,11 +17,18 @@ public class EnemyBase : MonoBehaviour
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
         _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
+
+        stats = new MonsterStats()
+               .SetHealth(200)
+               .SetAttackDamage(10)
+               .SetSpeed(4f)
+               .SetDefense(1)
+               .SetAttackSpeed(1f);
     }
 
     public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)
     {
-        stats.health -= p_pDamage;
+        stats.Health -= p_pDamage;
 
         _floatingText.Value = p_pDamage.ToString();
         _damageFeedback.PlayFeedbacks();
@@ -32,7 +39,7 @@ public class EnemyBase : MonoBehaviour
             _enemyAI.Stun(p_stunDuration);
         
         Knockback(p_pAttacker, 100);
-        if (stats.health <= 0)
+        if (stats.Health <= 0)
         {
             Destroy(gameObject);
         }

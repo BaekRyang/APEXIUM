@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     
     public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
-    public PlayerStats playerStats = new PlayerStats();
+    public PlayerStats playerStats;
 
     private int      _jumpCountOffset;
     public  JumpDire _jumpDirection;
