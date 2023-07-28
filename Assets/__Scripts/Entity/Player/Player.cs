@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
         _stats            = Controller.playerStats;
         
         skills.Add(gameObject.AddComponent<RevolverShot>());
+        skills.Add(gameObject.AddComponent<PierceShot>());
         yield break;
     }
 

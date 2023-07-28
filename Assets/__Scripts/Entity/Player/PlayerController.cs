@@ -373,27 +373,27 @@ public class PlayerController : MonoBehaviour
     {
         if (_input.primarySkill)
         {
-            player.skills[0].Play(1);
+            player.skills[0].Play();
             Debug.Log("PrimarySkill");
         } else if (_input.secondarySkill)
         {
-            player.skills[1].Play(1);
+            player.skills[1].Play();
             Debug.Log("SecondarySkill");
         } else if (_input.movementSkill)
         {
-            player.skills[2].Play(1);
+            player.skills[2].Play();
             Debug.Log("MovementSkill");
         } else if (_input.ultimateSkill)
         {
-            player.skills[3].Play(1);
+            player.skills[3].Play();
             Debug.Log("UltimateSkill");
         } else if (_input.specialSkill)
         {
-            player.skills[4].Play(1);
+            player.skills[4].Play();
             Debug.Log("SpecialSkill");
         } else if (_input.itemSkill)
         {
-            player.skills[5].Play(1);
+            player.skills[5].Play();
             Debug.Log("ItemSkill");
         }
     }
