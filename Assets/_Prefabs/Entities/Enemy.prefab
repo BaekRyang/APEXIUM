@@ -118,6 +118,16 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 5917554750849969010, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      propertyPath: m_LinearDrag
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917554750849969010, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 8133573880300514449, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_Enabled
@@ -165,6 +175,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dc30dfdc072874182eb621a36377f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _damageFeedback: {fileID: 0}
+  stats:
+    health: 100
+    attackDamage: 30
+    speed: 2
+    level: 1
+    defense: 0
+    attackSpeed: 1
 --- !u!114 &-8639249466388217110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +195,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1f33d3789bdf44798931a634027cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canDazed: 1
+  canStun: 1
   targetPlayer: {fileID: 0}
   thisCollider: {fileID: 0}
   chaseDistance: 5

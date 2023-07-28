@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_BUFFER               = 0.1f;
     private const float DISABLE_LADDER_CLIMB_TIME = 0.2f;
 
+    public bool controllable = true;
+    
     public Tilemap _ladderTilemap;
 
     public Player player;
@@ -30,8 +32,10 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
+    
+    public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
-    public PlayerStats playerStats = new PlayerStats();
+    public PlayerStats playerStats;
 
     private int      _jumpCountOffset;
     public  JumpDire _jumpDirection;
@@ -41,8 +45,13 @@ public class PlayerController : MonoBehaviour
     private float JumpHeight   => playerStats.jumpHeight;
     private int   MaxJumpCount => playerStats.maxJumpCount + _jumpCountOffset;
     
-    public int PlayerFacing => transform.localScale.x > 0 ? 1 : -1;
-    
+    public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
+
+    public enum Facing
+    {
+        Left  = -1,
+        Right = 1
+    }
 
     private void Awake()
     {
@@ -95,6 +104,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!controllable) return;
+        
         if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
             return;
 
@@ -145,12 +156,12 @@ public class PlayerController : MonoBehaviour
                      jumpDown   = Input.GetButtonDown("Jump"),
                      jumpUp     = Input.GetButtonUp("Jump"),
 
-                     primarySkill   = Input.GetButtonDown("PrimarySkill"),
-                     secondarySkill = Input.GetButtonDown("SecondarySkill"),
-                     movementSkill  = Input.GetButtonDown("MovementSkill"),
-                     ultimateSkill  = Input.GetButtonDown("UltimateSkill"),
-                     specialSkill   = Input.GetButtonDown("SpecialSkill"),
-                     itemSkill      = Input.GetButtonDown("ItemSkill")
+                     primarySkill   = Input.GetButton("PrimarySkill"),
+                     secondarySkill = Input.GetButton("SecondarySkill"),
+                     movementSkill  = Input.GetButton("MovementSkill"),
+                     ultimateSkill  = Input.GetButton("UltimateSkill"),
+                     specialSkill   = Input.GetButton("SpecialSkill"),
+                     itemSkill      = Input.GetButton("ItemSkill")
                  };
 
         // _input = new InputValues
@@ -179,8 +190,8 @@ public class PlayerController : MonoBehaviour
         
         _transformCache.localScale = _input.horizontal switch
         {
-            > 0 => new Vector3(1, 1, 1),
-            < 0 => new Vector3(-1, 1, 1),
+            > 0 => new Vector3(-1, 1, 1),
+            < 0 => new Vector3(1, 1, 1),
             _   => _transformCache.localScale
         };
     }
@@ -207,7 +218,6 @@ public class PlayerController : MonoBehaviour
             var _jumpHeight = climbLadder && _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
             jumpBuffer = 0;
             jumpCount++;
-            GameManager.Instance._cellSlider.value = MaxJumpCount - jumpCount;
 
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
 
@@ -229,10 +239,9 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(_rigidbody2D.velocity.y) < 0.001f || climbLadder)
         {
             //코요테 타임 및 점프 카운트 초기화 
-            jumpGraceTimer                         = JUMP_GRACE_TIME;
-            jumpCount                              = 0;
-            GameManager.Instance._cellSlider.value = MaxJumpCount;
-            _jumpDirection                         = _lastLadderJumpDirection = JumpDire.None;
+            jumpGraceTimer = JUMP_GRACE_TIME;
+            jumpCount      = 0;
+            _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
         }
     }
 
@@ -351,7 +360,8 @@ public class PlayerController : MonoBehaviour
 
 #region Gravity
 
-    [SerializeField] private float maxFallSpeed = 15;
+    [SerializeField] private float       maxFallSpeed = 15;
+    [SerializeField]                 private Rigidbody2D _rigidbody2D1;
 
     private void ClampVelocity()
     {
@@ -367,32 +377,18 @@ public class PlayerController : MonoBehaviour
     private void UseSkill()
     {
         if (_input.primarySkill)
-        {
-            player.skills[0].Play(1);
-            Debug.Log("PrimarySkill");
-        } else if (_input.secondarySkill)
-        {
-            player.skills[1].Play(1);
-            Debug.Log("SecondarySkill");
-        } else if (_input.movementSkill)
-        {
-            player.skills[2].Play(1);
-            Debug.Log("MovementSkill");
-        } else if (_input.ultimateSkill)
-        {
-            player.skills[3].Play(1);
-            Debug.Log("UltimateSkill");
-        } else if (_input.specialSkill)
-        {
-            player.skills[4].Play(1);
-            Debug.Log("SpecialSkill");
-        } else if (_input.itemSkill)
-        {
-            player.skills[5].Play(1);
-            Debug.Log("ItemSkill");
-        }
+            player.skills[SkillTypes.Primary].Play();
+        else if (_input.secondarySkill)
+            player.skills[SkillTypes.Secondary].Play();
+        else if (_input.movementSkill)
+            player.skills[SkillTypes.Utility].Play();
+        else if (_input.ultimateSkill)
+            player.skills[SkillTypes.Ultimate].Play();
+        else if (_input.specialSkill)
+            player.skills[SkillTypes.Special].Play();
+        else if (_input.itemSkill)
+            player.skills[SkillTypes.Item].Play();
     }
-    
 
 #endregion
 }

@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    private const float DAZED_DURATION = 0.35f;
+
     private const float CLIFF_DETECT_DISTANCE       = 0.5f;
     private const float CHANGE_DIRECTION_CYCLE_TIME = 1.0f;
+
+    [Header("Set in Inspector")]
+    [SerializeField] private bool canDazed = true;
+
+    [SerializeField] private bool canStun = true;
 
     private readonly WaitForSeconds _changeDirectionCycle = new WaitForSeconds(CHANGE_DIRECTION_CYCLE_TIME);
 
@@ -20,9 +27,10 @@ public class EnemyAI : MonoBehaviour
     private                  Transform _transform;
     private                  Vector3   _targetPosition;
 
-    private Stats _stats;
+    private MonsterStats _stats;
 
-    private bool _stunned;
+    private bool  _stunned,  _dazed;
+    private float _stunTime, _dazeTime;
 
     public void Initialize(EnemyBase p_enemyBase)
     {
@@ -52,9 +60,20 @@ public class EnemyAI : MonoBehaviour
 
     public void Update()
     {
-        var bounds = thisCollider.bounds;
-        _colliderEdgeLeft  = bounds.min;
-        _colliderEdgeRight = bounds.min + Vector3.right * bounds.size.x;
+        if (_stunned)
+            _stunTime -= Time.deltaTime;
+        if (_dazed)
+            _dazeTime -= Time.deltaTime;
+
+        if (_stunTime <= 0) _stunned = false;
+        if (_dazeTime <= 0) _dazed   = false;
+        
+        
+
+
+        var _bounds = thisCollider.bounds;
+        _colliderEdgeLeft  = _bounds.min;
+        _colliderEdgeRight = _bounds.min + Vector3.right * _bounds.size.x;
 
         if (CLIFF_DETECT_DISTANCE > 0)
         {
@@ -66,7 +85,7 @@ public class EnemyAI : MonoBehaviour
             };
         }
 
-        if (_stunned) return;
+        if (_stunned || _dazed) return;
         _transform.position += _targetDirection * (Time.deltaTime * _stats.speed);
     }
 
@@ -86,4 +105,21 @@ public class EnemyAI : MonoBehaviour
     }
 
 #endregion
+
+    public void Stun(float p_stunDuration)
+    {
+        if (!canStun) return;
+
+        _stunned = true;
+        if (!(_stunTime > p_stunDuration)) //기존 스턴시간이 더 길면 무시
+            _stunTime = p_stunDuration;
+    }
+
+    public void Daze()
+    {
+        if (!canDazed) return;
+        
+        _dazed    = true;
+        _dazeTime = DAZED_DURATION;
+    }
 }
