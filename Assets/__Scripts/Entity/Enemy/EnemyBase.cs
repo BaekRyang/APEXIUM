@@ -1,15 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
 {
     private EnemyAI          _enemyAI;
-    public  MMF_Player       _damageFeedback;
-    public  MonsterStats            stats;
-    public  MMF_FloatingText _floatingText;
+    private MMF_Player       _damageFeedback;
+    private MMF_FloatingText _floatingText;
+
+    public MonsterStats stats;
 
     private void Start()
     {
@@ -28,8 +26,6 @@ public class EnemyBase : MonoBehaviour
 
     public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)
     {
-        stats.Health -= p_pDamage;
-
         _floatingText.Value = p_pDamage.ToString();
         _damageFeedback.PlayFeedbacks();
 
@@ -37,9 +33,9 @@ public class EnemyBase : MonoBehaviour
             _enemyAI.Daze();
         else
             _enemyAI.Stun(p_stunDuration);
-        
-        Knockback(p_pAttacker, 100);
-        if (stats.Health <= 0)
+
+        Knockback(p_pAttacker, 150);
+        if (stats.health <= 0)
         {
             Destroy(gameObject);
         }
@@ -48,6 +44,7 @@ public class EnemyBase : MonoBehaviour
     private void Knockback(Player p_pAttacker, float p_pKnockbackForce)
     {
         Vector2 _knockbackDirection = (transform.position - p_pAttacker.PlayerPosition).normalized;
+
         // GetComponent<Rigidbody2D>().velocity = _knockbackDirection * p_pKnockbackForce;
         GetComponent<Rigidbody2D>().AddForce(_knockbackDirection * p_pKnockbackForce, ForceMode2D.Impulse);
     }

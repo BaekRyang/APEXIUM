@@ -36,19 +36,50 @@ public class UIElements : MonoBehaviour
         expBar     = _playerUI.Find("EXP").GetComponent<Slider>();
         levelIndex = expBar.transform.Find("Value").GetComponent<TMP_Text>();
 
-        resourceBar = _playerUI.Find("Gauges").Find("Resource").GetComponent<CellSlider>();
+        resourceBar = _playerUI.Find("Gauges").Find("Resources").GetComponent<CellSlider>();
     }
 
-    public void SetHealth(float p_currentHealth, float p_maxHealth)
+    private int cachedMaxhealth = -1;
+
+    public void SetHealth(int p_currentHealth = -1, int p_maxHealth = -1)
     {
-        healthBar.maxValue = p_maxHealth;
-        healthBar.value  = p_currentHealth;
+        if (p_maxHealth == -1) //최대 체력이 -1이면 기존 최대 체력으로 설정
+            p_maxHealth = cachedMaxhealth;
+        else //아니면 최대 체력 갱신
+            healthBar.maxValue = p_maxHealth;
+
+        if (p_currentHealth == -1) //현재 체력이 -1이면 기존 현재 체력으로 설정
+            p_currentHealth = (int)healthBar.value;
+        else //아니면 현재 체력 갱신
+            healthBar.value = p_currentHealth;
+
+        //체력바 텍스트 갱신
         healthIndex.text = $"{p_currentHealth:0}/{p_maxHealth:0}";
     }
 
-    public void SetExp(float p_currentExp, float p_maxExp) => expBar.value = p_currentExp / p_maxExp;
+    public void SetExp(int p_currentExp) => expBar.value = p_currentExp;
 
     public void SetLevelIndex(int p_level) => levelIndex.text = $"{p_level}";
-    
+
     public void SetCoolDown(SkillTypes p_skillType, float p_cooldown) => skillBlocks[p_skillType].SetCoolDown(p_cooldown);
+
+    // public void Notified(NotifyTypes p_type, object p_value)
+    // {
+    //     switch (p_type)
+    //     {
+    //         case NotifyTypes.Health:
+    //             SetHealth(p_currentHealth: (int)p_value);
+    //             break;
+    //         case NotifyTypes.MaxHealth:
+    //             SetHealth(p_maxHealth: (int)p_value);
+    //             break;
+    //         case NotifyTypes.Exp:
+    //             SetExp((int)p_value);
+    //             break;
+    //         case NotifyTypes.Level:
+    //             SetLevelIndex((int)p_value);
+    //             break;
+    //
+    //     }
+    // }
 }

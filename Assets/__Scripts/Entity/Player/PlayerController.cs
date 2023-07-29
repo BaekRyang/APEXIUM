@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private const float DISABLE_LADDER_CLIMB_TIME = 0.2f;
 
     public bool controllable = true;
-    
+
     public Tilemap _ladderTilemap;
 
     public Player player;
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
-    
+
     public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
     public PlayerStats playerStats;
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     private float Speed        => playerStats.speed;
     private float JumpHeight   => playerStats.jumpHeight;
     private int   MaxJumpCount => playerStats.maxJumpCount + _jumpCountOffset;
-    
+
     public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
 
     public enum Facing
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _ladderTilemap = GameObject.Find("Grid").transform.Find("Ladder").GetComponent<Tilemap>();
 
-        GameManager.Instance.virtualCamera.Follow = transform;
+        GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
     }
 
     void LoadSetting()
@@ -96,16 +96,14 @@ public class PlayerController : MonoBehaviour
         ResetJump();
 
         _jumpDirection = GetNowJumpDirection();
-        
+
         UseSkill();
-        
-        
     }
 
     private void FixedUpdate()
     {
         if (!controllable) return;
-        
+
         if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
             return;
 
@@ -182,16 +180,16 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
         FlipSprite();
     }
-    
+
     //이동 방향에 따라서 스프라이트를 뒤집어준다.
     private void FlipSprite()
     {
         Transform _transformCache = transform;
-        
+
         _transformCache.localScale = _input.horizontal switch
         {
             > 0 => new Vector3(-1, 1, 1),
-            < 0 => new Vector3(1, 1, 1),
+            < 0 => new Vector3(1,  1, 1),
             _   => _transformCache.localScale
         };
     }
@@ -280,8 +278,8 @@ public class PlayerController : MonoBehaviour
         if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
             return;                                     //사다리에 다시 붙지 못하도록 한다.
 
-        Bounds  _bounds = _boxCollider2D.bounds;
-        Vector2 _mdPoint  = new Vector2(_bounds.center.x, _bounds.min.y);
+        Bounds  _bounds  = _boxCollider2D.bounds;
+        Vector2 _mdPoint = new Vector2(_bounds.center.x, _bounds.min.y);
         if (_input.vertical > 0 &&
             !climbLadder        &&
             !Physics2D.Raycast(_mdPoint, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider.IsUnityNull())
@@ -345,7 +343,7 @@ public class PlayerController : MonoBehaviour
     private bool HasLadderTile(bool p_isDown = false)
     {
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
-                                                 Mathf.FloorToInt(transform.position.y - (p_isDown ? 1 : 0)));
+                                                  Mathf.FloorToInt(transform.position.y - (p_isDown ? 1 : 0)));
 
         if (_ladderTilemap.HasTile(_tilePosition))
         {
@@ -360,8 +358,7 @@ public class PlayerController : MonoBehaviour
 
 #region Gravity
 
-    [SerializeField] private float       maxFallSpeed = 15;
-    [SerializeField]                 private Rigidbody2D _rigidbody2D1;
+    [SerializeField] private float maxFallSpeed = 15;
 
     private void ClampVelocity()
     {

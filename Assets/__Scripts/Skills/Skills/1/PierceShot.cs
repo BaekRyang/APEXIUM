@@ -5,21 +5,23 @@ using UnityEngine;
 
 public class PierceShot : AttackableSkill
 {
-    private const float RANGE             = 20f;
-    private const float COOLDOWN          = 6f;
-    private const float STUN_DURATION     = 1f;
-    private const float DAMAGE_MULTIPLIER = 3f;
+    private const float RANGE         = 20f;
+    private const float COOLDOWN      = 6f;
+    private const float STUN_DURATION = 1f;
+    private const float SKILL_DAMAGE  = 3f;
 
     public void OnEnable()
     {
-        skillType   = SkillTypes.Secondary;
-        cooldown    = COOLDOWN;
-        skillDamage = DAMAGE_MULTIPLIER;
+        SkillType   = SkillTypes.Secondary;
+        Cooldown    = COOLDOWN;
+        SkillDamage = SKILL_DAMAGE;
     }
 
     public override bool Play()
     {
-        if (!base.Play()) return false; //쿨타임 체크
+        if (!CanUse()) return false;
+        if (!ConsumeResource()) return false;
+
 
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
@@ -30,15 +32,19 @@ public class PierceShot : AttackableSkill
         {
             Collider2D _hitCollider = _hitObject.collider;
 
-            if (_hitCollider.IsUnityNull()) return false;
+            if (_hitCollider == null) continue;
 
             if (_hitCollider.CompareTag("Enemy"))
             {
                 int _damage = GetDamage();
-                _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, player);
+                _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
             }
         }
 
+        if (Stats.Resource == 0)
+            return RevolverShot.Reload();
+
+        LastUsedTime = Time.time;
         return true;
     }
 }

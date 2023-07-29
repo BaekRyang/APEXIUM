@@ -1,5 +1,7 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CellSlider : MonoBehaviour
 {
@@ -47,6 +49,57 @@ public class CellSlider : MonoBehaviour
         {
             lastValue          = value;
             fillRect.anchorMax = new Vector2((float)value / maxValue, 1);
+        }
+    }
+    
+    public void ApplySetting()
+    {
+        if (backGroundRect != null) DestroyImmediate(backGroundRect.gameObject);
+        if (fillRect       != null) DestroyImmediate(fillRect.gameObject);
+
+        var _backGroundRect = new GameObject("BackGroundRect").AddComponent<RectTransform>();
+        _backGroundRect.SetParent(transform);
+        backGroundRect = _backGroundRect;
+        _backGroundRect.localScale  = _backGroundRect.anchorMax = Vector2.one;
+        _backGroundRect.anchorMin   = _backGroundRect.offsetMin = _backGroundRect.offsetMax = new Vector2(0, 0);
+
+        HorizontalLayoutGroup layoutGroup = _backGroundRect.AddComponent<HorizontalLayoutGroup>();
+
+        layoutGroup.childControlHeight = layoutGroup.childControlWidth = layoutGroup.childForceExpandHeight = layoutGroup.childControlWidth = true;
+
+        //자식으로 CellObject를 maxValue만큼 생성해준다.
+        for (int i = 0; i < maxValue; i++)
+        {
+            var _cell = Instantiate(cellObject, _backGroundRect.transform);
+            _cell.name                        = $"Cell {i + 1}";
+            _cell.transform.localScale        = Vector3.one;
+            _cell.GetComponent<Image>().color = disableColor;
+        }
+
+        var _fillRect = new GameObject("FillRect").AddComponent<RectTransform>();
+        _fillRect.SetParent(transform);
+        fillRect = _fillRect;
+
+        _fillRect.localScale = _fillRect.anchorMax = Vector2.one;
+        _fillRect.anchorMin  = _fillRect.offsetMin = _fillRect.offsetMax = new Vector2(0, 0);
+
+        _fillRect.AddComponent<Mask>();
+        _fillRect.AddComponent<Image>().color = new Color(0, 0, 0, 0.01f);
+
+        //자식으로 CellObject를 maxValue만큼 생성해준다.
+        for (int i = 0; i < maxValue; i++)
+        {
+            GameObject _cell = Instantiate(cellObject, _fillRect.transform);
+            _cell.name                        = $"Cell {i + 1}";
+            _cell.transform.localScale        = Vector3.one;
+            _cell.GetComponent<Image>().color = enableColor;
+
+            RectTransform cellRect = _cell.GetComponent<RectTransform>();
+            cellRect.sizeDelta = new Vector2(backGroundRect.rect.width / maxValue, backGroundRect.rect.height);
+            Vector2 cellSize = cellRect.sizeDelta;
+
+            cellRect.pivot            = new Vector2(.5f, .5f);
+            cellRect.anchoredPosition = new Vector2(i * cellSize.x + cellSize.x / 2, cellSize.y / 2);
         }
     }
 }

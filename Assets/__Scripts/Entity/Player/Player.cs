@@ -1,31 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.Feedbacks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] public int              clientID;
-    private                 PlayerController _playerController;
-    private                 PlayerStats      _stats;
-    public                  Vector3          PlayerPosition => transform.position;
+    public int clientID;
+
+    private PlayerController _playerController;
+    private PlayerStats      _stats;
+    public  Vector3          PlayerPosition => transform.position;
 
     public readonly Dictionary<SkillTypes, Skill> skills = new Dictionary<SkillTypes, Skill>();
 
+    private MMF_Player _statusFeedback;
+    private MMF_FloatingText _floatingText;
     public PlayerController Controller => _playerController;
 
     public PlayerStats Stats => _stats;
 
-    private IEnumerator LoadSettings()
+    private void LoadSettings()
     {
         _stats = new PlayerStats()
-                 .SetHealth(100)
-                 .SetAttackDamage(10)
-                 .SetSpeed(4f)
-                 .SetDefense(0)
-                 .SetAttackSpeed(1f)
-                 .SetMaxJumpCount(1)
-                 .SetJumpHeight(10);
+                .SetHealth(100)
+                .SetAttackDamage(10)
+                .SetSpeed(4f)
+                .SetDefense(0)
+                .SetAttackSpeed(1f)
+                .SetMaxJumpCount(1)
+                .SetJumpHeight(10)
+                .SetResource(7);
 
 
         _playerController      = gameObject.AddComponent<PlayerController>();
@@ -35,15 +41,25 @@ public class Player : MonoBehaviour
         skills.Add(SkillTypes.Primary,   gameObject.AddComponent<RevolverShot>());
         skills.Add(SkillTypes.Secondary, gameObject.AddComponent<PierceShot>());
         skills.Add(SkillTypes.Utility,   gameObject.AddComponent<Roll>());
-        yield break;
+        skills.Add(SkillTypes.Ultimate,  gameObject.AddComponent<Spree>());
+
+        _statusFeedback = GetComponentInChildren<MMF_Player>();
+        _floatingText   = _statusFeedback.GetFeedbackOfType<MMF_FloatingText>();
     }
 
     void Start()
     {
-        StartCoroutine(LoadSettings());
+        LoadSettings();
     }
 
-    void Update()
+    public void PlayStatusFeedback(string p_pText)
     {
+        if (_statusFeedback.IsUnityNull())
+        {
+            Debug.Log("NULL");
+            return;
+        }
+        _floatingText.Value = p_pText;
+        _statusFeedback.PlayFeedbacks();
     }
 }
