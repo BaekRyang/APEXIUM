@@ -15,6 +15,9 @@ public class RevolverShot : AttackableSkill
     private const float DAMAGE_MULTIPLIER   = 1f;
     private const float RELOAD_TIME_SECONDS = 2f;
 
+    //재장전중 총알이 장전되었다면 재장전을 끊기 위하여 총알이 장전되었는지 확인하는 횟수
+    private const int RELOAD_BULLET_CHECK = 4;
+
     public void OnEnable()
     {
         SkillType   = SkillTypes.Primary;
@@ -59,8 +62,15 @@ public class RevolverShot : AttackableSkill
         _player.PlayStatusFeedback("RELOAD");
         Task.Run(() =>
         {
-            Thread.Sleep((int)(RELOAD_TIME_SECONDS * 1000));
-            if (_player.Stats.Resource <= 0)
+            for (int i = 0; i < RELOAD_BULLET_CHECK; i++)
+            {
+                if (_player.Stats.Resource > 0) return; //총알이 장전되었다면 재장전을 끊는다.
+
+                Thread.Sleep((int)(RELOAD_TIME_SECONDS / RELOAD_BULLET_CHECK * 1000));
+            }
+            
+            // 위에서 Resource가 0이 아닐때 즉시 return을 했으므로, 아래 if는 false가 된다.
+            if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
                 _player.Stats.Resource = UIElements.Instance.resourceBar.value = _player.Stats.maxResource;
         });
 
