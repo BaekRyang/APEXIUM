@@ -34,6 +34,8 @@ public class EnemyBase : MonoBehaviour
         else
             _enemyAI.Stun(p_stunDuration);
 
+        stats.health -= p_pDamage;
+        
         Knockback(p_pAttacker, 150);
         if (stats.health <= 0)
         {

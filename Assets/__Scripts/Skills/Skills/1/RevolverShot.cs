@@ -41,7 +41,7 @@ public class RevolverShot : AttackableSkill
 
         if (_hitCollider != null)
         {
-            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point));
+            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point, (int)Player.Controller.PlayerFacing));
             if (_hitCollider.CompareTag("Enemy"))
             {
                 int _damage = GetDamage();
@@ -74,6 +74,6 @@ public class RevolverShot : AttackableSkill
                 _player.Stats.Resource = UIElements.Instance.resourceBar.value = _player.Stats.maxResource;
         });
 
-        return false;
+        return false; //Play에서 false를 리턴하도록 여기서 false를 리턴
     }
 }

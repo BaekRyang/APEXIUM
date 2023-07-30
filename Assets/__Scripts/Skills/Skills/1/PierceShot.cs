@@ -30,10 +30,12 @@ public class PierceShot : AttackableSkill
 
         foreach (var _hitObject in _hit)
         {
-            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hitObject.point));
+            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hitObject.point, (int)Player.Controller.PlayerFacing));
             Collider2D _hitCollider = _hitObject.collider;
 
             if (_hitCollider == null) continue;
+
+            if (_hitCollider.CompareTag("Tile")) break; //벽에 맞았다면 더 뒤에있는 물체들은 무시
 
             if (_hitCollider.CompareTag("Enemy"))
             {

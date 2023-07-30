@@ -48,7 +48,7 @@ public class Spree : AttackableSkill
 
             if (_hitCollider != null)
             {
-                StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point));
+                StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point, (int)Player.Controller.PlayerFacing));
                 if (_hitCollider.CompareTag("Enemy"))
                 {
                     int _damage = GetDamage();
