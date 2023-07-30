@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,14 +35,14 @@ public class UIElements : MonoBehaviour
         resourceBar = _playerUI.Find("Gauges").Find("Resources").GetComponent<CellSlider>();
     }
 
-    private int cachedMaxhealth = -1;
+    private int _cachedMaxHealth = -1;
 
     public void SetHealth(int p_currentHealth = -1, int p_maxHealth = -1)
     {
         if (p_maxHealth == -1) //최대 체력이 -1이면 기존 최대 체력으로 설정
-            p_maxHealth = cachedMaxhealth;
+            p_maxHealth = _cachedMaxHealth;
         else //아니면 최대 체력 갱신
-            healthBar.maxValue = p_maxHealth;
+            healthBar.maxValue = _cachedMaxHealth = p_maxHealth;
 
         if (p_currentHealth == -1) //현재 체력이 -1이면 기존 현재 체력으로 설정
             p_currentHealth = (int)healthBar.value;

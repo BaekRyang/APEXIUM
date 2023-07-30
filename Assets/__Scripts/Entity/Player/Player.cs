@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
     private PlayerController _playerController;
     private PlayerStats      _stats;
+    private bool             _isImmune;
     public  Vector3          PlayerPosition => transform.position;
 
     public readonly Dictionary<SkillTypes, Skill> skills = new Dictionary<SkillTypes, Skill>();
@@ -61,5 +62,17 @@ public class Player : MonoBehaviour
         }
         _floatingText.Value = p_pText;
         _statusFeedback.PlayFeedbacks();
+    }
+    
+    public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_pAttacker)
+    {
+        if (_isImmune) return;
+        
+        TakeDamage(p_pDamage);
+    }
+    
+    private void TakeDamage(int p_pDamage)
+    {
+        Stats.health -= p_pDamage;
     }
 }

@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -20,7 +16,6 @@ public class PlayerController : MonoBehaviour
 {
     private const float JUMP_GRACE_TIME           = 0.1f;
     private const float JUMP_BUFFER               = 0.1f;
-    private const float DISABLE_LADDER_CLIMB_TIME = 0.2f;
 
     public bool controllable = true;
 
@@ -117,10 +112,6 @@ public class PlayerController : MonoBehaviour
             if (jumpBuffer > 0)
                 Jump();
         }
-    }
-
-    private void OnCollisionExit(Collision p_other)
-    {
     }
 
     // private void OnTriggerEnter2D(Collider2D p_other)

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PierceShot : AttackableSkill
 {
-    private const float RANGE         = 20f;
+    private const float RANGE         = 50f;
     private const float COOLDOWN      = 6f;
     private const float STUN_DURATION = 1f;
     private const float SKILL_DAMAGE  = 3f;
@@ -30,6 +30,7 @@ public class PierceShot : AttackableSkill
 
         foreach (var _hitObject in _hit)
         {
+            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hitObject.point));
             Collider2D _hitCollider = _hitObject.collider;
 
             if (_hitCollider == null) continue;

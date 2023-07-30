@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class RevolverShot : AttackableSkill
 {
-    private const float RANGE               = 20f;
+    private const float RANGE               = 40f;
     private const float COOLDOWN            = .25f;
     private const float STUN_DURATION       = 0f;
     private const float DAMAGE_MULTIPLIER   = 1f;
@@ -35,8 +35,10 @@ public class RevolverShot : AttackableSkill
 
         Collider2D _hitCollider = _hit.collider;
 
+
         if (_hitCollider != null)
         {
+            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point));
             if (_hitCollider.CompareTag("Enemy"))
             {
                 int _damage = GetDamage();
@@ -46,7 +48,7 @@ public class RevolverShot : AttackableSkill
 
         if (Stats.Resource == 0)
             Reload();
-        
+
         LastUsedTime = Time.time;
         return true;
     }
