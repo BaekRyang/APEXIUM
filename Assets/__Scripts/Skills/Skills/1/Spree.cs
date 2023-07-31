@@ -10,6 +10,7 @@ public class Spree : AttackableSkill
     private const float STUN_DURATION       = 1f;
     private const float SKILL_DAMAGE        = 2.5f;
     private const int   BULLET_SPREAD_ANGLE = 2;
+    private const float SPREE_SPEED         = 2f;
 
     public void OnEnable()
     {
@@ -33,6 +34,7 @@ public class Spree : AttackableSkill
     {
         do
         {
+            Revolver.NextReloadTime = Revolver.GetNextReloadTime();
             Debug.Log($"SpreeBullet - {Player.Stats.Resource}");
 
             Transform _cachedTransform = transform;
@@ -56,10 +58,10 @@ public class Spree : AttackableSkill
                 }
             }
 
-            yield return new WaitForSeconds(.15f);
+            yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Stats.attackSpeed);
         } while (ConsumeResource());
 
-        RevolverShot.Reload();
+        Revolver.Reload();
         Player.Controller.controllable = true;
     }
 }

@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
         Controller.player      = this;
         Controller.playerStats = _stats;
 
+        skills.Add(SkillTypes.Passive,   gameObject.AddComponent<Revolver>());
         skills.Add(SkillTypes.Primary,   gameObject.AddComponent<RevolverShot>());
         skills.Add(SkillTypes.Secondary, gameObject.AddComponent<PierceShot>());
         skills.Add(SkillTypes.Utility,   gameObject.AddComponent<Roll>());

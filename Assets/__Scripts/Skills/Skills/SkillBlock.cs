@@ -45,6 +45,6 @@ public enum SkillTypes
     Secondary,
     Utility,
     Ultimate,
-    Special,
+    Passive,
     Item
 }

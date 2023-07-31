@@ -21,7 +21,7 @@ public class PierceShot : AttackableSkill
     {
         if (!CanUse()) return false;
         if (!ConsumeResource()) return false;
-
+        Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
@@ -34,8 +34,10 @@ public class PierceShot : AttackableSkill
             Collider2D _hitCollider = _hitObject.collider;
 
             if (_hitCollider == null) continue;
-
-            if (_hitCollider.CompareTag("Tile")) break; //벽에 맞았다면 더 뒤에있는 물체들은 무시
+            
+            //RaycastAll과 다르게 RaycastAll2D는 RaycastHit2D[]의 정렬이 가까운 순서대로 되어있으므로
+            //벽에 맞았다면 뒤에있는 물체들은 무시해도 된다.
+            if (_hitCollider.CompareTag("Tile")) break;
 
             if (_hitCollider.CompareTag("Enemy"))
             {
@@ -45,7 +47,7 @@ public class PierceShot : AttackableSkill
         }
 
         if (Stats.Resource == 0)
-            return RevolverShot.Reload();
+            return Revolver.Reload();
 
         LastUsedTime = Time.time;
         return true;

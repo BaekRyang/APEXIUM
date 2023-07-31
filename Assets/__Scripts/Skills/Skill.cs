@@ -15,7 +15,11 @@ public class Skill : MonoBehaviour, IUseable
     {
         get
         {
-            float _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
+            float _remainingCooldown;
+            if (SkillType == SkillTypes.Primary)
+                _remainingCooldown = Cooldown / Stats.attackSpeed - (Time.time - LastUsedTime);
+            else
+                _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
 
             /*쿨타임 Modifier가 있을때만 작동하도록 해야함 -- 아니면 Cooldown 프로퍼티를 수정하는 방법도 있을듯*/
             // if (SkillType != SkillTypes.Primary && _remainingCooldown < .5f) 
@@ -31,10 +35,10 @@ public class Skill : MonoBehaviour, IUseable
 
     public virtual bool Play() => false;
 
-    private void Update()
+    protected void Update()
     {
         // if (SkillType != SkillTypes.Primary) //쿨타임 UI 업데이트
-            UIElements.Instance.SetCoolDown(SkillType, RemainingCooldown);
+        UIElements.Instance.SetCoolDown(SkillType, RemainingCooldown);
     }
 
     protected bool CanUse()
@@ -52,6 +56,7 @@ public class Skill : MonoBehaviour, IUseable
             Stats.Resource -= p_amount;
             return true;
         }
+
         return false;
     }
 }

@@ -373,7 +373,7 @@ public class PlayerController : MonoBehaviour
         else if (_input.ultimateSkill)
             player.skills[SkillTypes.Ultimate].Play();
         else if (_input.specialSkill)
-            player.skills[SkillTypes.Special].Play();
+            player.skills[SkillTypes.Passive].Play();
         else if (_input.itemSkill)
             player.skills[SkillTypes.Item].Play();
     }
