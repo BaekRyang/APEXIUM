@@ -1,14 +1,18 @@
 using System;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class PlayerStats : Stats<PlayerStats>
 {
-    public int   exp;
-    public int   maxExp = 100;
-    public int   maxJumpCount;
-    public float jumpHeight;
-    public int   resource;
-    public int   maxResource;
+    [SerializeField] private int   exp;
+    [SerializeField] private int   maxExp = 100;
+    [SerializeField] private int   maxJumpCount;
+    [SerializeField] private float jumpHeight;
+    [SerializeField] private int   resource;
+    [SerializeField] private int   maxResource;
+    [SerializeField] private int   commonResource;
+    [SerializeField] private int   advancedResource;
 
     public int Resource
     {
@@ -16,15 +20,53 @@ public class PlayerStats : Stats<PlayerStats>
         set => UIElements.Instance.resourceBar.value = resource = value;
     }
 
+    public int MaxResource
+    {
+        get => maxResource;
+        set => maxResource = value;
+    }
+
+    public float JumpHeight
+    {
+        get => jumpHeight;
+        set => jumpHeight = value;
+    }
+
+    public int MaxJumpCount
+    {
+        get => maxJumpCount;
+        set => maxJumpCount = value;
+    }
+
+    public int CommonResource
+    {
+        get => commonResource;
+        set
+        {
+            commonResource                        = value;
+            Resources.Instance.ResourceValue.text = value.ToString();
+        }
+    }
+
+    public int AdvancedResource
+    {
+        get => advancedResource;
+        set
+        {
+            advancedResource                              = value;
+            Resources.Instance.AdvancedResourceValue.text = value.ToString();
+        }
+    }
+
     public PlayerStats SetMaxJumpCount(int p_maxJumpCount)
     {
-        maxJumpCount = p_maxJumpCount;
+        MaxJumpCount = p_maxJumpCount;
         return this;
     }
 
     public PlayerStats SetJumpHeight(float p_jumpHeight)
     {
-        jumpHeight = p_jumpHeight;
+        JumpHeight = p_jumpHeight;
         return this;
     }
 
@@ -32,7 +74,7 @@ public class PlayerStats : Stats<PlayerStats>
     {
         UIElements.Instance.resourceBar.maxValue = UIElements.Instance.resourceBar.value = p_resource;
         UIElements.Instance.resourceBar.ApplySetting();
-        Resource = maxResource = p_resource;
+        Resource = MaxResource = p_resource;
         return this;
     }
 }

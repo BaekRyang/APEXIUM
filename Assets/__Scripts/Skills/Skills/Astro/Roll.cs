@@ -33,9 +33,8 @@ public class Roll : Skill
             Thread.Sleep(500);
             Player.Controller.controllable = true;
         });
-
-       
-        Stats.Resource = Stats.maxResource;
+        
+        Stats.Resource = Stats.MaxResource;
 
         GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Secondary].RemainingCooldown = 0;
         GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Ultimate].RemainingCooldown = 0;

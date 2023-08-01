@@ -37,8 +37,8 @@ public class PlayerController : MonoBehaviour
     public  JumpDire _lastLadderJumpDirection;
 
     private float Speed        => playerStats.speed;
-    private float JumpHeight   => playerStats.jumpHeight;
-    private int   MaxJumpCount => playerStats.maxJumpCount + _jumpCountOffset;
+    private float JumpHeight   => playerStats.JumpHeight;
+    private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
     public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
 

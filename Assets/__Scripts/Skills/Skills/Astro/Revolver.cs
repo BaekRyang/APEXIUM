@@ -21,12 +21,12 @@ public class Revolver : Skill
     public void Update()
     {
         base.Update();
-        if (Stats.resource == Stats.maxResource) return; //재장전이 되었으면 리턴
+        if (Stats.Resource == Stats.MaxResource) return; //재장전이 되었으면 리턴
 
         //총알이 다 채워지지 않은 상태로 재장전시간 +50% 초만큼 지나면 총알을 채운다.
         if (Time.time > NextReloadTime)
         {
-            Stats.Resource = Stats.maxResource;
+            Stats.Resource = Stats.MaxResource;
             NextReloadTime = GetNextReloadTime();
         }
     }
@@ -55,7 +55,7 @@ public class Revolver : Skill
 
             // 위에서 Resource가 0이 아닐때 즉시 return을 했으므로, 아래 if는 false가 된다.
             if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
-                _player.Stats.Resource = UIElements.Instance.resourceBar.value = _player.Stats.maxResource;
+                _player.Stats.Resource = _player.Stats.MaxResource;
         });
 
         return false; //Play에서 false를 리턴하도록 여기서 false를 리턴
