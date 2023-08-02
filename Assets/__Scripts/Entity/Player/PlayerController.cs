@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
+[Serializable]
 public struct InputValues
 {
     public float horizontal,   vertical;
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     public Player player;
 
-    private InputValues _input;
+    public InputValues _input;
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
@@ -169,6 +170,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
+        player._animator.SetBool("IsWalk", _input.horizontal != 0);
         FlipSprite();
     }
 
@@ -211,10 +213,17 @@ public class PlayerController : MonoBehaviour
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
 
             if (climbLadder)
-                climbLadder = false;
+            {
+                player._animator.speed = 1;
+                climbLadder            = false;
+                player._animator.SetBool("IsClimb", false);
+            }
 
             if (jumpGraceTimer > 0)
                 jumpGraceTimer = 100;
+            
+            Animation.PlayAnimation(player._animator, "Jump");
+            player._animator.SetBool("IsJump", true);
         }
     }
 
@@ -231,6 +240,7 @@ public class PlayerController : MonoBehaviour
             jumpGraceTimer = JUMP_GRACE_TIME;
             jumpCount      = 0;
             _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
+            player._animator.SetBool("IsJump", false);
         }
     }
 
@@ -256,7 +266,10 @@ public class PlayerController : MonoBehaviour
     {
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
         if (climbLadder && _input.vertical == 0)
-            _rigidbody2D.velocity = Vector2.zero;
+        {
+            _rigidbody2D.velocity  = Vector2.zero;
+            player._animator.speed = 0;
+        }
 
         //상하이동이 없거나 사다리를 타고있지 않으면 리턴
         if (_input.vertical == 0 || !onLadder) return;
@@ -281,9 +294,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        climbLadder           = true;
-        transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
-        _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
+        player._animator.SetBool("IsClimb", true);
+        
+        
+        climbLadder            = true;
+        transform.position     = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
+        _rigidbody2D.velocity  = Vector2.zero;                           //가속 초기화
 
         //사다리에서 나갈때 틩기는 현상을 막기위해 velocity사용을 하지 않게 변경
         // if (climbLadder) //타고있는중에는 상하 이동만 해준다.
@@ -294,6 +310,9 @@ public class PlayerController : MonoBehaviour
             float _deltaY = _input.vertical * Speed * Time.deltaTime;
             transform.position += new Vector3(0, _deltaY, 0);
         }
+        
+        player._animator.speed = 1;
+
     }
 
     private JumpDire GetNowJumpDirection()
@@ -323,6 +342,7 @@ public class PlayerController : MonoBehaviour
             climbLadder               = false;
             _rigidbody2D.gravityScale = 1;
             _boxCollider2D.isTrigger  = false;
+            player._animator.SetBool("IsClimb", false);
         }
     }
 

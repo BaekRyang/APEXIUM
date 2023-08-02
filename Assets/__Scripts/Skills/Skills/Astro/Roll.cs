@@ -28,6 +28,7 @@ public class Roll : Skill
                      Vector2.right;
 
         Player.Controller.Rigidbody2D.AddForce(_force, ForceMode2D.Impulse);
+        Player._animator.SetTrigger("Roll");
         Task.Run(() =>
         {
             Thread.Sleep(500);

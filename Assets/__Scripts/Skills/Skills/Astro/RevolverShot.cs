@@ -28,6 +28,8 @@ public class RevolverShot : AttackableSkill
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
         
         Debug.Log("RevolverShot");
+        Player._animator.SetTrigger("Primary");
+        Player._animator.SetBool("Playing", true);
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
 

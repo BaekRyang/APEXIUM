@@ -16,8 +16,10 @@ public class Player : MonoBehaviour
 
     public readonly Dictionary<SkillTypes, Skill> skills = new Dictionary<SkillTypes, Skill>();
 
-    private MMF_Player _statusFeedback;
+    private MMF_Player       _statusFeedback;
     private MMF_FloatingText _floatingText;
+
+    public Animator         _animator;
     public PlayerController Controller => _playerController;
 
     public PlayerStats Stats => _stats;
@@ -36,9 +38,11 @@ public class Player : MonoBehaviour
 
 
         _playerController      = gameObject.AddComponent<PlayerController>();
+        _animator              = GetComponent<Animator>();
         Controller.player      = this;
         Controller.playerStats = _stats;
 
+        _animator.runtimeAnimatorController = Animation.GetAnimatorController("Astro");
         skills.Add(SkillTypes.Passive,   gameObject.AddComponent<Revolver>());
         skills.Add(SkillTypes.Primary,   gameObject.AddComponent<RevolverShot>());
         skills.Add(SkillTypes.Secondary, gameObject.AddComponent<PierceShot>());
@@ -61,17 +65,18 @@ public class Player : MonoBehaviour
             Debug.Log("NULL");
             return;
         }
+
         _floatingText.Value = p_pText;
         _statusFeedback.PlayFeedbacks();
     }
-    
+
     public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_pAttacker)
     {
         if (_isImmune) return;
-        
+
         TakeDamage(p_pDamage);
     }
-    
+
     private void TakeDamage(int p_pDamage)
     {
         Stats.health -= p_pDamage;
