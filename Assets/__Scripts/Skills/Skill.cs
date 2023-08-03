@@ -35,7 +35,7 @@ public class Skill : MonoBehaviour, IUseable
 
     public virtual bool Play() => false;
 
-    protected void Update()
+    protected virtual void Update()
     {
         // if (SkillType != SkillTypes.Primary) //쿨타임 UI 업데이트
         UIElements.Instance.SetCoolDown(SkillType, RemainingCooldown);
@@ -44,7 +44,7 @@ public class Skill : MonoBehaviour, IUseable
     protected bool CanUse()
     {
         if (RemainingCooldown > 0) return false;           //쿨타임 체크
-        if (!Player.Controller.controllable) return false; //사용 가능한 상태인지 체크
+        if (!Player.Controller.Controllable) return false; //사용 가능한 상태인지 체크
 
         return true;
     }

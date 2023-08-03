@@ -20,7 +20,7 @@ public class Roll : Skill
         if (!CanUse()) return false;
 
         //바라보고 있는 방향으로 구르기
-        Player.Controller.controllable = false;
+        Player.Controller.SetControllable(false);
 
         var _force = (int)Player.Controller.PlayerFacing * //방향
                      POWER                               * //스킬 기본 속도
@@ -32,14 +32,14 @@ public class Roll : Skill
         Task.Run(() =>
         {
             Thread.Sleep(500);
-            Player.Controller.controllable = true;
+            Player.Controller.SetControllable(true);
         });
-        
+
         Stats.Resource = Stats.MaxResource;
 
         GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Secondary].RemainingCooldown = 0;
-        GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Ultimate].RemainingCooldown = 0;
-        
+        GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Ultimate].RemainingCooldown  = 0;
+
         LastUsedTime = Time.time;
         return true;
     }

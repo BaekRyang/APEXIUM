@@ -15,10 +15,8 @@ public struct InputValues
 
 public class PlayerController : MonoBehaviour
 {
-    private const float JUMP_GRACE_TIME           = 0.1f;
-    private const float JUMP_BUFFER               = 0.1f;
-
-    public bool controllable = true;
+    private const float JUMP_GRACE_TIME = 0.1f;
+    private const float JUMP_BUFFER     = 0.1f;
 
     public Tilemap _ladderTilemap;
 
@@ -42,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
     public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
+
+    public bool Controllable { get; private set; } = true;
 
     public enum Facing
     {
@@ -98,20 +98,28 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!controllable) return;
-
         if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
             return;
 
         Move();
     }
 
+    //바닥 착지시 실행할 Action
+    private Action _landingAction;
+    public void AddLandingAction(Action p_action)
+    {
+        _landingAction += p_action;
+    }
     private void OnCollisionEnter2D(Collision2D p_other)
     {
         if (p_other.gameObject.layer == LayerMask.NameToLayer("Floor"))
         {
             if (jumpBuffer > 0)
                 Jump();
+            
+            //landingAction 실행후 초기화
+            _landingAction?.Invoke();
+            _landingAction = null;
         }
     }
 
@@ -169,6 +177,11 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        if (!Controllable)
+        {
+            return;
+        }
+        
         _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
         player._animator.SetBool("IsWalk", _input.horizontal != 0);
         FlipSprite();
@@ -221,7 +234,7 @@ public class PlayerController : MonoBehaviour
 
             if (jumpGraceTimer > 0)
                 jumpGraceTimer = 100;
-            
+
             Animation.PlayAnimation(player._animator, "Jump");
             player._animator.SetBool("IsJump", true);
         }
@@ -295,11 +308,11 @@ public class PlayerController : MonoBehaviour
         }
 
         player._animator.SetBool("IsClimb", true);
-        
-        
-        climbLadder            = true;
-        transform.position     = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
-        _rigidbody2D.velocity  = Vector2.zero;                           //가속 초기화
+
+
+        climbLadder           = true;
+        transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
+        _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
 
         //사다리에서 나갈때 틩기는 현상을 막기위해 velocity사용을 하지 않게 변경
         // if (climbLadder) //타고있는중에는 상하 이동만 해준다.
@@ -310,9 +323,8 @@ public class PlayerController : MonoBehaviour
             float _deltaY = _input.vertical * Speed * Time.deltaTime;
             transform.position += new Vector3(0, _deltaY, 0);
         }
-        
-        player._animator.speed = 1;
 
+        player._animator.speed = 1;
     }
 
     private JumpDire GetNowJumpDirection()
@@ -369,7 +381,7 @@ public class PlayerController : MonoBehaviour
 
 #region Gravity
 
-    [SerializeField] private float maxFallSpeed = 15;
+    [SerializeField] private float maxFallSpeed = 20;
 
     private void ClampVelocity()
     {
@@ -384,6 +396,13 @@ public class PlayerController : MonoBehaviour
 
     private void UseSkill()
     {
+        if (_input.itemSkill) //아이템 스킬은 언제나 사용가능
+            player.skills[SkillTypes.Item].Play();
+        
+        if (climbLadder) return;
+
+        //이외는 사다리에서 사용 불가능
+        
         if (_input.primarySkill)
             player.skills[SkillTypes.Primary].Play();
         else if (_input.secondarySkill)
@@ -394,9 +413,15 @@ public class PlayerController : MonoBehaviour
             player.skills[SkillTypes.Ultimate].Play();
         else if (_input.specialSkill)
             player.skills[SkillTypes.Passive].Play();
-        else if (_input.itemSkill)
-            player.skills[SkillTypes.Item].Play();
     }
 
 #endregion
+
+    public void SetControllable(bool p_pControllable)
+    {
+        //플레이어의 조작 가능 여부를 설정한다.
+        Controllable = p_pControllable;
+        if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
+            _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
+    }
 }

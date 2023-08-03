@@ -9,10 +9,10 @@ using UnityEngine;
 
 public class RevolverShot : AttackableSkill
 {
-    private const float RANGE               = 40f;
-    public const float COOLDOWN            = .25f;
-    private const float STUN_DURATION       = 0f;
-    private const float DAMAGE_MULTIPLIER   = 1f;
+    private const float RANGE             = 40f;
+    public const  float COOLDOWN          = .25f;
+    private const float STUN_DURATION     = 0f;
+    private const float DAMAGE_MULTIPLIER = 1f;
 
     public void OnEnable()
     {
@@ -26,17 +26,18 @@ public class RevolverShot : AttackableSkill
         if (!CanUse()) return false;
         if (!ConsumeResource()) return false;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
-        
+
         Debug.Log("RevolverShot");
         Player._animator.SetTrigger("Primary");
         Player._animator.SetBool("Playing", true);
+        Player.Controller.SetControllable(false);
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
 
         RaycastHit2D _hit = Physics2D.Raycast(_position, _cachedTransform.right * (int)Facing, RANGE);
 
         Collider2D _hitCollider = _hit.collider;
-        
+
         if (_hitCollider != null)
         {
             StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point, (int)Player.Controller.PlayerFacing));
@@ -46,6 +47,14 @@ public class RevolverShot : AttackableSkill
                 _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
             }
         }
+        
+        Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
+
+        Task.Run(() =>
+        {
+            Thread.Sleep(200);
+            Player.Controller.SetControllable(true);
+        });
 
         if (Stats.Resource == 0)
             Revolver.Reload();
@@ -53,6 +62,4 @@ public class RevolverShot : AttackableSkill
         LastUsedTime = Time.time;
         return true;
     }
-
-
 }

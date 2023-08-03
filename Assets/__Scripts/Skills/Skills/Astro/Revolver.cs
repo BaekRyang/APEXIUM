@@ -18,7 +18,7 @@ public class Revolver : Skill
         SkillType = SkillTypes.Passive;
     }
 
-    public void Update()
+    protected override void Update()
     {
         base.Update();
         if (Stats.Resource == Stats.MaxResource) return; //재장전이 되었으면 리턴

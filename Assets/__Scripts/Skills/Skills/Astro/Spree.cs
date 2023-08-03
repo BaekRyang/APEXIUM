@@ -24,7 +24,8 @@ public class Spree : AttackableSkill
         if (!CanUse()) return false;
         if (!ConsumeResource()) return false;
 
-        Player.Controller.controllable = false;
+        Player.Controller.SetControllable(false);
+        Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
         StartCoroutine(SpreeBullet());
         LastUsedTime = Time.time;
         return true;
@@ -62,6 +63,6 @@ public class Spree : AttackableSkill
         } while (ConsumeResource());
 
         Revolver.Reload();
-        Player.Controller.controllable = true;
+        Player.Controller.SetControllable(true);
     }
 }
