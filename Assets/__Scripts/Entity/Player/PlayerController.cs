@@ -177,11 +177,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        if (!Controllable)
-        {
-            return;
-        }
-        
+        if (!Controllable) return;
+
         _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
         player._animator.SetBool("IsWalk", _input.horizontal != 0);
         FlipSprite();
@@ -211,6 +208,7 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         if (!_input.jumpDown) return;
+        if (!Controllable) return;
 
         //점프 버퍼 채워주고
         jumpBuffer = JUMP_BUFFER;

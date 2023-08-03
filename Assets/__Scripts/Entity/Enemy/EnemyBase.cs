@@ -11,17 +11,19 @@ public class EnemyBase : MonoBehaviour
 
     private void Start()
     {
-        _enemyAI = GetComponent<EnemyAI>();
-        _enemyAI.Initialize(this);
-        _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
-        _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
-
         stats = new MonsterStats()
                .SetHealth(200)
                .SetAttackDamage(10)
                .SetSpeed(4f)
                .SetDefense(1)
-               .SetAttackSpeed(1f);
+               .SetAttackSpeed(.5f);
+        
+        _enemyAI = GetComponent<EnemyAI>();
+        _enemyAI.Initialize(this);
+        _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
+        _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
+
+        
     }
 
     public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)

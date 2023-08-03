@@ -1,6 +1,14 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+
+[Serializable]
+enum EnemyAttackType
+{
+    Touch,
+    Range
+}
 
 public class EnemyAI : MonoBehaviour
 {
@@ -12,32 +20,37 @@ public class EnemyAI : MonoBehaviour
     [Header("Set in Inspector")]
     [SerializeField] private bool canDazed = true;
 
-    [SerializeField] private bool canStun = true;
+    [SerializeField] private bool  canStun       = true;
+    [SerializeField] private float chaseDistance = 5f;
+
+    [SerializeField] private EnemyAttackType attackType     = EnemyAttackType.Range;
+    [SerializeField] private float           attackRange    = 1f;
+    [SerializeField] private bool            stopWhenAttack = true;
 
     private readonly WaitForSeconds _changeDirectionCycle = new WaitForSeconds(CHANGE_DIRECTION_CYCLE_TIME);
+    private          EnemyBase      _base;
 
-    [SerializeField] private Player targetPlayer;
-
-    [SerializeField] private Collider2D thisCollider;
-    private                  Vector3    _colliderEdgeLeft, _colliderEdgeRight;
+    private Player     _targetPlayer;
+    private Collider2D _thisCollider;
+    private Vector3    _colliderEdgeLeft, _colliderEdgeRight;
 
     private Vector3 _targetDirection;
 
-    [SerializeField] private float     chaseDistance = 5f;
-    private                  Transform _transform;
-    private                  Vector3   _targetPosition;
+    private Transform _transform;
+    private Vector3   _targetPosition;
+    //플레이어를 향한 벡터
+    private Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
-    private MonsterStats _stats;
-
+    private bool _canMove = true;
     private bool  _stunned,  _dazed;
     private float _stunTime, _dazeTime;
 
     public void Initialize(EnemyBase p_enemyBase)
     {
-        targetPlayer = GameManager.Instance.RandomPlayer();
-        thisCollider = GetComponent<Collider2D>();
-        _stats       = p_enemyBase.stats;
-        _transform   = transform;
+        _targetPlayer = GameManager.Instance.RandomPlayer();
+        _thisCollider = GetComponent<Collider2D>();
+        _base         = p_enemyBase;
+        _transform    = transform;
 
         StartCoroutine(CalcNextBehavior());
     }
@@ -48,8 +61,8 @@ public class EnemyAI : MonoBehaviour
         {
             //일정 주기마다 플레이어 위치를 찾아서 해당 방향으로 이동
             yield return _changeDirectionCycle;
-            if (!(Vector3.Distance(targetPlayer.PlayerPosition, _transform.position) <= chaseDistance)) continue;
-            _targetPosition = targetPlayer.PlayerPosition;
+            if (!(Vector3.Distance(_targetPlayer.PlayerPosition, _transform.position) <= chaseDistance)) continue;
+            _targetPosition = _targetPlayer.PlayerPosition;
 
             if (_targetPosition.x > _transform.position.x)
                 _targetDirection = Vector3.right;
@@ -67,11 +80,10 @@ public class EnemyAI : MonoBehaviour
 
         if (_stunTime <= 0) _stunned = false;
         if (_dazeTime <= 0) _dazed   = false;
-        
-        
 
+        CalcAttack();
 
-        var _bounds = thisCollider.bounds;
+        var _bounds = _thisCollider.bounds;
         _colliderEdgeLeft  = _bounds.min;
         _colliderEdgeRight = _bounds.min + Vector3.right * _bounds.size.x;
 
@@ -85,8 +97,8 @@ public class EnemyAI : MonoBehaviour
             };
         }
 
-        if (_stunned || _dazed) return;
-        _transform.position += _targetDirection * (Time.deltaTime * _stats.speed);
+        if (_stunned || _dazed || !_canMove) return;
+        _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
     }
 
 #region CliffDetect
@@ -118,8 +130,32 @@ public class EnemyAI : MonoBehaviour
     public void Daze()
     {
         if (!canDazed) return;
-        
+
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
+    }
+
+    private void CalcAttack()
+    {
+        if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= attackRange)
+        {
+            _canMove = false;
+            if (Time.time >= _nextAttackTime)
+                Attack();
+        }
+        else
+            _canMove = true;
+    }
+
+    [SerializeField] private float _lastAttackTime;
+    [SerializeField] private float _nextAttackTime;
+
+    private void Attack()
+    {
+        _lastAttackTime = Time.time;
+        _nextAttackTime = _lastAttackTime + 1 / _base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
+
+        Debug.Log("Attack!");
+        Debug.DrawRay(transform.position, TowardPlayer * attackRange, Color.red, 1f);
     }
 }
