@@ -17,13 +17,12 @@ public class EnemyBase : MonoBehaviour
                .SetSpeed(4f)
                .SetDefense(1)
                .SetAttackSpeed(.5f);
-        
+
         _enemyAI = GetComponent<EnemyAI>();
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
         _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
 
-        
     }
 
     public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)
@@ -37,11 +36,15 @@ public class EnemyBase : MonoBehaviour
             _enemyAI.Stun(p_stunDuration);
 
         stats.health -= p_pDamage;
-        
+
         Knockback(p_pAttacker, 150);
         if (stats.health <= 0)
         {
-            Destroy(gameObject);
+            _enemyAI._animator.SetTrigger("Die");
+            Destroy(this);
+            Destroy(_enemyAI);
+            GetComponent<Rigidbody2D>().simulated = false;
+            GetComponent<Collider2D>().enabled   = false;
         }
     }
 

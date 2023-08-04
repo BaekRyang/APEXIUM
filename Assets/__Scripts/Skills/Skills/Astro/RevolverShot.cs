@@ -34,7 +34,8 @@ public class RevolverShot : AttackableSkill
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
 
-        RaycastHit2D _hit = Physics2D.Raycast(_position, _cachedTransform.right * (int)Facing, RANGE);
+        LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
+        RaycastHit2D _hit       = Physics2D.Raycast(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);
 
         Collider2D _hitCollider = _hit.collider;
 

@@ -38,10 +38,14 @@ public class EnemyAI : MonoBehaviour
 
     private Transform _transform;
     private Vector3   _targetPosition;
+
+    public  Animator _animator;
+    private bool     nowMove;
+
     //플레이어를 향한 벡터
     private Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
-    private bool _canMove = true;
+    private bool  _canMove = true;
     private bool  _stunned,  _dazed;
     private float _stunTime, _dazeTime;
 
@@ -51,6 +55,9 @@ public class EnemyAI : MonoBehaviour
         _thisCollider = GetComponent<Collider2D>();
         _base         = p_enemyBase;
         _transform    = transform;
+
+        _animator                           = GetComponent<Animator>();
+        _animator.runtimeAnimatorController = Animation.GetAnimatorController("Frost");
 
         StartCoroutine(CalcNextBehavior());
     }
@@ -99,6 +106,7 @@ public class EnemyAI : MonoBehaviour
 
         if (_stunned || _dazed || !_canMove) return;
         _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
+        _animator.SetBool("IsWalk", true);
     }
 
 #region CliffDetect
@@ -121,7 +129,7 @@ public class EnemyAI : MonoBehaviour
     public void Stun(float p_stunDuration)
     {
         if (!canStun) return;
-
+        _animator.SetBool("IsWalk", false);
         _stunned = true;
         if (!(_stunTime > p_stunDuration)) //기존 스턴시간이 더 길면 무시
             _stunTime = p_stunDuration;
@@ -130,7 +138,7 @@ public class EnemyAI : MonoBehaviour
     public void Daze()
     {
         if (!canDazed) return;
-
+        _animator.SetBool("IsWalk", false);
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
     }
@@ -156,6 +164,7 @@ public class EnemyAI : MonoBehaviour
         _nextAttackTime = _lastAttackTime + 1 / _base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
 
         Debug.Log("Attack!");
+        _animator.SetTrigger("Attack");
         Debug.DrawRay(transform.position, TowardPlayer * attackRange, Color.red, 1f);
     }
 }

@@ -49,6 +49,9 @@ public class Player : MonoBehaviour
         skills.Add(SkillTypes.Utility,   gameObject.AddComponent<Roll>());
         skills.Add(SkillTypes.Ultimate,  gameObject.AddComponent<Spree>());
 
+        var a = typeof(Spree);
+        gameObject.AddComponent(a);
+        
         _statusFeedback = GetComponentInChildren<MMF_Player>();
         _floatingText   = _statusFeedback.GetFeedbackOfType<MMF_FloatingText>();
     }

@@ -44,7 +44,8 @@ public class Spree : AttackableSkill
             //Quaternion은 위 아래로 랜덤이어야 하므로 z축을 기준으로 회전한다.
             var randDirection = Quaternion.Euler(0, 0, Random.Range(-BULLET_SPREAD_ANGLE, BULLET_SPREAD_ANGLE)) * (_cachedTransform.right * (int)Facing);
 
-            RaycastHit2D _hit = Physics2D.Raycast(_position, randDirection, RANGE);
+            LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
+            RaycastHit2D _hit       = Physics2D.BoxCast(_position, Vector2.one * .3f, 0, randDirection, RANGE, _layerMask);
             Debug.DrawRay(_position, randDirection * RANGE, Color.red);
 
             Collider2D _hitCollider = _hit.collider;
