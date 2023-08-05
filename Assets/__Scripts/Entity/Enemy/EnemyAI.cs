@@ -59,23 +59,21 @@ public class EnemyAI : MonoBehaviour
         _animator                           = GetComponent<Animator>();
         _animator.runtimeAnimatorController = Animation.GetAnimatorController("Frost");
 
-        StartCoroutine(CalcNextBehavior());
+        bool playerInRange = CalcNextBehavior();
     }
 
-    private IEnumerator CalcNextBehavior()
+    private bool CalcNextBehavior()
     {
-        while (true)
-        {
-            //일정 주기마다 플레이어 위치를 찾아서 해당 방향으로 이동
-            yield return _changeDirectionCycle;
-            if (!(Vector3.Distance(_targetPlayer.PlayerPosition, _transform.position) <= chaseDistance)) continue;
-            _targetPosition = _targetPlayer.PlayerPosition;
+        //일정 주기마다 플레이어 위치를 찾아서 해당 방향으로 이동
+        if (!(Vector3.Distance(_targetPlayer.PlayerPosition, _transform.position) <= chaseDistance)) return false;
 
-            if (_targetPosition.x > _transform.position.x)
-                _targetDirection = Vector3.right;
-            else if (_targetPosition.x < _transform.position.x)
-                _targetDirection = Vector3.left;
-        }
+        _targetPosition = _targetPlayer.PlayerPosition;
+        if (_targetPosition.x > _transform.position.x)
+            _targetDirection = Vector3.right;
+        else if (_targetPosition.x < _transform.position.x)
+            _targetDirection = Vector3.left;
+
+        return true;
     }
 
     public void Update()
@@ -105,6 +103,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         if (_stunned || _dazed || !_canMove) return;
+
+        //지금 animation의 state의 이름이 Attack으로 끝나면 이동하지 않음
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
         _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
         _animator.SetBool("IsWalk", true);
     }
@@ -148,11 +149,16 @@ public class EnemyAI : MonoBehaviour
         if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= attackRange)
         {
             _canMove = false;
+            _animator.SetBool("IsAttack", true);
+            
             if (Time.time >= _nextAttackTime)
                 Attack();
         }
         else
+        {
+            _animator.SetBool("IsAttack", false);
             _canMove = true;
+        }
     }
 
     [SerializeField] private float _lastAttackTime;
@@ -163,8 +169,8 @@ public class EnemyAI : MonoBehaviour
         _lastAttackTime = Time.time;
         _nextAttackTime = _lastAttackTime + 1 / _base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
 
-        Debug.Log("Attack!");
         _animator.SetTrigger("Attack");
+        Debug.Log("Attack!");
         Debug.DrawRay(transform.position, TowardPlayer * attackRange, Color.red, 1f);
     }
 }
