@@ -15,8 +15,8 @@ public struct InputValues
 
 public class PlayerController : MonoBehaviour
 {
-    private const float JUMP_GRACE_TIME = 0.1f;
-    private const float JUMP_BUFFER     = 0.1f;
+    private const float JUMP_GRACE_TIME = 0.2f;
+    private const float JUMP_BUFFER     = 0.2f;
 
     public Tilemap _ladderTilemap;
 
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerStats playerStats;
 
-    private int      _jumpCountOffset;
+    private int      _jumpCountOffset; //점프 카운트를 조정하기 위한 변수
     public  JumpDire _jumpDirection;
     public  JumpDire _lastLadderJumpDirection;
 
@@ -80,6 +80,9 @@ public class PlayerController : MonoBehaviour
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
         _rigidbody2D.gravityScale = climbLadder ? 0 : 3;
 
+        //공중점프 제한 및 코요테타임 구현용
+        //코요테 타임은 바닥에 붙어있을때 언제나 일정 수준을 유지하므로
+        //jumpGraceTimer가 0이면 공중에 떠있는 상태이므로, 최대 점프 횟수를 -1 조정해준다.
         _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
 
         SetLadderStatus();
@@ -106,42 +109,28 @@ public class PlayerController : MonoBehaviour
 
     //바닥 착지시 실행할 Action
     private Action _landingAction;
+
     public void AddLandingAction(Action p_action)
     {
         _landingAction += p_action;
     }
+
     private void OnCollisionEnter2D(Collision2D p_other)
     {
         if (p_other.gameObject.layer == LayerMask.NameToLayer("Floor"))
         {
-            if (jumpBuffer > 0)
-                Jump();
-            
-            //landingAction 실행후 초기화
+            if (jumpBuffer > 0) //바닥에 닿았는데 찰나의 차이로 점프를 미리 시도했다면 점프를 실행해준다.
+            {
+                Debug.Log("Buffered Jump");
+                jumpCount = 0;
+                Jump(true);
+            }
+
+            //landingAction 실행후 초기화(바닥에 착지시 실행할 Action)
             _landingAction?.Invoke();
             _landingAction = null;
         }
     }
-
-    // private void OnTriggerEnter2D(Collider2D p_other)
-    // {
-    //     if (p_other.gameObject.CompareTag("Ladder"))
-    //     {
-    //         onLadder  = true;
-    //         ladderPos = p_other.transform.position;
-    //     }
-    // }
-    //
-    // private void OnTriggerExit2D(Collider2D p_other)
-    // {
-    //     if (p_other.gameObject.CompareTag("Ladder"))
-    //     {
-    //         onLadder                  = false;
-    //         climbLadder               = false;
-    //         _rigidbody2D.gravityScale = 1;
-    //         _boxCollider2D.isTrigger  = false;
-    //     }
-    // }
 
 #region Input
 
@@ -205,37 +194,45 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpBuffer;     //Buffering Time
     [SerializeField] private float jumpGraceTimer; //Coyote Time
 
-    private void Jump()
+    private void Jump(bool p_forced = false)
     {
-        if (!_input.jumpDown) return;
+        if (!p_forced) //점프키를 무시하는 강제점프가 아니라면
+            if (!_input.jumpDown) return; //점프키 상태 확인
+        
         if (!Controllable) return;
 
-        //점프 버퍼 채워주고
+        //점프키가 눌러졌으므로, 점프 버퍼는 채워준다.
         jumpBuffer = JUMP_BUFFER;
 
-        //coyoteTimer가 0보다 크고 남은 점프횟수가 있다면 점프
-        if (jumpCount < MaxJumpCount)
+        //최대 점프 횟수에 도달하면 점프하지 않는다.
+        if (jumpCount >= MaxJumpCount)
         {
-            //사다리용 : 아래키 누르고 점프하면 위로 가속하지 않게 해준다.
-            var _jumpHeight = climbLadder && _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
-            jumpBuffer = 0;
-            jumpCount++;
-
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
-
-            if (climbLadder)
-            {
-                player._animator.speed = 1;
-                climbLadder            = false;
-                player._animator.SetBool("IsClimb", false);
-            }
-
-            if (jumpGraceTimer > 0)
-                jumpGraceTimer = 100;
-
-            Animation.PlayAnimation(player._animator, "Jump");
-            player._animator.SetBool("IsJump", true);
+            Debug.Log($"Max Jump Count - {jumpCount} / {MaxJumpCount}");
+            return;
         }
+
+        //사다리에서 아래방향 점프를 했다면 아래 방향으로 떨어뜨려준다.
+        //=>내리려는 의도로 점프를 했을때 작동
+        var _jumpHeight = climbLadder && _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
+
+        jumpBuffer = 0; //점프 했으므로 버퍼 초기화
+        jumpCount++;    //점프횟수 증가
+
+        //사다리를 타고있었다면 사다리 타기를 종료한다.
+        if (climbLadder)
+        {
+            player._animator.speed = 1;
+            climbLadder            = false;
+            player._animator.SetBool("IsClimb", false);
+        }
+
+        //실제 점프 및 점프관련 애니메이션 실행
+        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
+        Animation.PlayAnimation(player._animator, "Jump");
+        player._animator.SetBool("IsJump", true);
+
+        if (jumpGraceTimer > 0)              //정상적으로 점프를 했다면
+            jumpGraceTimer = float.MaxValue; //점프 횟수 조정을 받지 않도록 최대값을 넣어준다. (0이하가 되면 점프 횟수가 줄어듦)
     }
 
 #endregion
@@ -363,9 +360,9 @@ public class PlayerController : MonoBehaviour
     /// <returns>True if there is a ladder tile.</returns>
     private bool HasLadderTile(bool p_isDown = false)
     {
+        
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
-                                                  Mathf.FloorToInt(transform.position.y - (p_isDown ? 1 : 0)));
-
+                                                  Mathf.FloorToInt(transform.position.y - (p_isDown ? .1f : 0))); //오차보정
         if (_ladderTilemap.HasTile(_tilePosition))
         {
             ladderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
@@ -396,11 +393,11 @@ public class PlayerController : MonoBehaviour
     {
         if (_input.itemSkill) //아이템 스킬은 언제나 사용가능
             player.skills[SkillTypes.Item].Play();
-        
+
         if (climbLadder) return;
 
         //이외는 사다리에서 사용 불가능
-        
+
         if (_input.primarySkill)
             player.skills[SkillTypes.Primary].Play();
         else if (_input.secondarySkill)

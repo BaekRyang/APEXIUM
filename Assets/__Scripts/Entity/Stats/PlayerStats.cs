@@ -2,9 +2,29 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+public enum StatType
+{
+    Health,
+    MaxHealth,
+    AttackDamage,
+    Speed,
+    Level,
+    Defense,
+    AttackSpeed,
+    Exp,
+    MaxExp,
+    MaxJumpCount,
+    JumpHeight,
+    Resource,
+    MaxResource,
+    CommonResource,
+    AdvancedResource
+}
+
 [Serializable]
 public class PlayerStats : Stats<PlayerStats>
 {
+    [SerializeField] private int   ownerID;
     [SerializeField] private int   exp;
     [SerializeField] private int   maxExp = 100;
     [SerializeField] private int   maxJumpCount;
@@ -13,6 +33,8 @@ public class PlayerStats : Stats<PlayerStats>
     [SerializeField] private int   maxResource;
     [SerializeField] private int   commonResource;
     [SerializeField] private int   advancedResource;
+
+    public int OwnerID => ownerID;
 
     public int Resource
     {
@@ -23,7 +45,11 @@ public class PlayerStats : Stats<PlayerStats>
     public int MaxResource
     {
         get => maxResource;
-        set => maxResource = value;
+        set
+        {
+            UIElements.Instance.resourceBar.maxValue = maxResource = value;
+            UIElements.Instance.resourceBar.ApplySetting();
+        }
     }
 
     public float JumpHeight
@@ -56,6 +82,12 @@ public class PlayerStats : Stats<PlayerStats>
             advancedResource                              = value;
             Resources.Instance.AdvancedResourceValue.text = value.ToString();
         }
+    }
+
+    public PlayerStats SetOwnerID(int p_ownerID)
+    {
+        ownerID = p_ownerID;
+        return this;
     }
 
     public PlayerStats SetMaxJumpCount(int p_maxJumpCount)

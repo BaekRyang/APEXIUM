@@ -108,6 +108,8 @@ public class EnemyAI : MonoBehaviour
         if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
         _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
         _animator.SetBool("IsWalk", true);
+        
+        _transform.localScale = new Vector3(-_targetDirection.x, 1, 1);
     }
 
 #region CliffDetect
@@ -170,6 +172,13 @@ public class EnemyAI : MonoBehaviour
         _nextAttackTime = _lastAttackTime + 1 / _base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
 
         _animator.SetTrigger("Attack");
+
+        var attacked = Physics2D.OverlapCircleAll(transform.position, attackRange, LayerMask.GetMask("Player"));
+        foreach (var player in attacked)
+        {
+            player.GetComponent<Player>().Attacked(_base.stats.attackDamage, 0, _base);
+        }
+        
         Debug.Log("Attack!");
         Debug.DrawRay(transform.position, TowardPlayer * attackRange, Color.red, 1f);
     }

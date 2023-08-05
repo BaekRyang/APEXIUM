@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.Feedbacks;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
     private void LoadSettings()
     {
         _stats = new PlayerStats()
+                .SetOwnerID(GameManager.Instance.playerID)
                 .SetHealth(100)
                 .SetAttackDamage(10)
                 .SetSpeed(4f)
@@ -35,7 +37,7 @@ public class Player : MonoBehaviour
                 .SetMaxJumpCount(1)
                 .SetJumpHeight(10)
                 .SetResource(7);
-
+        UIElements.Instance.SetHealth(_stats.health, _stats.maxHealth);
 
         _playerController      = gameObject.AddComponent<PlayerController>();
         _animator              = GetComponent<Animator>();
@@ -77,12 +79,58 @@ public class Player : MonoBehaviour
     {
         if (_isImmune) return;
 
+        PlayStatusFeedback(p_pDamage.ToString());
         TakeDamage(p_pDamage);
     }
 
     private void TakeDamage(int p_pDamage)
     {
         Stats.health -= p_pDamage;
+        UIElements.Instance.SetHealth(Stats.health, Stats.maxHealth);
     }
-    
+
+    public void ChangeStats(StatType p_statType, float p_value)
+    {
+        switch (p_statType)
+        {
+            case StatType.Health:
+                Stats.health += (int)p_value;
+                break;
+            case StatType.MaxHealth:
+                Stats.maxHealth += (int)p_value;
+                break;
+            case StatType.AttackDamage:
+                Stats.attackDamage += (int)p_value;
+                break;
+            case StatType.Speed:
+                Stats.speed += p_value;
+                break;
+            case StatType.Level:
+                
+                break;
+            case StatType.Defense:
+                break;
+            case StatType.AttackSpeed:
+                break;
+            case StatType.Exp:
+                break;
+            case StatType.MaxExp:
+                break;
+            case StatType.MaxJumpCount:
+                break;
+            case StatType.JumpHeight:
+                break;
+            case StatType.Resource:
+                break;
+            case StatType.MaxResource:
+                break;
+            case StatType.CommonResource:
+                break;
+            case StatType.AdvancedResource:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(p_statType), p_statType, null);
+        }
+    }
+
 }
