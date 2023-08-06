@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject              playerPrefab;
 
     [SerializeField] private                PlayerData[]                   characters;
+    [SerializeField] private                EnemyData[]                    monsters;
     [DoNotSerialize] public static readonly Dictionary<string, PlayerData> CharactersData = new();
+    [DoNotSerialize] public static readonly Dictionary<string, EnemyData>  MonstersData   = new();
 
     public CinemachineVirtualCamera virtualCamera;
 
@@ -39,6 +41,9 @@ public class GameManager : MonoBehaviour
 
         foreach (var _character in characters)
             CharactersData.Add(_character.name, _character);
+        
+        foreach (var _monster in monsters)
+            MonstersData.Add(_monster.name, _monster);
     }
 
     public void InstantiatePlayer(int p_newPlayerID)

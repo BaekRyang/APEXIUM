@@ -2,21 +2,19 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-
 [Serializable]
 public class Stats<T> where T : Stats<T>
 {
     //제네릭 자기참조 형식으로 정의되었기 때문에, "T"는 Stats<T>를 상속받는 클래스여야 한다.
     //Stats는 자신을 상속받아야 하기 때문에 인스턴스화 할 수 없다.
-    
-    
-    public int   health;
-    public int   maxHealth;
-    public int   attackDamage;
-    public float speed;
-    public int   level;
-    public int   defense;
-    public float attackSpeed;
+
+    public int   health       = 100;
+    public int   maxHealth    = 100;
+    public int   attackDamage = 10;
+    public float speed        = 5;
+    public int   level        = 1;
+    public int   defense      = 1;
+    public float attackSpeed  = 1;
 
     public T SetHealth(int p_health)
     {

@@ -7,22 +7,16 @@ public class EnemyBase : MonoBehaviour
     private MMF_Player       _damageFeedback;
     private MMF_FloatingText _floatingText;
 
-    public MonsterStats stats;
+    public EnemyStats stats;
 
     private void Start()
     {
-        stats = new MonsterStats()
-               .SetHealth(200)
-               .SetAttackDamage(10)
-               .SetSpeed(4f)
-               .SetDefense(1)
-               .SetAttackSpeed(.5f);
+        stats           = new EnemyStats(GameManager.MonstersData["Frost"]);
 
-        _enemyAI = GetComponent<EnemyAI>();
+        _enemyAI        = GetComponent<EnemyAI>();
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
         _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
-
     }
 
     public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)
@@ -44,7 +38,7 @@ public class EnemyBase : MonoBehaviour
             Destroy(this);
             Destroy(_enemyAI);
             GetComponent<Rigidbody2D>().simulated = false;
-            GetComponent<Collider2D>().enabled   = false;
+            GetComponent<Collider2D>().enabled    = false;
         }
     }
 

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c31e44ed7e4564481e0713bb4599e1, type: 3}
+  m_Name: Frost
+  m_EditorClassIdentifier: 
+  enemyName: Frost
+  stats:
+    health: 200
+    maxHealth: 200
+    attackDamage: 10
+    speed: 4
+    level: 1
+    defense: 1
+    attackSpeed: 0.5
+    canDazed: 1
+    canStun: 1
+    chaseDistance: 5
+    attackType: 0
+    attackRange: 5
+    stopWhenAttack: 1

@@ -3,12 +3,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[Serializable]
-enum EnemyAttackType
-{
-    Touch,
-    Range
-}
+
 
 public class EnemyAI : MonoBehaviour
 {
@@ -16,16 +11,6 @@ public class EnemyAI : MonoBehaviour
 
     private const float CLIFF_DETECT_DISTANCE       = 0.5f;
     private const float CHANGE_DIRECTION_CYCLE_TIME = 1.0f;
-
-    [Header("Set in Inspector")]
-    [SerializeField] private bool canDazed = true;
-
-    [SerializeField] private bool  canStun       = true;
-    [SerializeField] private float chaseDistance = 5f;
-
-    [SerializeField] private EnemyAttackType attackType     = EnemyAttackType.Range;
-    [SerializeField] private float           attackRange    = 1f;
-    [SerializeField] private bool            stopWhenAttack = true;
 
     private readonly WaitForSeconds _changeDirectionCycle = new WaitForSeconds(CHANGE_DIRECTION_CYCLE_TIME);
     private          EnemyBase      _base;
@@ -57,7 +42,7 @@ public class EnemyAI : MonoBehaviour
         _transform    = transform;
 
         _animator                           = GetComponent<Animator>();
-        _animator.runtimeAnimatorController = Animation.GetAnimatorController("Frost");
+        _animator.runtimeAnimatorController = Animation.GetAnimatorController(_base.stats.enemyName);
 
         bool playerInRange = CalcNextBehavior();
     }
@@ -65,7 +50,7 @@ public class EnemyAI : MonoBehaviour
     private bool CalcNextBehavior()
     {
         //일정 주기마다 플레이어 위치를 찾아서 해당 방향으로 이동
-        if (!(Vector3.Distance(_targetPlayer.PlayerPosition, _transform.position) <= chaseDistance)) return false;
+        if (!(Vector3.Distance(_targetPlayer.PlayerPosition, _transform.position) <= _base.stats.chaseDistance)) return false;
 
         _targetPosition = _targetPlayer.PlayerPosition;
         if (_targetPosition.x > _transform.position.x)
@@ -78,6 +63,9 @@ public class EnemyAI : MonoBehaviour
 
     public void Update()
     {
+        if (_targetPlayer == null)
+            return;
+        
         if (_stunned)
             _stunTime -= Time.deltaTime;
         if (_dazed)
@@ -108,7 +96,7 @@ public class EnemyAI : MonoBehaviour
         if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
         _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
         _animator.SetBool("IsWalk", true);
-        
+
         _transform.localScale = new Vector3(-_targetDirection.x, 1, 1);
     }
 
@@ -131,7 +119,7 @@ public class EnemyAI : MonoBehaviour
 
     public void Stun(float p_stunDuration)
     {
-        if (!canStun) return;
+        if (!_base.stats.canStun) return;
         _animator.SetBool("IsWalk", false);
         _stunned = true;
         if (!(_stunTime > p_stunDuration)) //기존 스턴시간이 더 길면 무시
@@ -140,7 +128,7 @@ public class EnemyAI : MonoBehaviour
 
     public void Daze()
     {
-        if (!canDazed) return;
+        if (!_base.stats.canDazed) return;
         _animator.SetBool("IsWalk", false);
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
@@ -148,11 +136,11 @@ public class EnemyAI : MonoBehaviour
 
     private void CalcAttack()
     {
-        if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= attackRange)
+        if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= _base.stats.chaseDistance)
         {
             _canMove = false;
             _animator.SetBool("IsAttack", true);
-            
+
             if (Time.time >= _nextAttackTime)
                 Attack();
         }
@@ -173,13 +161,13 @@ public class EnemyAI : MonoBehaviour
 
         _animator.SetTrigger("Attack");
 
-        var attacked = Physics2D.OverlapCircleAll(transform.position, attackRange, LayerMask.GetMask("Player"));
+        var attacked = Physics2D.OverlapCircleAll(transform.position, _base.stats.attackRange, LayerMask.GetMask("Player"));
         foreach (var player in attacked)
         {
             player.GetComponent<Player>().Attacked(_base.stats.attackDamage, 0, _base);
         }
-        
+
         Debug.Log("Attack!");
-        Debug.DrawRay(transform.position, TowardPlayer * attackRange, Color.red, 1f);
+        Debug.DrawRay(transform.position, TowardPlayer * _base.stats.attackRange, Color.red, 1f);
     }
 }
