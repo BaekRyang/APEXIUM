@@ -31,7 +31,7 @@ public class Skill : MonoBehaviour, IUseable
         set => LastUsedTime = Time.time + value - Cooldown; //설정한 값으로 쿨타임 변경
     }
 
-    public float LastUsedTime { get; set; }
+    public float LastUsedTime { get; set; } = float.MinValue; //최소값 안쓰면 쿨타임이 돌아가는 상태로 시작함
 
     public virtual bool Play() => false;
 

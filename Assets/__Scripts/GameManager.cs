@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,6 +13,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Dictionary<int, Player> players = new Dictionary<int, Player>();
     [SerializeField] private GameObject              playerPrefab;
+
+    [SerializeField] private                PlayerData[]                   characters;
+    [DoNotSerialize] public static readonly Dictionary<string, PlayerData> CharactersData = new();
 
     public CinemachineVirtualCamera virtualCamera;
 
@@ -32,6 +36,9 @@ public class GameManager : MonoBehaviour
     {
         Instance ??= this;
         DontDestroyOnLoad(gameObject);
+
+        foreach (var _character in characters)
+            CharactersData.Add(_character.name, _character);
     }
 
     public void InstantiatePlayer(int p_newPlayerID)

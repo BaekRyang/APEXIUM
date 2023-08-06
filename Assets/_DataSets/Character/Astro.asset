@@ -12,25 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6422dc84f3c2944198ddb3dd2f42f02, type: 3}
   m_Name: Astro
   m_EditorClassIdentifier: 
-  _characterName: Astro
-  _stats:
+  characterName: Astro
+  stats:
     health: 100
     maxHealth: 100
     attackDamage: 10
-    speed: 4
+    speed: 6
     level: 1
     defense: 1
     attackSpeed: 1
+    ownerID: 0
     exp: 0
-    maxExp: 100
+    maxExp: 0
     maxJumpCount: 1
     jumpHeight: 10
     resource: 7
     maxResource: 7
     commonResource: 0
     advancedResource: 0
-  _skill_Passive: Revolver
-  _skill_Primary: RevolverShot
-  _skill_Secondary: PierceShot
-  _skill_Utility: Roll
-  _skill_Ultimate: Spree
+  skillPassive: Revolver
+  skillPrimary: RevolverShot
+  skillSecondary: PierceShot
+  skillUtility: Roll
+  skillUltimate: Spree

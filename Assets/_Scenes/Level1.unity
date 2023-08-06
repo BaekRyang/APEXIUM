@@ -116284,6 +116284,8 @@ MonoBehaviour:
   statistics: {fileID: 0}
   playerPrefab: {fileID: 9142645116984913145, guid: 169c1b357cecc924e9fea70f080b3757,
     type: 3}
+  characters:
+  - {fileID: 11400000, guid: 2bdfe2abafb088a49801bed05cd1b7fa, type: 2}
   virtualCamera: {fileID: 2084382252}
 --- !u!4 &1545019964
 Transform:

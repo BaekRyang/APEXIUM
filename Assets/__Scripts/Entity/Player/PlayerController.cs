@@ -18,11 +18,11 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_GRACE_TIME = 0.2f;
     private const float JUMP_BUFFER     = 0.2f;
 
-    public Tilemap _ladderTilemap;
+    private Tilemap _ladderTilemap;
 
     public Player player;
 
-    public InputValues _input;
+    private InputValues _input;
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
     public PlayerStats playerStats;
 
     private int      _jumpCountOffset; //점프 카운트를 조정하기 위한 변수
-    public  JumpDire _jumpDirection;
-    public  JumpDire _lastLadderJumpDirection;
+    private JumpDire _jumpDirection;
+    private JumpDire _lastLadderJumpDirection;
 
     private float Speed        => playerStats.speed;
     private float JumpHeight   => playerStats.JumpHeight;
@@ -56,10 +56,6 @@ public class PlayerController : MonoBehaviour
         _ladderTilemap = GameObject.Find("Grid").transform.Find("Ladder").GetComponent<Tilemap>();
 
         GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
-    }
-
-    void LoadSetting()
-    {
     }
 
     private void Update()
@@ -270,6 +266,9 @@ public class PlayerController : MonoBehaviour
         Right
     }
 
+    /// <summary>
+    /// 플레이어의 사다리 관련 액션 처리
+    /// </summary>
     private void ClimbLadder(Vector3 p_position)
     {
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
@@ -290,21 +289,8 @@ public class PlayerController : MonoBehaviour
         if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
             return;                                     //사다리에 다시 붙지 못하도록 한다.
 
-        Bounds  _bounds  = _boxCollider2D.bounds;
-        Vector2 _mdPoint = new Vector2(_bounds.center.x, _bounds.min.y);
-        if (_input.vertical > 0 &&
-            !climbLadder        &&
-            !Physics2D.Raycast(_mdPoint, Vector2.down, .1f, LayerMask.GetMask("Floor")).collider.IsUnityNull())
-
-            //사다리 위에서 윗 키를 눌렀을때 사다리를 타지 않도록 해준다.
-        {
-            Debug.Log("Disable Ladder Jump");
-            return;
-        }
-
         player._animator.SetBool("IsClimb", true);
-
-
+        
         climbLadder           = true;
         transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
         _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
@@ -322,6 +308,9 @@ public class PlayerController : MonoBehaviour
         player._animator.speed = 1;
     }
 
+    /// <summary>
+    /// 플레이어의 점프 방향 계산
+    /// </summary>
     private JumpDire GetNowJumpDirection()
     {
         return _input switch
@@ -335,12 +324,12 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Player status for ladder.
+    /// 사다리 탑승을 위한 플레이어 상태를 설정한다.
     /// </summary>
     private void SetLadderStatus()
     {
-        //현재 서있는 곳이 사다리인지 확인한다. (아래쪽으로 가는 경우에는 한칸 아래를 조사한다.)
-        if (HasLadderTile(_input.vertical < 0))
+        //현재 서있는 곳이 사다리인지 확인한다.
+        if (HasLadderTile())
             onLadder = true;
         else
         {
@@ -354,22 +343,20 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Check if there is a ladder tile at the player position.
+    /// 플레이어 위치에 사다리 타일이 있는지 확인한다.
     /// </summary>
-    /// <param name="p_isDown">Check one tile down.</param>
-    /// <returns>True if there is a ladder tile.</returns>
-    private bool HasLadderTile(bool p_isDown = false)
+    private bool HasLadderTile()
     {
         
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
-                                                  Mathf.FloorToInt(transform.position.y - (p_isDown ? .1f : 0))); //오차보정
-        if (_ladderTilemap.HasTile(_tilePosition))
-        {
-            ladderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
-            return true;
-        }
+                                                  Mathf.FloorToInt(transform.position.y - (_input.vertical < 0 ? .1f : 0))); //오차보정
+        if (!_ladderTilemap.HasTile(_tilePosition)) return false;
+        
+        //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
+        //따라서 사다리의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
+        ladderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y); 
+        return true;
 
-        return false;
     }
 
 #endregion

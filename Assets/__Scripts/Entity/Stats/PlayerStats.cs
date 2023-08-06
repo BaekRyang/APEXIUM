@@ -34,6 +34,26 @@ public class PlayerStats : Stats<PlayerStats>
     [SerializeField] private int   commonResource;
     [SerializeField] private int   advancedResource;
 
+    public PlayerStats(PlayerStats p_other)
+    {
+        ownerID         = p_other.ownerID;
+        health          = p_other.health;
+        maxHealth       = p_other.maxHealth;
+        attackDamage    = p_other.attackDamage;
+        speed           = p_other.speed;
+        level           = p_other.level;
+        defense         = p_other.defense;
+        attackSpeed     = p_other.attackSpeed;
+        exp             = p_other.exp;
+        maxExp          = p_other.maxExp;
+        maxJumpCount    = p_other.maxJumpCount;
+        jumpHeight      = p_other.jumpHeight;
+        resource        = p_other.resource;
+        maxResource     = p_other.maxResource;
+        commonResource  = p_other.commonResource;
+        advancedResource = p_other.advancedResource;
+    }
+
     public int OwnerID => ownerID;
 
     public int Resource
@@ -82,31 +102,5 @@ public class PlayerStats : Stats<PlayerStats>
             advancedResource                              = value;
             Resources.Instance.AdvancedResourceValue.text = value.ToString();
         }
-    }
-
-    public PlayerStats SetOwnerID(int p_ownerID)
-    {
-        ownerID = p_ownerID;
-        return this;
-    }
-
-    public PlayerStats SetMaxJumpCount(int p_maxJumpCount)
-    {
-        MaxJumpCount = p_maxJumpCount;
-        return this;
-    }
-
-    public PlayerStats SetJumpHeight(float p_jumpHeight)
-    {
-        JumpHeight = p_jumpHeight;
-        return this;
-    }
-
-    public PlayerStats SetResource(int p_resource)
-    {
-        UIElements.Instance.resourceBar.maxValue = UIElements.Instance.resourceBar.value = p_resource;
-        UIElements.Instance.resourceBar.ApplySetting();
-        Resource = MaxResource = p_resource;
-        return this;
     }
 }
