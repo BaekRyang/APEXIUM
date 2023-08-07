@@ -110,7 +110,7 @@ public class Client : MonoBehaviour
 
     private void BeginReceive() => 
         ClientSocket.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
-    // 비동기적으로 데이터를 받는다. - 서버의 Receive와 유사한데, 여기는 비동기적으로 받아서 Callback으로 처리한다.
+    //비동기적으로 데이터를 받는다. - 서버의 Receive와 유사한데, 여기는 비동기적으로 받아서 Callback으로 처리한다.
     
     private          int?      _totalPacketSize; //nullable int 타입
     private readonly ArrayList _pendingDataBuffer = new ArrayList();
@@ -119,7 +119,7 @@ public class Client : MonoBehaviour
     {
         //이 함수가 실행되었다는것 => 데이터를 받아서 _receiveBuffer에 넣었음
 
-        // 데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
+        //데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
         int _received = ClientSocket.EndReceive(p_result);
 
         Debug.Log($"{PREFIX} Data Received / {_received}bytes");
@@ -130,25 +130,20 @@ public class Client : MonoBehaviour
             return;
         }
 
-        if (_totalPacketSize is null)
+        if (_totalPacketSize is null) //null이면 아직 패킷의 크기를 받지 않았다는 뜻
         {
             Debug.Log($"{PREFIX} New Packet Size Received {_receiveBuffer[0]}");
             _totalPacketSize = _receiveBuffer[0];
         }
 
-        if (_pendingDataBuffer.Count < _totalPacketSize + 2)
+        if (_pendingDataBuffer.Count < _totalPacketSize + 2) //위에서 얻은 패킷의 크기 + 2(시퀀스 넘버, 패킷 타입)보다 작으면 일부만 온것임
         {
             for (int i = 0; i < _received; i++)
                 _pendingDataBuffer.Add(_receiveBuffer[i]);
             Debug.Log($"{PREFIX} Packet piece received {_received} - " +
                       $"Total : {_pendingDataBuffer.Count} / {_totalPacketSize + 2}");
         }
-        else
-        {
-            Debug.Log($"{_pendingDataBuffer.Count} / {_totalPacketSize}");
-        }
-
-        if (_pendingDataBuffer.Count >= _totalPacketSize + 2)
+        else //패킷의 크기와 같거나 큰 데이터가 왔다면 => 다 받은것임
         {
             Debug.Log($"{PREFIX} Full Packet Received - Pending : {_pendingDataBuffer.Count} / Total : {_totalPacketSize + 2} ");
             StringBuilder _sb = new StringBuilder();
