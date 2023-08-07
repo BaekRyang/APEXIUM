@@ -65,4 +65,11 @@ public class Revolver : Skill
     {
         return Time.time + GetReloadTime() * AUTO_RELOAD_TIME_MULTIPLIER;
     }
+    
+    public static IEnumerator DelayAndSetControllable(Player p_player)
+    {
+        p_player.Controller.SetControllable(false);
+        yield return new WaitForSeconds(0.2f);
+        p_player.Controller.SetControllable(true);
+    }
 }

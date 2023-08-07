@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Cinemachine;
 using Unity.VisualScripting;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
 
 public class GameManager : MonoBehaviour
 {
@@ -41,7 +45,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var _character in characters)
             CharactersData.Add(_character.name, _character);
-        
+
         foreach (var _monster in monsters)
             MonstersData.Add(_monster.name, _monster);
     }

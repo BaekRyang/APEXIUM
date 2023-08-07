@@ -30,7 +30,6 @@ public class RevolverShot : AttackableSkill
         Debug.Log("RevolverShot");
         Player._animator.SetTrigger("Primary");
         Player._animator.SetBool("Playing", true);
-        Player.Controller.SetControllable(false);
         Transform _cachedTransform = transform;
         Vector3   _position        = _cachedTransform.position;
 
@@ -48,14 +47,17 @@ public class RevolverShot : AttackableSkill
                 _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
             }
         }
-        
+    
         Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
 
-        Task.Run(() =>
-        {
-            Thread.Sleep(200);
-            Player.Controller.SetControllable(true);
-        });
+        // Task.Run(async () =>
+        // {
+        //     // Thread.Sleep(200);
+        //     await Task.Delay(200);
+        //     Player.Controller.SetControllable(true);
+        // });
+        
+        StartCoroutine(Revolver.DelayAndSetControllable(Player));
 
         if (Stats.Resource == 0)
             Revolver.Reload();
@@ -63,4 +65,5 @@ public class RevolverShot : AttackableSkill
         LastUsedTime = Time.time;
         return true;
     }
+
 }

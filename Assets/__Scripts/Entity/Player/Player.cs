@@ -69,12 +69,25 @@ public class Player : MonoBehaviour
         if (_isImmune) return;
 
         PlayStatusFeedback(p_pDamage.ToString());
-        TakeDamage(p_pDamage);
+        bool _stillAlive = HealthChange(-p_pDamage);
+
+        if (_stillAlive) return; //아래는 죽었을때 이벤트 처리
+        _animator.SetTrigger("Death");
+        Controller.SetControllable(false);
+        Die();
     }
 
-    private void TakeDamage(int p_pDamage)
+    private bool HealthChange(int p_pDamage)
     {
-        Stats.health -= p_pDamage;
-        UIElements.Instance.SetHealth(Stats.health, Stats.maxHealth);
+        Stats.health += p_pDamage;
+        if (clientID == GameManager.Instance.playerID) //해당 캐릭터가 자신의 캐릭터일때만 UI 업데이트
+            UIElements.Instance.SetHealth(Stats.health, Stats.maxHealth);
+        
+        return Stats.health > 0; //체력이 0이하면 false 반환
+    }
+
+    private void Die()
+    {
+        
     }
 }
