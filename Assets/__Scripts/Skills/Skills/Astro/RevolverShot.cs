@@ -19,10 +19,15 @@ public class RevolverShot : AttackableSkill
         SkillType   = SkillTypes.Primary;
         Cooldown    = COOLDOWN;
         SkillDamage = DAMAGE_MULTIPLIER;
+
+        TestEvent _testEvent = new TestEvent();
+        _testEvent.OnTestEvent += new EventHandler((object sender, EventArgs e) => Debug.Log("TestEvent"));
     }
 
     public override bool Play()
     {
+        
+        
         if (!CanUse()) return false;
         if (!ConsumeResource()) return false;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
@@ -47,7 +52,7 @@ public class RevolverShot : AttackableSkill
                 _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
             }
         }
-    
+
         Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
 
         // Task.Run(async () =>
@@ -56,7 +61,7 @@ public class RevolverShot : AttackableSkill
         //     await Task.Delay(200);
         //     Player.Controller.SetControllable(true);
         // });
-        
+
         StartCoroutine(Revolver.DelayAndSetControllable(Player));
 
         if (Stats.Resource == 0)
@@ -65,5 +70,4 @@ public class RevolverShot : AttackableSkill
         LastUsedTime = Time.time;
         return true;
     }
-
 }

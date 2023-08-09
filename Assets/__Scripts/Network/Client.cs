@@ -10,7 +10,7 @@ using ProtoBuf;
 public class Client : MonoBehaviour
 {
     private const string PREFIX = "<color=blue>Client</color> - ";
-    
+
     private        string    _serverIP   = "127.0.0.1";
     private        int       _serverPort = 11211;
     private static Socket    ClientSocket;
@@ -20,10 +20,10 @@ public class Client : MonoBehaviour
 
     private void Start()
     {
-
     #region TCP Init
 
         ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //클라이언트 소켓 준비
+
         //Bind는 필요없음 : 클라이언트는 자동으로 포트를 골라서 서버에 연결함
 
         IPAddress  _serverAddress  = IPAddress.Parse(_serverIP);                  //서버 주소를 IPAddress로 변환
@@ -51,7 +51,8 @@ public class Client : MonoBehaviour
     #region UDP Init
 
         UDPClient = new UdpClient();
-        UDPClient.Connect(_serverEndPoint); 
+        UDPClient.Connect(_serverEndPoint);
+
         //UDP는 TCP의 Connect와 다르게 실제로 연결을 만드는것은 아니고
         //UdpClient.Send()에 매번 EndPoint를 넘겨줘야 하는데, 이 때 EndPoint의 기본값을 설정해준다.
         //여기서는 언제나 서버와 통신을 하기 때문에 서버의 EndPoint를 기본값으로 설정해준다.
@@ -67,7 +68,7 @@ public class Client : MonoBehaviour
 
             using (var _stream = new MemoryStream()) //메모리 스트림을 이용하여 직렬화한다. MemoryStream()은 데이터를 쓸 수 있는 상태
             {
-                Serializer.Serialize(_stream, _mousePosition);                     //mousePosition을 stream에 serialize한다.
+                Serializer.Serialize(_stream, _mousePosition);                 //mousePosition을 stream에 serialize한다.
                 Send(_stream.ToArray(), PacketType.Movement, ConnectType.UDP); //stream을 byte[]로 변환하여 Send한다. 두번째 Arg은 데이터 타입 명시용
             }
         }
@@ -89,29 +90,29 @@ public class Client : MonoBehaviour
             ClientSocket.Send(p_packet);
 
             Debug.Log($"{PREFIX} Packet Sent(TCP) : {p_packet.Length} bytes");
-        } 
+        }
         else if (p_connectType is ConnectType.UDP)
         {
             if (UDPClient == null)
                 return;
-            
+
             //새로운 bye[]를 만들어서 필요한 데이터를 넣는다.
             //데이터의 순서는 [시퀀스 넘버, 패킷 타입, 패킷 데이터] 순서로 넣는다.
             byte[] _packet = new byte[p_packet.Length + 2]; //시퀀스 넘버와 패킷 타입을 넣을 공간을 미리 만들어둔다.
             _packet[0] = (byte)GameManager.Instance.playerID;
             _packet[1] = (byte)p_type;
             Array.Copy(p_packet, 0, _packet, 2, p_packet.Length); //p_packet의 데이터를 _packet에 복사한다.
-            
+
             UDPClient.Send(_packet, _packet.Length); //데이터를 보낸다.
             Debug.Log($"{PREFIX} Packet Sent(UDP) : {_packet.Length} bytes");
         }
-        
     }
 
-    private void BeginReceive() => 
+    private void BeginReceive() =>
         ClientSocket.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+
     //비동기적으로 데이터를 받는다. - 서버의 Receive와 유사한데, 여기는 비동기적으로 받아서 Callback으로 처리한다.
-    
+
     private          int?      _totalPacketSize; //nullable int 타입
     private readonly ArrayList _pendingDataBuffer = new ArrayList();
 
@@ -143,7 +144,8 @@ public class Client : MonoBehaviour
             Debug.Log($"{PREFIX} Packet piece received {_received} - " +
                       $"Total : {_pendingDataBuffer.Count} / {_totalPacketSize + 2}");
         }
-        else //패킷의 크기와 같거나 큰 데이터가 왔다면 => 다 받은것임
+
+        if (_pendingDataBuffer.Count >= _totalPacketSize + 2)
         {
             Debug.Log($"{PREFIX} Full Packet Received - Pending : {_pendingDataBuffer.Count} / Total : {_totalPacketSize + 2} ");
             StringBuilder _sb = new StringBuilder();
@@ -153,10 +155,12 @@ public class Client : MonoBehaviour
 
             // 수신된 데이터를 처리한다.
             byte[] _dataBuf = new byte[_pendingDataBuffer.Count];
+
             //PendingDataBuffer에 있는 데이터 전부를 _dataBuf에 복사한다.
             _pendingDataBuffer.CopyTo(_dataBuf);
 
             HandleReceivedData(_dataBuf);
+
             //다음 패킷을 위해 초기화한다.
             _pendingDataBuffer.Clear();
             _totalPacketSize = null;

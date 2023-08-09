@@ -4,13 +4,50 @@
         "width": 2
     },
     "activeFile": "",
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "Rules/autotile rules.tmx": {
+            "scale": 2.373515625,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 320.410783055199,
+                "y": 159.67874658503666
+            }
+        },
+        "autotile rules.tmx": {
+            "scale": 2.6303124999999996,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.30414637044083,
+                "y": 160.24711892598313
+            }
+        },
+        "prototype.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 383,
+                "y": 353.33333333333326
+            }
+        }
     },
+    "last.imagePath": "D:/OneDrive/SkyLab/Project R/Graphic/Tilemap",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 40,
     "openFiles": [
     ],
     "project": "ProjectR.tiled-project",
     "recentFiles": [
-    ]
+        "autotile rules.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
 }

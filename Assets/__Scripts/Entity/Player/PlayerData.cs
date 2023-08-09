@@ -20,3 +20,13 @@ public class PlayerData : ScriptableObject
     public string skillUtility;
     public string skillUltimate;
 }
+
+public class TestEvent
+{
+    public event EventHandler OnTestEvent;
+    
+    public void Test()
+    {
+        OnTestEvent?.Invoke(this, EventArgs.Empty);
+    }
+}
