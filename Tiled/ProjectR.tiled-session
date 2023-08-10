@@ -3,19 +3,39 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
-    "automapping.whileDrawing": true,
+    "activeFile": "Winter.tsx",
+    "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        "Rules",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/ProjectR/Assets/_Tilemaps/Winter.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx": {
+            "scale": 0.21078124999999998,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 493.4025203854708,
+                "y": 647.5908080059303
+            }
+        },
         "Rules/autotile rules.tmx": {
-            "scale": 2.373515625,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 320.410783055199,
-                "y": 159.67874658503666
+                "x": 282.25,
+                "y": 232
             }
+        },
+        "Winter.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "autotile rules.tmx": {
             "scale": 2.6303124999999996,
@@ -26,23 +46,31 @@
             }
         },
         "prototype.tmx": {
-            "scale": 1.5,
+            "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 383,
-                "y": 353.33333333333326
+                "x": 1409.875,
+                "y": 1289
             }
         }
     },
+    "last.externalTilesetPath": "C:/Github/ProjectR/Tiled",
     "last.imagePath": "D:/OneDrive/SkyLab/Project R/Graphic/Tilemap",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
+        "Winter.tsx",
+        "prototype.tmx",
+        "Rules/autotile rules.tmx"
     ],
     "project": "ProjectR.tiled-project",
     "recentFiles": [
+        "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
+        "Rules/autotile rules.tmx",
+        "prototype.tmx",
+        "Winter.tsx",
         "autotile rules.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
