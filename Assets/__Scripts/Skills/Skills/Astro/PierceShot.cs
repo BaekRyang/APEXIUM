@@ -38,7 +38,7 @@ public class PierceShot : AttackableSkill
             
             //RaycastAll과 다르게 RaycastAll2D는 RaycastHit2D[]의 정렬이 가까운 순서대로 되어있으므로
             //벽에 맞았다면 뒤에있는 물체들은 무시해도 된다.
-            if (_hitCollider.CompareTag("Tile")) break;
+            if (_hitCollider.CompareTag("Floor")) break;
 
             if (_hitCollider.CompareTag("Enemy"))
             {

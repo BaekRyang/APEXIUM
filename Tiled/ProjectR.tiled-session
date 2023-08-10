@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Winter.tsx",
+    "activeFile": "prototype.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
         "Rules",
@@ -14,23 +14,51 @@
         ":/automap-tiles.tsx": {
             "scaleInDock": 1
         },
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 282.8333333333333,
+                "y": 199.33333333333334
+            }
+        },
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/Zoria Tileset/overhead-objects.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/Zoria Tileset/scraps.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/Zoria Tileset/tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/Zoria Tileset/water.tsx": {
+            "scaleInDock": 1
+        },
         "C:/Github/ProjectR/Assets/_Tilemaps/Winter.tsx": {
             "scaleInDock": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx": {
-            "scale": 0.21078124999999998,
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 493.4025203854708,
-                "y": 647.5908080059303
+                "x": 3011.333333333333,
+                "y": 1348
+            }
+        },
+        "Rules/LadderRules.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 171.5,
+                "y": 152.33333333333334
             }
         },
         "Rules/autotile rules.tmx": {
-            "scale": 2,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 282.25,
-                "y": 232
+                "x": 237.66666666666663,
+                "y": 276
             }
         },
         "Winter.tsx": {
@@ -47,10 +75,10 @@
         },
         "prototype.tmx": {
             "scale": 4,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 1409.875,
-                "y": 1289
+                "x": 2157.125,
+                "y": 1273.5
             }
         }
     },
@@ -68,9 +96,10 @@
     "project": "ProjectR.tiled-project",
     "recentFiles": [
         "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
-        "Rules/autotile rules.tmx",
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx",
         "prototype.tmx",
         "Winter.tsx",
+        "Rules/autotile rules.tmx",
         "autotile rules.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",

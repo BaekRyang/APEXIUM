@@ -438,6 +438,13 @@ MonoBehaviour:
     level: 1
     defense: 0
     attackSpeed: 1
+    enemyName: 
+    canDazed: 0
+    canStun: 0
+    chaseDistance: 0
+    attackType: 0
+    attackRange: 0
+    stopWhenAttack: 0
 --- !u!114 &-8639249466388217110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,12 +457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1f33d3789bdf44798931a634027cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canDazed: 1
-  canStun: 1
-  chaseDistance: 5
-  attackType: 1
-  attackRange: 1
-  stopWhenAttack: 1
   _animator: {fileID: 0}
   _lastAttackTime: 0
   _nextAttackTime: 0

@@ -5,6 +5,8 @@ using Cinemachine;
 using Unity.VisualScripting;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.U2D;
 using Task = System.Threading.Tasks.Task;
 
 public class GameManager : MonoBehaviour
@@ -24,6 +26,8 @@ public class GameManager : MonoBehaviour
     [DoNotSerialize] public static readonly Dictionary<string, EnemyData>  MonstersData   = new();
 
     public CinemachineVirtualCamera virtualCamera;
+    
+    public TileBase tileBase;
 
     public Player RandomPlayer()
     {
@@ -52,7 +56,11 @@ public class GameManager : MonoBehaviour
 
     public void InstantiatePlayer(int p_newPlayerID)
     {
-        GameObject _player = Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+        
+        //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
+        var        _spawnPosition = Physics2D.RaycastAll(new Vector2(0, 100), Vector2.down, 100, LayerMask.GetMask("Floor"))[^1].point;
+        _spawnPosition.y += 1.5f;
+        GameObject _player = Instantiate(playerPrefab, _spawnPosition, Quaternion.identity);
         _player.transform.name = $"Player {p_newPlayerID}";
 
         _player.GetComponent<Player>().clientID = p_newPlayerID;

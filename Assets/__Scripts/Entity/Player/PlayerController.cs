@@ -18,13 +18,13 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_GRACE_TIME = 0.2f;
     private const float JUMP_BUFFER     = 0.2f;
 
-    private Tilemap _ladderTilemap;
+    [SerializeField] private Tilemap _ladderTilemap;
 
     public Player player;
 
     private InputValues _input;
 
-    private Rigidbody2D   _rigidbody2D;
+    [SerializeField] private Rigidbody2D _rigidbody2D; 
     private BoxCollider2D _boxCollider2D;
 
     public Rigidbody2D Rigidbody2D => _rigidbody2D;
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
-        _ladderTilemap = GameObject.Find("Grid").transform.Find("Ladder").GetComponent<Tilemap>();
+        _ladderTilemap = GameObject.Find("prototype").transform.Find("Ladder").GetComponent<Tilemap>();
 
         GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
     }
@@ -347,14 +347,20 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private bool HasLadderTile()
     {
+        //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
+        Vector3 _localPosition = _ladderTilemap.transform.InverseTransformPoint(transform.position);
+
         
-        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x),
-                                                  Mathf.FloorToInt(transform.position.y - (_input.vertical < 0 ? .1f : 0))); //오차보정
+        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x),
+                                                  Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 ? .1f : 0))); //오차보정
         if (!_ladderTilemap.HasTile(_tilePosition)) return false;
         
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
         //따라서 사다리의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
-        ladderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y); 
+        Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y); 
+        
+        //로컬 좌표를 다시 월드 좌표로 변환한다.
+        ladderPos = _ladderTilemap.transform.TransformPoint(_localLadderPos);
         return true;
 
     }
@@ -405,5 +411,15 @@ public class PlayerController : MonoBehaviour
         Controllable = p_pControllable;
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
+    }
+
+    private void CheckLadderTiles()
+    {
+        for (int x = 0; x < 100; x++)
+        {
+            for (int y = 0; y < 100; y++)
+            {
+            }
+        }
     }
 }
