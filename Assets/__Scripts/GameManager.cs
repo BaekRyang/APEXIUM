@@ -1,13 +1,7 @@
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Cinemachine;
 using Unity.VisualScripting;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using UnityEngine.U2D;
-using Task = System.Threading.Tasks.Task;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,8 +20,6 @@ public class GameManager : MonoBehaviour
     [DoNotSerialize] public static readonly Dictionary<string, EnemyData>  MonstersData   = new();
 
     public CinemachineVirtualCamera virtualCamera;
-    
-    public TileBase tileBase;
 
     public Player RandomPlayer()
     {

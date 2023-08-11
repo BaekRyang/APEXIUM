@@ -6,8 +6,8 @@
     "activeFile": "prototype.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "Rules",
-        "."
+        ".",
+        "Rules"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -49,16 +49,16 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 171.5,
-                "y": 152.33333333333334
+                "x": 170.66666666666666,
+                "y": 151.33333333333334
             }
         },
         "Rules/autotile rules.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 3,
+            "scale": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 237.66666666666663,
-                "y": 276
+                "x": 301.5,
+                "y": 275
             }
         },
         "Winter.tsx": {
@@ -74,11 +74,11 @@
             }
         },
         "prototype.tmx": {
-            "scale": 4,
-            "selectedLayer": 2,
+            "scale": 0.5,
+            "selectedLayer": -1,
             "viewCenter": {
-                "x": 2157.125,
-                "y": 1273.5
+                "x": 7338,
+                "y": 1862
             }
         }
     },
@@ -91,15 +91,18 @@
     "openFiles": [
         "Winter.tsx",
         "prototype.tmx",
-        "Rules/autotile rules.tmx"
+        "Rules/autotile rules.tmx",
+        "Rules/LadderRules.tmx"
     ],
     "project": "ProjectR.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
+        "Winter.tsx",
+        "Rules/LadderRules.tmx",
+        "Rules/autotile rules.tmx",
+        "prototype.tmx",
         "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
         "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx",
-        "prototype.tmx",
-        "Winter.tsx",
-        "Rules/autotile rules.tmx",
         "autotile rules.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
