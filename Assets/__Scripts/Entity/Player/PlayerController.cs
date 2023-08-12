@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -18,14 +19,15 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_GRACE_TIME = 0.2f;
     private const float JUMP_BUFFER     = 0.2f;
 
-    [SerializeField] private Tilemap _ladderTilemap;
+    [SerializeField] private Tilemap ladderTilemap;
+    [SerializeField] private Tilemap floorTilemap;
 
     public Player player;
 
     private InputValues _input;
 
-    [SerializeField] private Rigidbody2D _rigidbody2D; 
-    private BoxCollider2D _boxCollider2D;
+    [SerializeField] private Rigidbody2D   _rigidbody2D;
+    private                  BoxCollider2D _boxCollider2D;
 
     public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
@@ -53,7 +55,8 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
-        _ladderTilemap = GameObject.Find("prototype").transform.Find("Ladder").GetComponent<Tilemap>();
+        ladderTilemap  = GameObject.Find("prototype").transform.Find("Ladder").GetComponent<Tilemap>();
+        floorTilemap   = GameObject.Find("prototype").transform.Find("Tile").GetComponent<Tilemap>();
 
         GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
     }
@@ -70,8 +73,8 @@ public class PlayerController : MonoBehaviour
 
         GetInput(); //Key Input 값 받아오기
 
-        //점프중일때(상승) 바닥을 뚫고 올라갈 수 있게 해준다.
-        _boxCollider2D.isTrigger = _rigidbody2D.velocity.y > 0 || climbLadder;
+        // //점프중일때(상승) 바닥을 뚫고 올라갈 수 있게 해준다. (Obsoleted - Collider 안에서 점프 못하게 막았음)
+        _boxCollider2D.isTrigger = climbLadder;
 
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
         _rigidbody2D.gravityScale = climbLadder ? 0 : 3;
@@ -193,9 +196,17 @@ public class PlayerController : MonoBehaviour
     private void Jump(bool p_forced = false)
     {
         if (!p_forced) //점프키를 무시하는 강제점프가 아니라면
-            if (!_input.jumpDown) return; //점프키 상태 확인
-        
+            if (!_input.jumpDown)
+                return; //점프키 상태 확인
+
         if (!Controllable) return;
+
+        //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
+        if (HasTile(floorTilemap).Item1)
+        {
+            Debug.Log("Ladder Jump in Wall");
+            return;
+        }
 
         //점프키가 눌러졌으므로, 점프 버퍼는 채워준다.
         jumpBuffer = JUMP_BUFFER;
@@ -290,7 +301,7 @@ public class PlayerController : MonoBehaviour
             return;                                     //사다리에 다시 붙지 못하도록 한다.
 
         player._animator.SetBool("IsClimb", true);
-        
+
         climbLadder           = true;
         transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
         _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
@@ -328,9 +339,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void SetLadderStatus()
     {
+        var _hasTile = HasTile(ladderTilemap);
+
         //현재 서있는 곳이 사다리인지 확인한다.
-        if (HasLadderTile())
-            onLadder = true;
+        if (_hasTile.Item1)
+        {
+            ladderPos = _hasTile.Item2;
+            onLadder  = true;
+        }
         else
         {
             if (!onLadder) return;
@@ -345,24 +361,23 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 플레이어 위치에 사다리 타일이 있는지 확인한다.
     /// </summary>
-    private bool HasLadderTile()
+    private (bool, Vector2) HasTile(Tilemap _tilemap)
     {
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
-        Vector3 _localPosition = _ladderTilemap.transform.InverseTransformPoint(transform.position);
+        Vector3 _localPosition = _tilemap.transform.InverseTransformPoint(transform.position);
 
-        
+
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x),
                                                   Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 ? .1f : 0))); //오차보정
-        if (!_ladderTilemap.HasTile(_tilePosition)) return false;
-        
-        //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
-        //따라서 사다리의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
-        Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y); 
-        
-        //로컬 좌표를 다시 월드 좌표로 변환한다.
-        ladderPos = _ladderTilemap.transform.TransformPoint(_localLadderPos);
-        return true;
+        if (!_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
+        //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
+        //따라서 타일의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
+        Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
+
+        //로컬 좌표를 다시 월드 좌표로 변환한다.
+        Vector2 _tileWorldPosition = _tilemap.transform.TransformPoint(_localLadderPos);
+        return (true, _tileWorldPosition);
     }
 
 #endregion
@@ -411,15 +426,5 @@ public class PlayerController : MonoBehaviour
         Controllable = p_pControllable;
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
-    }
-
-    private void CheckLadderTiles()
-    {
-        for (int x = 0; x < 100; x++)
-        {
-            for (int y = 0; y < 100; y++)
-            {
-            }
-        }
     }
 }

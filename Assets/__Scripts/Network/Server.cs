@@ -182,7 +182,7 @@ public class Server : MonoBehaviour
         }
     }
 
-    private async Task Send(Socket p_socket, byte[] p_data, PacketType p_type, ConnectType p_connectType)
+    private async void Send(Socket p_socket, byte[] p_data, PacketType p_type, ConnectType p_connectType)
     {
         switch (p_connectType)
         {
