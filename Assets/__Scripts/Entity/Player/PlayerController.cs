@@ -89,6 +89,14 @@ public class PlayerController : MonoBehaviour
 
         Jump();
 
+        {
+            //함수화 해야함
+            {
+                if (_rigidbody2D.velocity.y < 0)
+                    player._animator.SetBool("IsJump", true);
+            }
+        }
+
         ClampVelocity();
 
         ResetJump();
@@ -368,7 +376,12 @@ public class PlayerController : MonoBehaviour
 
 
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x),
-                                                  Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 ? .1f : 0))); //오차보정
+                                                  Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 && _rigidbody2D.velocity.y == 0 ? 1f : 0)));
+                                                    //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
+                                                    //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
+
+
+        Debug.DrawRay(_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.yellow);
         if (!_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
