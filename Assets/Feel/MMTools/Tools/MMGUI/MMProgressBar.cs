@@ -43,6 +43,8 @@ namespace MoreMountains.Tools
 		/// the delayed bar that will show when moving from a value to a new, higher value
 		[Tooltip("the delayed bar that will show when moving from a value to a new, higher value")]
 		public Transform DelayedBarIncreasing;
+
+		public Transform BumpTransform;
         
 		[MMInspectorGroup("Fill Settings", true, 11)]
 		/// the local scale or fillamount value to reach when the value associated to the bar is at 0%
@@ -878,7 +880,8 @@ namespace MoreMountains.Tools
 				float percent = Mathf.Clamp01(journey / BumpDuration);
 				float curvePercent = BumpScaleAnimationCurve.Evaluate(percent);
 				float colorCurvePercent = BumpColorAnimationCurve.Evaluate(percent);
-				this.transform.localScale = curvePercent * _initialScale;
+                
+				this.BumpTransform.localScale = curvePercent * _initialScale;
 
 				if (ChangeColorWhenBumping && _isForegroundImageNotNull)
 				{
