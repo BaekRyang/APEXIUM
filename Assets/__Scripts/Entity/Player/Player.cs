@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
 
     public PlayerStats Stats => _stats;
 
+    private bool _dead;
+
     private void LoadSettings(PlayerData p_playerData)
     {
         _stats = new PlayerStats(p_playerData.stats);
@@ -64,17 +66,15 @@ public class Player : MonoBehaviour
         _statusFeedback.PlayFeedbacks();
     }
 
-    public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_pAttacker)
+    public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_attacker)
     {
-        if (_isImmune) return;
+        if (_isImmune || _dead) return;
 
         PlayStatusFeedback(p_pDamage.ToString());
         bool _stillAlive = HealthChange(-p_pDamage);
 
         if (_stillAlive) return; //아래는 죽었을때 이벤트 처리
-        _animator.SetTrigger("Death");
-        Controller.SetControllable(false);
-        Die();
+        Die(p_attacker);
     }
 
     private bool HealthChange(int p_pDamage)
@@ -82,12 +82,63 @@ public class Player : MonoBehaviour
         Stats.health += p_pDamage;
         if (clientID == GameManager.Instance.playerID) //해당 캐릭터가 자신의 캐릭터일때만 UI 업데이트
             UIElements.Instance.SetHealth(Stats.health, Stats.maxHealth);
-        
+
         return Stats.health > 0; //체력이 0이하면 false 반환
     }
 
-    private void Die()
+    private void Die(EnemyBase p_attacker)
     {
-        
+        _dead = true; //죽었음을 표시
+        Controller.SetControllable(false); //이동 불가
+        _animator.SetTrigger("Dead"); //꼭 필요한지는 모르겠음 (체크 필요)
+        _animator.enabled = false; //애니메이션을 수동으로 조작하기 위해서 비활성화
+
+        //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
+        Vector2 _direction = new Vector2((transform.position - p_attacker.transform.position).normalized.x, 2f);
+
+        //해당 x방향이 +이면 SR의 x Flip을 true 아니면 false
+        GetComponent<SpriteRenderer>().flipX = _direction.x > 0;
+
+        Controller.Rigidbody2D.AddForce(_direction * 7f, ForceMode2D.Impulse);
+        StartCoroutine(DeadAction());
+    }
+
+    private IEnumerator DeadAction()
+    {
+        AnimationClip _deadClip = null;
+
+        //이름이 Dead로 끝나는 클립을 찾아 저장한다.
+        foreach (AnimationClip _clip in _animator.runtimeAnimatorController.animationClips)
+        {
+            if (_clip.name.EndsWith("Dead"))
+            {
+                _deadClip = _clip;
+                break;
+            }
+        }
+
+        if (_deadClip == null) yield break;
+
+        Debug.Log(_deadClip.name);
+        Debug.Log(_deadClip.length);
+
+        while (true)
+        {
+            if (Controller.Rigidbody2D.velocity.sqrMagnitude != 0)
+            {
+                _deadClip.SampleAnimation(gameObject, 0);
+            }
+            else
+            {
+                Debug.Log("1");
+                _deadClip.SampleAnimation(gameObject, 0.025f);
+                yield return new WaitForSeconds(1f);
+                Debug.Log("2");
+                _deadClip.SampleAnimation(gameObject, 0.05f);
+                yield break;
+            }
+
+            yield return null;
+        }
     }
 }

@@ -200,6 +200,7 @@ public class Client : MonoBehaviour
         if (_packetType is PacketType.PlacePlayer)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(p_receivedData[2]); });
+            // GameManager.Instance.InstantiatePlayer(p_receivedData[2]);
             Debug.Log($"{PREFIX} Player Placed : {p_receivedData[2]}");
             return; //여기에 return 안하니까 BeginReceive가 먹통이 되버리는 문제가 있었음
         }

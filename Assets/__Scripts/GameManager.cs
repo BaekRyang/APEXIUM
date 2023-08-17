@@ -48,7 +48,6 @@ public class GameManager : MonoBehaviour
 
     public void InstantiatePlayer(int p_newPlayerID)
     {
-        
         //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
         var        _spawnPosition = Physics2D.RaycastAll(new Vector2(0, 100), Vector2.down, 100, LayerMask.GetMask("Floor"))[^1].point;
         _spawnPosition.y += 1.5f;
