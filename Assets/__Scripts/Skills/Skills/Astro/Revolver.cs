@@ -46,20 +46,6 @@ public class Revolver : Skill
         //재장전중에는 자동 재장전을 끊는다.
         NextReloadTime = float.MaxValue;
         
-        // Task.Run(() =>
-        // {
-        //     for (int i = 0; i < RELOAD_BULLET_CHECK; i++)
-        //     {
-        //         if (_player.Stats.Resource > 0) return; //총알이 장전되었다면 재장전을 끊는다.
-        //
-        //         Thread.Sleep((int)(GetReloadTime() / RELOAD_BULLET_CHECK * 1000));
-        //     }
-        //
-        //     // 위에서 Resource가 0이 아닐때 즉시 return을 했으므로, 아래 if는 false가 된다.
-        //     if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
-        //         _player.Stats.Resource = _player.Stats.MaxResource;
-        // });
-
         UniTask.Void(async () =>
         {
             for (int i = 0; i < RELOAD_BULLET_CHECK; i++)
@@ -71,7 +57,7 @@ public class Revolver : Skill
 
             // 위에서 Resource가 0이 아닐때 즉시 return을 했으므로, 아래 if는 false가 된다.
             if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
-                _player.Stats.Resource = _player.Stats.MaxResource;
+                _player.Stats.Resource = _player.Stats.MaxResource; 
         });
 
         return false; //Play에서 false를 리턴하도록 여기서 false를 리턴

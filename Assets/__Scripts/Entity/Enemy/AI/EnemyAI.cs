@@ -8,21 +8,21 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     private const float DAZED_DURATION = 0.35f;
-
     private const float CLIFF_DETECT_DISTANCE       = 0.5f;
     private const float CHANGE_DIRECTION_CYCLE_TIME = 1.0f;
 
     private readonly WaitForSeconds _changeDirectionCycle = new WaitForSeconds(CHANGE_DIRECTION_CYCLE_TIME);
-    private          EnemyBase      _base;
+    public          EnemyBase      _base;
+
+    public Vector2 bodySize;
 
     private Player     _targetPlayer;
     private Collider2D _thisCollider;
-    private Vector3    _colliderEdgeLeft, _colliderEdgeRight;
 
-    private Vector3 _targetDirection;
+    public Vector3 _targetDirection;
 
-    private Transform _transform;
-    private Vector3   _targetPosition;
+    public Transform _transform;
+    public Vector3   _targetPosition;
 
     public  Animator _animator;
     private bool     nowMove;
@@ -30,9 +30,22 @@ public class EnemyAI : MonoBehaviour
     //플레이어를 향한 벡터
     private Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
+    private IState CurrentState
+    {
+        get => _currentState;
+        set
+        {
+            _currentState?.Exit(); //현재상태 존재하면 Exit()호출
+            _currentState = value; //현재상태를 새로운 상태로 변경
+            _currentState.Enter(); //새로운 상태의 Enter()호출
+        }
+    }
+
     private bool  _canMove = true;
     private bool  _stunned,  _dazed;
     private float _stunTime, _dazeTime;
+
+    private IState _currentState;
 
     public void Initialize(EnemyBase p_enemyBase)
     {
@@ -40,11 +53,15 @@ public class EnemyAI : MonoBehaviour
         _thisCollider = GetComponent<Collider2D>();
         _base         = p_enemyBase;
         _transform    = transform;
+        
+        bodySize = _thisCollider.bounds.size;
 
         _animator                           = GetComponent<Animator>();
         _animator.runtimeAnimatorController = Animation.GetAnimatorController(_base.stats.enemyName);
 
         bool playerInRange = CalcNextBehavior();
+
+        CurrentState = new SWander().Initialize(this); //초기 상태는 SWander. 제일 처음 등록되는것이므로 Initialize 해준다.
     }
 
     private bool CalcNextBehavior()
@@ -63,34 +80,21 @@ public class EnemyAI : MonoBehaviour
 
     public void Update()
     {
-        if (_targetPlayer == null)
-            return;
-        
         if (_stunned)
-            _stunTime -= Time.deltaTime;
-        if (_dazed)
-            _dazeTime -= Time.deltaTime;
-
-        if (_stunTime <= 0) _stunned = false;
-        if (_dazeTime <= 0) _dazed   = false;
-
-        CalcAttack();
-
-        var _bounds = _thisCollider.bounds;
-        _colliderEdgeLeft  = _bounds.min;
-        _colliderEdgeRight = _bounds.min + Vector3.right * _bounds.size.x;
-
-        if (CLIFF_DETECT_DISTANCE > 0)
         {
-            _targetDirection = CliffDetect() switch
-            {
-                1  => Vector3.left,
-                -1 => Vector3.right,
-                _  => _targetDirection
-            };
+            _stunTime -= Time.deltaTime;
+            _stunned  =  _stunTime > 0;
         }
-
+        
+        if (_dazed)
+        {
+            _dazeTime -= Time.deltaTime;
+            _dazed    =  _dazeTime > 0;
+        }
+        
         if (_stunned || _dazed || !_canMove) return;
+        
+        CurrentState.Execute();
 
         //지금 animation의 state의 이름이 Attack으로 끝나면 이동하지 않음
         if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
@@ -99,23 +103,6 @@ public class EnemyAI : MonoBehaviour
 
         _transform.localScale = new Vector3(-_targetDirection.x, 1, 1);
     }
-
-#region CliffDetect
-
-    private int CliffDetect()
-    {
-        return Physics2D.Raycast(_colliderEdgeLeft, Vector3.down, CLIFF_DETECT_DISTANCE, LayerMask.GetMask("Floor"))
-                        .collider
-                        .IsUnityNull()
-            ? -1
-            : Physics2D.Raycast(_colliderEdgeRight, Vector3.down, CLIFF_DETECT_DISTANCE, LayerMask.GetMask("Floor"))
-                       .collider
-                       .IsUnityNull()
-                ? 1
-                : 0;
-    }
-
-#endregion
 
     public void Stun(float p_stunDuration)
     {
@@ -136,7 +123,7 @@ public class EnemyAI : MonoBehaviour
 
     private void CalcAttack()
     {
-        if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= _base.stats.chaseDistance)
+        if (Vector2.Distance(_targetPlayer.PlayerPosition, _transform.position) <= _base.stats.attackRange)
         {
             _canMove = false;
             _animator.SetBool("IsAttack", true);

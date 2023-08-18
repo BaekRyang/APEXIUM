@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -88,10 +89,10 @@ public class Player : MonoBehaviour
 
     private void Die(EnemyBase p_attacker)
     {
-        _dead = true; //죽었음을 표시
+        _dead = true;                      //죽었음을 표시
         Controller.SetControllable(false); //이동 불가
-        _animator.SetTrigger("Dead"); //꼭 필요한지는 모르겠음 (체크 필요)
-        _animator.enabled = false; //애니메이션을 수동으로 조작하기 위해서 비활성화
+        _animator.SetTrigger("Dead");      //꼭 필요한지는 모르겠음 (체크 필요)
+        _animator.enabled = false;         //애니메이션을 수동으로 조작하기 위해서 비활성화
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
         Vector2 _direction = new Vector2((transform.position - p_attacker.transform.position).normalized.x, 2f);
@@ -105,36 +106,20 @@ public class Player : MonoBehaviour
 
     private IEnumerator DeadAction()
     {
-        AnimationClip _deadClip = null;
+        AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
+        //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
 
-        //이름이 Dead로 끝나는 클립을 찾아 저장한다.
-        foreach (AnimationClip _clip in _animator.runtimeAnimatorController.animationClips)
-        {
-            if (_clip.name.EndsWith("Dead"))
-            {
-                _deadClip = _clip;
-                break;
-            }
-        }
-
-        if (_deadClip == null) yield break;
-
-        Debug.Log(_deadClip.name);
-        Debug.Log(_deadClip.length);
+        if (_deadClip == null) yield break; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
 
         while (true)
         {
-            if (Controller.Rigidbody2D.velocity.sqrMagnitude != 0)
-            {
-                _deadClip.SampleAnimation(gameObject, 0);
-            }
+            if (Controller.Rigidbody2D.velocity.sqrMagnitude != 0) //아직 날아가는 중 이라면
+                _deadClip.SampleAnimation(gameObject, 0);          //1번 스프라이트
             else
             {
-                Debug.Log("1");
-                _deadClip.SampleAnimation(gameObject, 0.025f);
+                _deadClip.SampleAnimation(gameObject, 0.025f); //바닥에 떨어졌다면 2번 스프라이트
                 yield return new WaitForSeconds(1f);
-                Debug.Log("2");
-                _deadClip.SampleAnimation(gameObject, 0.05f);
+                _deadClip.SampleAnimation(gameObject, 0.05f); //1초뒤 마지막 스프라이트 (죽은 상태)
                 yield break;
             }
 
