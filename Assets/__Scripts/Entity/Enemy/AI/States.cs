@@ -19,13 +19,15 @@ public struct FloatPair
 [Serializable]
 public abstract class State : IState
 {
-    protected EnemyAI enemyAI;
+    [SerializeField] protected EnemyAI enemyAI;
 
-    public IState Initialize(EnemyAI p_enemyAI)
+    public State Initialize(EnemyAI p_enemyAI)
     {
         enemyAI = p_enemyAI;
         return this;
     }
+
+    [SerializeField] protected string stateName = "NULL";
 
     public abstract void Enter();
     public abstract void Execute();
@@ -69,7 +71,7 @@ public abstract class State : IState
     /// <summary>
     /// Chase 범위 내에 플레이어가 있는지 확인하고 있다면 제일 가까운 플레이어 반환
     /// </summary>
-    protected static (bool, Player) PlayerInRange(EnemyAI p_enemyAI)
+    protected static (Player, float) PlayerInRange(EnemyAI p_enemyAI)
     {
         Player[] _players        = GameManager.Instance.GetPlayers();
         Player   _targetPlayer   = null;
@@ -83,8 +85,9 @@ public abstract class State : IState
             _targetPlayer   = _player;
         }
 
-        return _targetDistance <= p_enemyAI._base.stats.attackRange ? (true, _targetPlayer) : (false, null);
+        return _targetDistance <= p_enemyAI._base.stats.chaseDistance ? (_targetPlayer, _targetDistance) : (null, -1);
     }
+    
 }
 
 [Serializable]
@@ -97,15 +100,18 @@ public class SWander : State
         Waiting
     }
 
+    [Space]
     [SerializeField] private WanderState _currentState;
-    [SerializeField] private float       _nextMovableTime, _nextWaitTime;
-    [SerializeField] private float       _nextChangeDirectionTime;
+
+    [SerializeField] private float _nextMovableTime, _nextWaitTime;
+    [SerializeField] private float _nextChangeDirectionTime;
 
     private readonly FloatPair _randomMovingTime = new FloatPair(5, 10),
                                _randomWaitTime   = new FloatPair(1, 5);
 
     public override void Enter()
     {
+        stateName                = "Wander";
         _currentState            = WanderState.Moving;
         enemyAI._targetDirection = Vector3.right;
     }
@@ -113,8 +119,9 @@ public class SWander : State
     public override void Execute()
     {
         //플레이어가 Chase 범위 내에 있는지 확인해서 있으면 Chase 상태로 전환
-        (bool _playerInRange, Player _targetPlayer) = PlayerInRange(enemyAI);
-        if (_playerInRange)
+        (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
+
+        if (_targetDistance > 0)
         {
             enemyAI._targetPlayer = _targetPlayer;
             enemyAI.CurrentState  = enemyAI.States["Chase"];
@@ -160,6 +167,7 @@ public class SWander : State
                     Debug.Log($"W -> M : {randTime}초 이동");
                     return;
                 }
+
                 enemyAI._animator.SetBool("IsWalk", false);
                 break;
             default:
@@ -177,17 +185,47 @@ public class SChase : State
 {
     public override void Enter()
     {
-        Debug.Log("chase enter");
+        Debug.Log("Chase Enter");
+        stateName = "Chase";
     }
 
     public override void Execute()
     {
-        Debug.Log("chase execute");
+        //플레이어가 Chase 범위 내에 있는지 확인해서 없으면 Wander 상태로 전환
+        (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
+        
+        if (_targetDistance < 0)
+        {
+            enemyAI._targetPlayer = null;
+            enemyAI.CurrentState  = enemyAI.States["Wander"];
+            return;
+        }
+
+        //플레이어가 Attack 범위 내에 있는지 확인해서 있으면 Attack 상태로 전환
+        if (_targetDistance <= enemyAI._base.stats.attackRange)
+        {
+            enemyAI.CurrentState = enemyAI.States["Attack"];
+            return;
+        }
+
+        //----------------------------------------------
+
+        if (CliffDetect(enemyAI))
+            enemyAI._targetDirection *= -1; //절벽 감지시 방향 반전
+
+        if (WallDetect(enemyAI))
+            enemyAI._targetDirection *= -1; //벽 감지시 방향 반전
+        
+        
+        //TODO : 너무 짧은 주기에 방향를 바꾸지 않도록 일정 시간 이후에 방향전환 가능하도록 수정
+        enemyAI._targetDirection =  enemyAI._targetDirection.DirectionToX(enemyAI._targetPlayer.PlayerPosition);
+        
+        enemyAI._animator.SetBool("IsWalk", true);
+        enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
     }
 }
 
@@ -195,6 +233,7 @@ public class SAttack : State
 {
     public override void Enter()
     {
+        stateName = "Attack";
         throw new System.NotImplementedException();
     }
 

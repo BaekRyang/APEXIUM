@@ -29,9 +29,9 @@ public class EnemyAI : MonoBehaviour
     private float _stunTime, _dazeTime;
 
     //플레이어를 향한 벡터
-    private Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
+    public Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
-    public IState CurrentState
+    public State CurrentState
     {
         get => _currentState;
         set
@@ -39,16 +39,15 @@ public class EnemyAI : MonoBehaviour
             _currentState?.Exit(); //현재상태 존재하면 Exit()호출
             _currentState = value; //현재상태를 새로운 상태로 변경
             _currentState.Enter(); //새로운 상태의 Enter()호출
-
-            _currentStateName = _currentState.GetType().Name;
         }
     }
+    
+    [Space]
 
-    public Dictionary<string, IState> States = new Dictionary<string, IState>();
+    public Dictionary<string, State> States = new Dictionary<string, State>();
 
-    private          IState _currentState;
-    [SerializeField] string _currentStateName;
-
+    [SerializeReference] private State  _currentState;
+    
     public void Initialize(EnemyBase p_enemyBase)
     {
         _targetPlayer = GameManager.Instance.GetRandomPlayer();

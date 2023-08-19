@@ -367,7 +367,7 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 플레이어 위치에 사다리 타일이 있는지 확인한다.
+    /// 플레이어 위치에 해당 타일이 있는지 확인한다.
     /// </summary>
     private (bool, Vector2) HasTile(Tilemap _tilemap)
     {

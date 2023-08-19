@@ -21,9 +21,10 @@ MonoBehaviour:
     level: 1
     defense: 1
     attackSpeed: 0.5
+    enemyName: 
     canDazed: 1
     canStun: 1
-    chaseDistance: 5
+    chaseDistance: 20
     attackType: 0
     attackRange: 5
     stopWhenAttack: 1
