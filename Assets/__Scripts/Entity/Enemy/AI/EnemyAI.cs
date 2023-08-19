@@ -1,36 +1,37 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
-
 public class EnemyAI : MonoBehaviour
 {
-    private const float DAZED_DURATION = 0.35f;
-    private const float CLIFF_DETECT_DISTANCE       = 0.5f;
-    private const float CHANGE_DIRECTION_CYCLE_TIME = 1.0f;
+    private const float DAZED_DURATION        = 0.35f;
+    private const float CLIFF_DETECT_DISTANCE = 0.5f;
 
-    private readonly WaitForSeconds _changeDirectionCycle = new WaitForSeconds(CHANGE_DIRECTION_CYCLE_TIME);
-    public          EnemyBase      _base;
+    public EnemyBase _base;
 
     public Vector2 bodySize;
 
-    private Player     _targetPlayer;
-    private Collider2D _thisCollider;
-
-    public Vector3 _targetDirection;
+    public Player     _targetPlayer;
+    public Collider2D _thisCollider;
 
     public Transform _transform;
-    public Vector3   _targetPosition;
+
+    public Vector3 _targetDirection;
+    public Vector3 _targetPosition;
 
     public  Animator _animator;
     private bool     nowMove;
 
+    private bool  _canMove = true;
+    private bool  _stunned,  _dazed;
+    private float _stunTime, _dazeTime;
+
     //플레이어를 향한 벡터
     private Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
-    private IState CurrentState
+    public IState CurrentState
     {
         get => _currentState;
         set
@@ -38,30 +39,33 @@ public class EnemyAI : MonoBehaviour
             _currentState?.Exit(); //현재상태 존재하면 Exit()호출
             _currentState = value; //현재상태를 새로운 상태로 변경
             _currentState.Enter(); //새로운 상태의 Enter()호출
+
+            _currentStateName = _currentState.GetType().Name;
         }
     }
 
-    private bool  _canMove = true;
-    private bool  _stunned,  _dazed;
-    private float _stunTime, _dazeTime;
+    public Dictionary<string, IState> States = new Dictionary<string, IState>();
 
-    private IState _currentState;
+    private          IState _currentState;
+    [SerializeField] string _currentStateName;
 
     public void Initialize(EnemyBase p_enemyBase)
     {
-        _targetPlayer = GameManager.Instance.RandomPlayer();
+        _targetPlayer = GameManager.Instance.GetRandomPlayer();
         _thisCollider = GetComponent<Collider2D>();
         _base         = p_enemyBase;
         _transform    = transform;
-        
+
         bodySize = _thisCollider.bounds.size;
 
         _animator                           = GetComponent<Animator>();
         _animator.runtimeAnimatorController = Animation.GetAnimatorController(_base.stats.enemyName);
 
-        bool playerInRange = CalcNextBehavior();
+        States.Add("Wander", new SWander().Initialize(this));
+        States.Add("Chase",  new SChase().Initialize(this));
+        States.Add("Attack", new SAttack().Initialize(this));
 
-        CurrentState = new SWander().Initialize(this); //초기 상태는 SWander. 제일 처음 등록되는것이므로 Initialize 해준다.
+        CurrentState = States["Wander"];
     }
 
     private bool CalcNextBehavior()
@@ -85,21 +89,19 @@ public class EnemyAI : MonoBehaviour
             _stunTime -= Time.deltaTime;
             _stunned  =  _stunTime > 0;
         }
-        
+
         if (_dazed)
         {
             _dazeTime -= Time.deltaTime;
             _dazed    =  _dazeTime > 0;
         }
-        
+
         if (_stunned || _dazed || !_canMove) return;
-        
+
         CurrentState.Execute();
 
         //지금 animation의 state의 이름이 Attack으로 끝나면 이동하지 않음
         if (_animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
-        _transform.position += _targetDirection * (Time.deltaTime * _base.stats.speed);
-        _animator.SetBool("IsWalk", true);
 
         _transform.localScale = new Vector3(-_targetDirection.x, 1, 1);
     }

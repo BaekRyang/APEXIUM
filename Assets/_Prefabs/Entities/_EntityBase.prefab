@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1007384899167168951}
   - component: {fileID: 5917554750849969010}
   - component: {fileID: -6522877386957613869}
-  - component: {fileID: 7916532297042160461}
+  - component: {fileID: -2457150797138859811}
   m_Layer: 0
   m_Name: _EntityBase
   m_TagString: Untagged
@@ -135,8 +135,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!60 &7916532297042160461
-PolygonCollider2D:
+--- !u!61 &-2457150797138859811
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -170,21 +170,13 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.45, y: 0.25}
     oldSize: {x: 5, y: 2}
     newSize: {x: 0.16, y: 0.16}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 1.1875, y: 0.25}
-      - {x: -1.1875, y: 0.25}
-      - {x: -1.5625, y: -0.0625}
-      - {x: -1.5625, y: -0.75}
-      - {x: -1.375, y: -1}
-      - {x: 1.4375, y: -1}
-      - {x: 1.6875, y: -0.6875}
-      - {x: 1.6875, y: -0.375}
-  m_UseDelaunayMesh: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1}
+  m_EdgeRadius: 0

@@ -43903,17 +43903,17 @@ PrefabInstance:
     - target: {fileID: 5721683958737647225, guid: 5d80da3a6a274544b937c609a27192a5,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5721683958737647225, guid: 5d80da3a6a274544b937c609a27192a5,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5721683958737647225, guid: 5d80da3a6a274544b937c609a27192a5,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5721683958737647225, guid: 5d80da3a6a274544b937c609a27192a5,
         type: 3}

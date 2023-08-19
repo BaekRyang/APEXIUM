@@ -1,8 +1,22 @@
 using System;
+using MoreMountains.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public struct FloatPair
+{
+    public float x;
+    public float y;
+
+    public FloatPair(float xValue, float yValue2)
+    {
+        x = xValue;
+        y = yValue2;
+    }
+}
+
+[Serializable]
 public abstract class State : IState
 {
     protected EnemyAI enemyAI;
@@ -19,77 +33,134 @@ public abstract class State : IState
 
     private const float CLIFF_DETECT_DISTANCE = 0.5f;
 
-    protected int CliffDetect() //절벽 감지 함수. 
+    protected static bool CliffDetect(EnemyAI p_enemyAI) //절벽 감지 함수. 
     {
         int     _layerMask = 1 << LayerMask.NameToLayer("Floor");
-        Vector3 _position  = enemyAI._transform.position;
+        Vector3 _position  = p_enemyAI._transform.position;
 
         Vector2 _checkPoint = new Vector2(
-            _position.x + enemyAI._targetDirection.x * enemyAI.bodySize.x / 2,
-            _position.y - enemyAI.bodySize.y                              / 2
+            _position.x + p_enemyAI._targetDirection.x * p_enemyAI.bodySize.x / 2,
+            _position.y - p_enemyAI.bodySize.y                                / 2
         );
 
-        RaycastHit2D _hit = Physics2D.Raycast(_checkPoint, Vector2.down, CLIFF_DETECT_DISTANCE, _layerMask);
-        return _hit.collider == null ? 1 : 0;
+        RaycastHit2D _hit = Physics2D.Raycast(_checkPoint,
+                                              Vector2.down,
+                                              CLIFF_DETECT_DISTANCE,
+                                              _layerMask);
+        Debug.DrawRay(_checkPoint, Vector2.down * CLIFF_DETECT_DISTANCE, Color.red);
+        Debug.Log($"Cliff Detect : {_hit.collider == null}");
+        return _hit.collider == null;
+    }
+
+    protected static bool WallDetect(EnemyAI p_enemyAI) //벽 감지 함수. 
+    {
+        int _layerMask = 1 << LayerMask.NameToLayer("Floor");
+
+        RaycastHit2D _hit = Physics2D.Raycast(p_enemyAI._transform.position,
+                                              p_enemyAI._targetDirection,
+                                              p_enemyAI.bodySize.x,
+                                              _layerMask);
+
+        Debug.DrawRay(p_enemyAI._transform.position, p_enemyAI._targetDirection * p_enemyAI.bodySize.x, Color.blue);
+        Debug.Log($"Wall Detect : {_hit.collider != null}");
+        return _hit.collider != null;
+    }
+
+    /// <summary>
+    /// Chase 범위 내에 플레이어가 있는지 확인하고 있다면 제일 가까운 플레이어 반환
+    /// </summary>
+    protected static (bool, Player) PlayerInRange(EnemyAI p_enemyAI)
+    {
+        Player[] _players        = GameManager.Instance.GetPlayers();
+        Player   _targetPlayer   = null;
+        float    _targetDistance = Mathf.Infinity;
+
+        foreach (Player _player in _players)
+        {
+            float _distance = Vector2.Distance(p_enemyAI._transform.position, _player.transform.position);
+            if (!(_distance < _targetDistance)) continue;
+            _targetDistance = _distance;
+            _targetPlayer   = _player;
+        }
+
+        return _targetDistance <= p_enemyAI._base.stats.attackRange ? (true, _targetPlayer) : (false, null);
     }
 }
 
+[Serializable]
 public class SWander : State
 {
+    [Serializable]
     private enum WanderState
     {
         Moving,
         Waiting
     }
 
-    private struct FloatPair
-    {
-        public float x;
-        public float y;
+    [SerializeField] private WanderState _currentState;
+    [SerializeField] private float       _nextMovableTime, _nextWaitTime;
+    [SerializeField] private float       _nextChangeDirectionTime;
 
-        public FloatPair(float xValue, float yValue2)
-        {
-            x = xValue;
-            y = yValue2;
-        }
-    }
-
-    private WanderState _currentState;
-    private float       _nextMovableTime, _nextWaitTime;
-
-    private readonly FloatPair _randomMovingTime = new FloatPair(3, 5),
-                               _randomWaitTime   = new FloatPair(1, 3);
+    private readonly FloatPair _randomMovingTime = new FloatPair(5, 10),
+                               _randomWaitTime   = new FloatPair(1, 5);
 
     public override void Enter()
     {
-        _currentState = WanderState.Moving;
+        _currentState            = WanderState.Moving;
+        enemyAI._targetDirection = Vector3.right;
     }
 
     public override void Execute()
     {
+        //플레이어가 Chase 범위 내에 있는지 확인해서 있으면 Chase 상태로 전환
+        (bool _playerInRange, Player _targetPlayer) = PlayerInRange(enemyAI);
+        if (_playerInRange)
+        {
+            enemyAI._targetPlayer = _targetPlayer;
+            enemyAI.CurrentState  = enemyAI.States["Chase"];
+            return;
+        }
+
+        //----------------------------------------------
+
         switch (_currentState)
         {
             case WanderState.Moving:
-                if (Time.time >= _nextMovableTime)
+                if (Time.time >= _nextWaitTime)
                 {
+                    Debug.Log($"{Time.time} >= {_nextMovableTime}");
+                    float randTime = Random.Range(_randomWaitTime.x, _randomWaitTime.y);
+
                     //Waiting 상태로 진입하고 다시 Move 상태로 진입할 시간을 랜덤으로 설정
-                    _nextMovableTime = Time.time + Random.Range(_randomWaitTime.x, _randomWaitTime.y);
+                    _nextMovableTime = Time.time + randTime;
                     _currentState    = WanderState.Waiting;
+                    Debug.Log($"M -> W : {randTime}초 대기");
+                    return;
                 }
 
-                if (CliffDetect() == 1)
+                if (CliffDetect(enemyAI))
                     enemyAI._targetDirection *= -1; //절벽 감지시 방향 반전
 
+                if (WallDetect(enemyAI))
+                    enemyAI._targetDirection *= -1; //벽 감지시 방향 반전
+
+                enemyAI._animator.SetBool("IsWalk", true);
+                enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
                 break;
-            
+
             case WanderState.Waiting:
                 if (Time.time >= _nextMovableTime)
                 {
-                    //Move 상태로 진입하고 다시 Waiting 상태로 진입할 시간을 랜덤으로 설정
-                    _nextWaitTime = Time.time + Random.Range(_randomMovingTime.x, _randomMovingTime.y);
-                    _currentState = WanderState.Moving;
-                }
+                    Debug.Log($"{Time.time} >= {_nextWaitTime}");
+                    float randTime = Random.Range(_randomMovingTime.x, _randomMovingTime.y);
 
+                    //Move 상태로 진입하고 다시 Waiting 상태로 진입할 시간을 랜덤으로 설정
+                    _nextWaitTime = Time.time + randTime;
+                    _currentState = WanderState.Moving;
+                    Debug.Log($"W -> M : {randTime}초 이동");
+                    return;
+                }
+                enemyAI._animator.SetBool("IsWalk", false);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -98,7 +169,7 @@ public class SWander : State
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("wander exit");
     }
 }
 
@@ -106,12 +177,12 @@ public class SChase : State
 {
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("chase enter");
     }
 
     public override void Execute()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("chase execute");
     }
 
     public override void Exit()

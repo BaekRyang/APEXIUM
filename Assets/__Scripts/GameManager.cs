@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,12 +22,17 @@ public class GameManager : MonoBehaviour
 
     public CinemachineVirtualCamera virtualCamera;
 
-    public Player RandomPlayer()
+    public Player GetRandomPlayer()
     {
         if (players.Count <= 0)
             return null;
 
         return players[Random.Range(0, players.Count)];
+    }
+
+    public Player[] GetPlayers()
+    {
+        return players.Values.ToArray();
     }
 
     public Player GetLocalPlayer()
@@ -49,7 +55,7 @@ public class GameManager : MonoBehaviour
     public void InstantiatePlayer(int p_newPlayerID)
     {
         //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
-        var        _spawnPosition = Physics2D.RaycastAll(new Vector2(0, 100), Vector2.down, 100, LayerMask.GetMask("Floor"))[^1].point;
+        var _spawnPosition = Physics2D.RaycastAll(new Vector2(0, 100), Vector2.down, 100, LayerMask.GetMask("Floor"))[^1].point;
         _spawnPosition.y += 1.5f;
         GameObject _player = Instantiate(playerPrefab, _spawnPosition, Quaternion.identity);
         _player.transform.name = $"Player {p_newPlayerID}";
