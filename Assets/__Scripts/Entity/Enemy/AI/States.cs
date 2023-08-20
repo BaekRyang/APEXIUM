@@ -1,4 +1,6 @@
 using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using MoreMountains.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -87,7 +89,6 @@ public abstract class State : IState
 
         return _targetDistance <= p_enemyAI._base.stats.chaseDistance ? (_targetPlayer, _targetDistance) : (null, -1);
     }
-    
 }
 
 [Serializable]
@@ -106,8 +107,8 @@ public class SWander : State
     [SerializeField] private float _nextMovableTime, _nextWaitTime;
     [SerializeField] private float _nextChangeDirectionTime;
 
-    private readonly FloatPair _randomMovingTime = new FloatPair(5, 10),
-                               _randomWaitTime   = new FloatPair(1, 5);
+    private readonly FloatPair _randomMovingTime = new FloatPair(5, 10), //이동 시간 랜덤 범위
+                               _randomWaitTime   = new FloatPair(1, 5);  //대기 시간 랜덤 범위
 
     public override void Enter()
     {
@@ -133,38 +134,34 @@ public class SWander : State
         switch (_currentState)
         {
             case WanderState.Moving:
-                if (Time.time >= _nextWaitTime)
+                if (Time.time >= _nextWaitTime) //Wait로 전환할 시간이 되었다면
                 {
-                    Debug.Log($"{Time.time} >= {_nextMovableTime}");
-                    float randTime = Random.Range(_randomWaitTime.x, _randomWaitTime.y);
-
-                    //Waiting 상태로 진입하고 다시 Move 상태로 진입할 시간을 랜덤으로 설정
-                    _nextMovableTime = Time.time + randTime;
+                    //Waiting 상태로 진입
                     _currentState    = WanderState.Waiting;
-                    Debug.Log($"M -> W : {randTime}초 대기");
+                    //Waiting에서 Move로 돌아올 시간 지정
+                    _nextMovableTime = Time.time + Random.Range(_randomWaitTime.x, _randomWaitTime.y);
                     return;
                 }
 
                 if (CliffDetect(enemyAI))
-                    enemyAI._targetDirection *= -1; //절벽 감지시 방향 반전
+                    enemyAI._targetDirection.InvertX(); //절벽 감지시 방향 반전
 
                 if (WallDetect(enemyAI))
-                    enemyAI._targetDirection *= -1; //벽 감지시 방향 반전
+                    enemyAI._targetDirection.InvertX(); //벽 감지시 방향 반전
+                
+                enemyAI._targetDirection.Normalize();
 
                 enemyAI._animator.SetBool("IsWalk", true);
                 enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
                 break;
 
             case WanderState.Waiting:
-                if (Time.time >= _nextMovableTime)
+                if (Time.time >= _nextMovableTime) //Move로 전환할 시간이 되었다면
                 {
-                    Debug.Log($"{Time.time} >= {_nextWaitTime}");
-                    float randTime = Random.Range(_randomMovingTime.x, _randomMovingTime.y);
-
-                    //Move 상태로 진입하고 다시 Waiting 상태로 진입할 시간을 랜덤으로 설정
-                    _nextWaitTime = Time.time + randTime;
+                    //Move 상태로 진입
                     _currentState = WanderState.Moving;
-                    Debug.Log($"W -> M : {randTime}초 이동");
+                    //Move에서 Waiting으로 돌아올 시간 지정
+                    _nextWaitTime = Time.time + Random.Range(_randomMovingTime.x, _randomMovingTime.y);
                     return;
                 }
 
@@ -193,7 +190,7 @@ public class SChase : State
     {
         //플레이어가 Chase 범위 내에 있는지 확인해서 없으면 Wander 상태로 전환
         (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
-        
+
         if (_targetDistance < 0)
         {
             enemyAI._targetPlayer = null;
@@ -204,22 +201,21 @@ public class SChase : State
         //플레이어가 Attack 범위 내에 있는지 확인해서 있으면 Attack 상태로 전환
         if (_targetDistance <= enemyAI._base.stats.attackRange)
         {
+            enemyAI._targetPlayer = _targetPlayer;
             enemyAI.CurrentState = enemyAI.States["Attack"];
             return;
         }
 
         //----------------------------------------------
 
-        if (CliffDetect(enemyAI))
-            enemyAI._targetDirection *= -1; //절벽 감지시 방향 반전
+        if (CliffDetect(enemyAI) || WallDetect(enemyAI))
+            enemyAI._targetDirection *= -1; //절벽이나 벽 감지시 방향 반전
 
-        if (WallDetect(enemyAI))
-            enemyAI._targetDirection *= -1; //벽 감지시 방향 반전
-        
-        
         //TODO : 너무 짧은 주기에 방향를 바꾸지 않도록 일정 시간 이후에 방향전환 가능하도록 수정
-        enemyAI._targetDirection =  enemyAI._targetDirection.DirectionToX(enemyAI._targetPlayer.PlayerPosition);
+        Debug.Log($"{enemyAI._targetDirection} -> {enemyAI._targetDirection.DirectionToX(enemyAI._targetPlayer.PlayerPosition)}");
+        enemyAI._targetDirection = enemyAI._transform.position.DirectionToX(enemyAI._targetPlayer.PlayerPosition);
         
+
         enemyAI._animator.SetBool("IsWalk", true);
         enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
     }
@@ -231,19 +227,61 @@ public class SChase : State
 
 public class SAttack : State
 {
+    [SerializeField] private float _lastAttackTime;
+    [SerializeField] private float _nextAttackTime;
+
     public override void Enter()
     {
         stateName = "Attack";
-        throw new System.NotImplementedException();
     }
 
     public override void Execute()
     {
-        throw new System.NotImplementedException();
+        if(_isAttacking) return;
+        
+        (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
+
+        if (_targetDistance < 0)
+        {
+            enemyAI._targetPlayer = null;
+            enemyAI.CurrentState  = enemyAI.States["Wander"];
+            return;
+        }
+
+        if (_targetDistance > enemyAI._base.stats.attackRange)
+        {
+            enemyAI.CurrentState = enemyAI.States["Chase"];
+            return;
+        }
+
+        enemyAI._animator.SetBool("IsAttack", true);
+        if (Time.time >= _nextAttackTime)
+            Attack();
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Attack Exit");
+        enemyAI._animator.SetBool("IsAttack", false);
+    }
+
+    private bool _isAttacking = false;
+    private async UniTaskVoid Attack()
+    {
+        _isAttacking = true;
+        _lastAttackTime = Time.time;
+        _nextAttackTime = _lastAttackTime + 1 / enemyAI._base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
+
+        enemyAI._animator.SetTrigger("Attack");
+
+        var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI._base.stats.attackRange, LayerMask.GetMask("Player")) ?? throw new ArgumentNullException("Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI._base.stats.attackRange, LayerMask.GetMask(\"Player\"))");
+        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI._base.stats.attackDamage, 0, enemyAI._base);
+
+        Debug.DrawRay(enemyAI.transform.position, enemyAI.TowardPlayer * enemyAI._base.stats.attackRange, Color.red, 1f);
+
+        int _time = enemyAI._animator.GetCurrentAnimatorClipInfo(0).Length;
+        await UniTask.Delay(TimeSpan.FromSeconds(_time));
+        _isAttacking = false;
+
     }
 }
