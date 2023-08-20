@@ -290,6 +290,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ClimbLadder(Vector3 p_position)
     {
+        if (!Controllable) return;
+        
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
         if (climbLadder && _input.vertical == 0)
         {

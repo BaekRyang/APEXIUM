@@ -28,6 +28,8 @@ public class EnemyAI : MonoBehaviour
     private bool  _stunned,  _dazed;
     private float _stunTime, _dazeTime;
 
+    public bool waitForAttack = false;
+
     //플레이어를 향한 벡터
     public Vector3 TowardPlayer => (_targetPosition - _transform.position).normalized;
 
