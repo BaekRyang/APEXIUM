@@ -36,4 +36,11 @@ public static class Tools
     {
         return new Vector3((to - from).x, (to - from).y, 0).normalized;
     }
+
+    private static uint ID = 0;
+    public static uint GetAttackID()
+    {
+        Debug.Log(ID);
+        return ID++;
+    }
 }

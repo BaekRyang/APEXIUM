@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -14,12 +12,12 @@ public enum EnemyAttackType
 public class EnemyStats : Stats<EnemyStats>
 {
     [SerializeField] public string          enemyName;
-    [SerializeField] public bool            canDazed       = true;
-    [SerializeField] public bool            canStun        = true;
-    [SerializeField] public float           chaseDistance  = 5f;
-    [SerializeField] public EnemyAttackType attackType     = EnemyAttackType.Normal;
-    [SerializeField] public float           attackRange    = 2f;
-    [SerializeField] public bool            stopWhenAttack = true;
+    [SerializeField] public bool            canDazed;
+    [SerializeField] public bool            canStun;
+    [SerializeField] public float           chaseDistance;
+    [SerializeField] public EnemyAttackType attackType;
+    [SerializeField] public float           attackRange;
+    [SerializeField] public bool            stopWhenAttack;
 
     public EnemyStats(EnemyData p_data)
     {

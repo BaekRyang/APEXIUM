@@ -1,6 +1,4 @@
 using System;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 [Serializable]
 public class Stats<T> where T : Stats<T>

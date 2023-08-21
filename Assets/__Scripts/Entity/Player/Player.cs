@@ -107,6 +107,7 @@ public class Player : MonoBehaviour
     private IEnumerator DeadAction()
     {
         AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
+
         //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
         
         if (_deadClip == null) yield break; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크

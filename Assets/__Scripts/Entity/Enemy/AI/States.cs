@@ -18,6 +18,18 @@ public struct FloatPair
     }
 }
 
+public struct Pair<T1, T2>
+{
+    public T1 x;
+    public T2 y;
+    
+    public Pair(T1 xValue, T2 yValue)
+    {
+        x = xValue;
+        y = yValue;
+    }
+}
+
 [Serializable]
 public abstract class State : IState
 {
@@ -42,11 +54,11 @@ public abstract class State : IState
     protected static bool CliffDetect(EnemyAI p_enemyAI) //절벽 감지 함수. 
     {
         int     _layerMask = 1 << LayerMask.NameToLayer("Floor");
-        Vector3 _position  = p_enemyAI._transform.position;
+        Vector3 _position  = p_enemyAI.cachedTransform.position;
 
         Vector2 _checkPoint = new Vector2(
-            _position.x + p_enemyAI._targetDirection.x * p_enemyAI.bodySize.x / 2,
-            _position.y - p_enemyAI.bodySize.y                                / 2
+            _position.x + p_enemyAI.targetDirection.x * p_enemyAI.bodySize.x / 2,
+            _position.y - p_enemyAI.bodySize.y                               / 2
         );
 
         RaycastHit2D _hit = Physics2D.Raycast(_checkPoint,
@@ -62,12 +74,12 @@ public abstract class State : IState
     {
         int _layerMask = 1 << LayerMask.NameToLayer("Floor");
 
-        RaycastHit2D _hit = Physics2D.Raycast(p_enemyAI._transform.position,
-                                              p_enemyAI._targetDirection,
+        RaycastHit2D _hit = Physics2D.Raycast(p_enemyAI.cachedTransform.position,
+                                              p_enemyAI.targetDirection,
                                               p_enemyAI.bodySize.x,
                                               _layerMask);
 
-        Debug.DrawRay(p_enemyAI._transform.position, p_enemyAI._targetDirection * p_enemyAI.bodySize.x, Color.blue);
+        Debug.DrawRay(p_enemyAI.cachedTransform.position, p_enemyAI.targetDirection * p_enemyAI.bodySize.x, Color.blue);
         Debug.Log($"Wall Detect : {_hit.collider != null}");
         return _hit.collider != null;
     }
@@ -83,13 +95,19 @@ public abstract class State : IState
 
         foreach (Player _player in _players)
         {
-            float _distance = Vector2.Distance(p_enemyAI._transform.position, _player.transform.position);
+            float _distance = Vector2.Distance(p_enemyAI.cachedTransform.position, _player.transform.position);
             if (!(_distance < _targetDistance)) continue;
             _targetDistance = _distance;
             _targetPlayer   = _player;
         }
 
-        return _targetDistance <= p_enemyAI._base.stats.chaseDistance ? (_targetPlayer, _targetDistance) : (null, -1);
+        return _targetDistance <= p_enemyAI.enemyBase.stats.chaseDistance ? (_targetPlayer, _targetDistance) : (null, -1);
+    }
+
+    protected static void Move(EnemyAI p_enemyAI)
+    {
+        p_enemyAI.cachedTransform.position +=
+            p_enemyAI.targetDirection * (Time.deltaTime * p_enemyAI.enemyBase.stats.speed);
     }
 }
 
@@ -104,19 +122,18 @@ public class SWander : State
     }
 
     [Space]
-    [SerializeField] private WanderState _currentState;
+    [SerializeField] private WanderState currentState;
 
-    [SerializeField] private float _nextMovableTime, _nextWaitTime;
-    [SerializeField] private float _nextChangeDirectionTime;
+    [SerializeField] private float nextMovableTime, nextWaitTime;
 
     private readonly FloatPair _randomMovingTime = new FloatPair(5, 10), //이동 시간 랜덤 범위
                                _randomWaitTime   = new FloatPair(1, 5);  //대기 시간 랜덤 범위
 
     public override void Enter()
     {
-        stateName                = "Wander";
-        _currentState            = WanderState.Moving;
-        enemyAI._targetDirection = Vector3.right;
+        stateName               = "Wander";
+        currentState            = WanderState.Moving;
+        enemyAI.targetDirection = Vector3.right;
     }
 
     public override void Execute()
@@ -126,50 +143,50 @@ public class SWander : State
 
         if (_targetDistance > 0)
         {
-            enemyAI._targetPlayer = _targetPlayer;
-            enemyAI.CurrentState  = enemyAI.States["Chase"];
+            enemyAI.targetPlayer = _targetPlayer;
+            enemyAI.CurrentState = enemyAI.States["Chase"];
             return;
         }
 
         //----------------------------------------------
 
-        switch (_currentState)
+        switch (currentState)
         {
             case WanderState.Moving:
-                if (Time.time >= _nextWaitTime) //Wait로 전환할 시간이 되었다면
+                if (Time.time >= nextWaitTime) //Wait로 전환할 시간이 되었다면
                 {
                     //Waiting 상태로 진입
-                    _currentState = WanderState.Waiting;
+                    currentState = WanderState.Waiting;
 
                     //Waiting에서 Move로 돌아올 시간 지정
-                    _nextMovableTime = Time.time + Random.Range(_randomWaitTime.x, _randomWaitTime.y);
+                    nextMovableTime = Time.time + Random.Range(_randomWaitTime.x, _randomWaitTime.y);
                     return;
                 }
 
                 if (CliffDetect(enemyAI))
-                    enemyAI._targetDirection.InvertX(); //절벽 감지시 방향 반전
+                    enemyAI.targetDirection.InvertX(); //절벽 감지시 방향 반전
 
                 if (WallDetect(enemyAI))
-                    enemyAI._targetDirection.InvertX(); //벽 감지시 방향 반전
+                    enemyAI.targetDirection.InvertX(); //벽 감지시 방향 반전
 
-                enemyAI._targetDirection.Normalize();
+                enemyAI.targetDirection.Normalize();
 
-                enemyAI._animator.SetBool("IsWalk", true);
-                enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
+                enemyAI.animator.SetBool("IsWalk", true);
+                enemyAI.cachedTransform.position += enemyAI.targetDirection * (Time.deltaTime * enemyAI.enemyBase.stats.speed);
                 break;
 
             case WanderState.Waiting:
-                if (Time.time >= _nextMovableTime) //Move로 전환할 시간이 되었다면
+                if (Time.time >= nextMovableTime) //Move로 전환할 시간이 되었다면
                 {
                     //Move 상태로 진입
-                    _currentState = WanderState.Moving;
+                    currentState = WanderState.Moving;
 
                     //Move에서 Waiting으로 돌아올 시간 지정
-                    _nextWaitTime = Time.time + Random.Range(_randomMovingTime.x, _randomMovingTime.y);
+                    nextWaitTime = Time.time + Random.Range(_randomMovingTime.x, _randomMovingTime.y);
                     return;
                 }
 
-                enemyAI._animator.SetBool("IsWalk", false);
+                enemyAI.animator.SetBool("IsWalk", false);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -184,6 +201,9 @@ public class SWander : State
 
 public class SChase : State
 {
+    private const float   CHASE_DIRECTION_CHANGE_DELAY = .5f;
+    private       UniTask _changeDirectionTask;
+
     public override void Enter()
     {
         Debug.Log("Chase Enter");
@@ -197,31 +217,37 @@ public class SChase : State
 
         if (_targetDistance < 0)
         {
-            enemyAI._targetPlayer = null;
-            enemyAI.CurrentState  = enemyAI.States["Wander"];
+            enemyAI.targetPlayer = null;
+            enemyAI.CurrentState = enemyAI.States["Wander"];
             return;
         }
 
         //플레이어가 Attack 범위 내에 있는지 확인해서 있으면 Attack 상태로 전환
         if (IsReadyToAttack && //공격 준비가 안되었다면 그냥 따라붙도록 함
-            _targetDistance <= enemyAI._base.stats.attackRange)
+            _targetDistance <= enemyAI.enemyBase.stats.attackRange)
         {
-            enemyAI._targetPlayer = _targetPlayer;
-            enemyAI.CurrentState  = enemyAI.States["Attack"];
+            enemyAI.targetPlayer = _targetPlayer;
+            enemyAI.CurrentState = enemyAI.States["Attack"];
             return;
         }
 
         //----------------------------------------------
 
         if (CliffDetect(enemyAI) || WallDetect(enemyAI))
-            enemyAI._targetDirection *= -1; //절벽이나 벽 감지시 방향 반전
+            enemyAI.targetDirection *= -1; //절벽이나 벽 감지시 방향 반전
 
-        //TODO : 너무 짧은 주기에 방향를 바꾸지 않도록 일정 시간 이후에 방향전환 가능하도록 수정
-        enemyAI._targetDirection = enemyAI._transform.position.DirectionToX(enemyAI._targetPlayer.PlayerPosition);
+        //플레이어 쪽으로 방향 전환을 너무 자주하면 이상해 보이므로 딜레이를 줌
+        if (_changeDirectionTask.Status != UniTaskStatus.Pending)
+            _changeDirectionTask = ChangeDirectionToTarget();
 
+        enemyAI.animator.SetBool("IsWalk", true);
+        Move(enemyAI);
+    }
 
-        enemyAI._animator.SetBool("IsWalk", true);
-        enemyAI._transform.position += enemyAI._targetDirection * (Time.deltaTime * enemyAI._base.stats.speed);
+    private async UniTask ChangeDirectionToTarget()
+    {
+        enemyAI.targetDirection = enemyAI.cachedTransform.position.DirectionToX(enemyAI.targetPlayer.PlayerPosition);
+        await UniTask.Delay(TimeSpan.FromSeconds(CHASE_DIRECTION_CHANGE_DELAY));
     }
 
     public override void Exit()
@@ -233,17 +259,18 @@ public class SAttack : State
 {
     [SerializeField] private float _lastAttackTime;
     [SerializeField] private float _nextAttackTime;
-    [SerializeField] private bool  _isAttacking;
+
+    private UniTask _attackTask;
 
     public override void Enter()
     {
         stateName = "Attack";
-        enemyAI._animator.SetBool("IsAttack", true);
+        enemyAI.animator.SetBool("IsAttack", true);
     }
 
-    public override async void Execute()
+    public override void Execute()
     {
-        if (_isAttacking) return;
+        if (_attackTask.Status == UniTaskStatus.Pending) return;
         if (enemyAI.waitForAttack) AttackDelay();
 
 
@@ -251,13 +278,13 @@ public class SAttack : State
 
         if (_targetDistance < 0)
         {
-            enemyAI._targetPlayer = null;
-            enemyAI.CurrentState  = enemyAI.States["Wander"];
+            enemyAI.targetPlayer = null;
+            enemyAI.CurrentState = enemyAI.States["Wander"];
             return;
         }
 
         if (enemyAI.waitForAttack || //공격 대기중이거나 너무 멀어졌으면 Chase 상태로 전환
-            _targetDistance > enemyAI._base.stats.attackRange)
+            _targetDistance > enemyAI.enemyBase.stats.attackRange)
         {
             Debug.Log("Attack -> Chase");
             enemyAI.CurrentState = enemyAI.States["Chase"];
@@ -267,40 +294,33 @@ public class SAttack : State
         if (Time.time >= _nextAttackTime)
         {
             _lastAttackTime = Time.time;
-            _nextAttackTime = _lastAttackTime + 1 / enemyAI._base.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
+            _nextAttackTime = _lastAttackTime + 1 / enemyAI.enemyBase.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
 
-            _isAttacking = true;
-            await Attack();
-            _isAttacking          = false;
-            enemyAI.waitForAttack = true;
+            _attackTask = Attack();
         }
     }
 
     public override void Exit()
     {
-        Debug.Log("Attack Exit");
-        enemyAI._animator.SetBool("IsAttack", false);
+        enemyAI.animator.SetBool("IsAttack", false);
     }
 
     private async UniTask Attack()
     {
-        enemyAI._animator.SetTrigger("Attack");
+        enemyAI.animator.SetTrigger("Attack");
 
-        var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI._base.stats.attackRange, LayerMask.GetMask("Player")) ?? throw new ArgumentNullException("Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI._base.stats.attackRange, LayerMask.GetMask(\"Player\"))");
-        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI._base.stats.attackDamage, 0, enemyAI._base);
+        var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
+        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI.enemyBase.stats.attackDamage, 0, enemyAI.enemyBase);
 
-        Debug.DrawRay(enemyAI.transform.position, enemyAI.TowardPlayer * enemyAI._base.stats.attackRange, Color.red, 1f);
-
-        int _time = enemyAI._animator.GetCurrentAnimatorClipInfo(0).Length;
-        await UniTask.Delay(TimeSpan.FromSeconds(_time));
+        int _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length;
+        await UniTask.Delay(TimeSpan.FromSeconds(_attackAnimationDelay));
+        enemyAI.waitForAttack = true;
     }
 
     private async void AttackDelay()
     {
-        Debug.Log("delay start");
-        float _waitingTime = _nextAttackTime - Time.time;
-        await UniTask.Delay(TimeSpan.FromSeconds(_waitingTime));
+        float _nextAttackDelay = _nextAttackTime - Time.time;
+        await UniTask.Delay(TimeSpan.FromSeconds(_nextAttackDelay));
         enemyAI.waitForAttack = false;
-        Debug.Log("delay end");
     }
 }

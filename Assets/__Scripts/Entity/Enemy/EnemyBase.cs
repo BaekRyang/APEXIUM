@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using MoreMountains.Feedbacks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
@@ -11,17 +13,33 @@ public class EnemyBase : MonoBehaviour
 
     private void Start()
     {
-        stats           = new EnemyStats(GameManager.MonstersData["Frost"]);
+        stats = new EnemyStats(GameManager.MonstersData["Frost"]);
 
-        _enemyAI        = GetComponent<EnemyAI>();
+        _enemyAI = GetComponent<EnemyAI>();
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
         _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
     }
 
-    public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker)
+    private readonly Dictionary<uint, uint> _attackID = new Dictionary<uint, uint>();
+
+    public void Attacked(int p_pDamage, float p_stunDuration, Player p_pAttacker, uint? p_attackID = null)
     {
         _floatingText.Value = p_pDamage.ToString();
+
+        if (!p_attackID.HasValue)
+            _floatingText.TargetPosition = transform.position;
+        else
+        {
+            if (_attackID.ContainsKey(p_attackID.Value)) //해당 ID의 공격이 이미 있으면
+                _attackID[p_attackID.Value]++;           //해당 아이디의 value를 증가
+            else                                         //없으면
+                _attackID.Add(p_attackID.Value, 0);      //해당 ID의 공격을 만들고 value를 초기화
+
+            _floatingText.TargetPosition = transform.position + Vector3.up * .7f * _attackID[p_attackID.Value];
+        }
+
+
         _damageFeedback.PlayFeedbacks();
 
         if (p_stunDuration == 0)
@@ -34,7 +52,7 @@ public class EnemyBase : MonoBehaviour
         Knockback(p_pAttacker, 150);
         if (stats.health <= 0)
         {
-            _enemyAI._animator.SetTrigger("Die");
+            _enemyAI.animator.SetTrigger("Die");
             Destroy(this);
             Destroy(_enemyAI);
             GetComponent<Rigidbody2D>().simulated = false;

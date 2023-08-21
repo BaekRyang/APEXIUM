@@ -36,7 +36,7 @@ namespace MoreMountains.Feedbacks
 		public override bool HasRandomness => true;
 
 		/// the possible places where the floating text should spawn at
-		public enum PositionModes { TargetTransform, FeedbackPosition, PlayPosition }
+		public enum PositionModes { TargetTransform, FeedbackPosition, PlayPosition, TargetPosition }
 
 		[MMFInspectorGroup("Floating Text", true, 64)]
 		/// the Intensity to spawn this text with, will act as a lifetime/movement/scale multiplier based on the spawner's settings
@@ -79,13 +79,22 @@ namespace MoreMountains.Feedbacks
 		/// where to spawn the new text (at the position of the feedback, or on a specified Transform)
 		[Tooltip("where to spawn the new text (at the position of the feedback, or on a specified Transform)")]
 		public PositionModes PositionMode = PositionModes.FeedbackPosition;
+		
 		/// in transform mode, the Transform on which to spawn the new floating text
 		[Tooltip("in transform mode, the Transform on which to spawn the new floating text")]
 		[MMFEnumCondition("PositionMode", (int)PositionModes.TargetTransform)]
 		public Transform TargetTransform;
+		
+		/// 특정 위치에 Play를 하기위해 추가한 변수
+		[MMFEnumCondition("PositionMode", (int)PositionModes.TargetPosition)]
+		public Vector3 TargetPosition = Vector3.zero;
+		
 		/// the direction to apply to the new floating text (leave it to 0 to let the Spawner decide based on its settings)
 		[Tooltip("the direction to apply to the new floating text (leave it to 0 to let the Spawner decide based on its settings)")]
 		public Vector3 Direction = Vector3.zero;
+
+		
+
 
 		protected Vector3 _playPosition;
 		protected string _value;
@@ -113,6 +122,9 @@ namespace MoreMountains.Feedbacks
 					break;
 				case PositionModes.TargetTransform:
 					_playPosition = TargetTransform.position;
+					break;
+				case PositionModes.TargetPosition:
+					_playPosition = TargetPosition;
 					break;
 			}
 

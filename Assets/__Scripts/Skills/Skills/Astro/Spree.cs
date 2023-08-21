@@ -33,6 +33,7 @@ public class Spree : AttackableSkill
 
     private IEnumerator SpreeBullet()
     {
+        var _attackID = Tools.GetAttackID();
         do
         {
             Revolver.NextReloadTime = Revolver.GetNextReloadTime();
@@ -56,7 +57,7 @@ public class Spree : AttackableSkill
                 if (_hitCollider.CompareTag("Enemy"))
                 {
                     int _damage = GetDamage();
-                    _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
+                    _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player, _attackID);
                 }
             }
 

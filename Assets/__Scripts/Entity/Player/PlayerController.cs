@@ -1,7 +1,5 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -26,10 +24,11 @@ public class PlayerController : MonoBehaviour
 
     private InputValues _input;
 
-    [SerializeField] private Rigidbody2D   _rigidbody2D;
-    private                  BoxCollider2D _boxCollider2D;
-
+    private Rigidbody2D   _rigidbody2D;
+    private BoxCollider2D _boxCollider2D;
+    
     public Rigidbody2D Rigidbody2D => _rigidbody2D;
+
 
     public PlayerStats playerStats;
 
@@ -291,7 +290,7 @@ public class PlayerController : MonoBehaviour
     private void ClimbLadder(Vector3 p_position)
     {
         if (!Controllable) return;
-        
+
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
         if (climbLadder && _input.vertical == 0)
         {
@@ -371,27 +370,28 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 플레이어 위치에 해당 타일이 있는지 확인한다.
     /// </summary>
-    private (bool, Vector2) HasTile(Tilemap _tilemap)
+    private (bool, Vector2) HasTile(Tilemap p_tilemap)
     {
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
-        Vector3 _localPosition = _tilemap.transform.InverseTransformPoint(transform.position);
+        Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
 
 
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x),
                                                   Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 && _rigidbody2D.velocity.y == 0 ? 1f : 0)));
-                                                    //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
-                                                    //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
+
+        //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
+        //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
 
 
-        Debug.DrawRay(_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.yellow);
-        if (!_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
+        Debug.DrawRay(p_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.yellow);
+        if (!p_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
         //따라서 타일의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
         Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
 
         //로컬 좌표를 다시 월드 좌표로 변환한다.
-        Vector2 _tileWorldPosition = _tilemap.transform.TransformPoint(_localLadderPos);
+        Vector2 _tileWorldPosition = p_tilemap.transform.TransformPoint(_localLadderPos);
         return (true, _tileWorldPosition);
     }
 
