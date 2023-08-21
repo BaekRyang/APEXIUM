@@ -49,7 +49,11 @@ public class EnemyBase : MonoBehaviour
 
         stats.health -= p_pDamage;
 
-        Knockback(p_pAttacker, 150);
+        if (stats.canKnockback)
+            Knockback(p_pAttacker, 200);
+        
+        
+        
         if (stats.health <= 0)
         {
             _enemyAI.animator.SetTrigger("Die");

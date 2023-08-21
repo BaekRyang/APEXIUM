@@ -11,7 +11,7 @@ public class Revolver : Skill
     private const float RELOAD_TIME_SECONDS         = 2f;
     private const int   RELOAD_BULLET_CHECK         = 4; //재장전중 총알이 장전되었다면 재장전을 끊기 위하여 총알이 장전되었는지 확인하는 횟수
     private const float AUTO_RELOAD_TIME_MULTIPLIER = 1.5f;
-    
+
     public static float NextReloadTime;
 
     public void OnEnable()
@@ -29,6 +29,7 @@ public class Revolver : Skill
         {
             Stats.Resource = Stats.MaxResource;
             NextReloadTime = GetNextReloadTime();
+            Debug.Log($"{NextReloadTime - Time.time}");
         }
     }
 
@@ -45,7 +46,7 @@ public class Revolver : Skill
 
         //재장전중에는 자동 재장전을 끊는다.
         NextReloadTime = float.MaxValue;
-        
+
         UniTask.Void(async () =>
         {
             for (int i = 0; i < RELOAD_BULLET_CHECK; i++)
@@ -57,7 +58,7 @@ public class Revolver : Skill
 
             // 위에서 Resource가 0이 아닐때 즉시 return을 했으므로, 아래 if는 false가 된다.
             if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
-                _player.Stats.Resource = _player.Stats.MaxResource; 
+                _player.Stats.Resource = _player.Stats.MaxResource;
         });
 
         return false; //Play에서 false를 리턴하도록 여기서 false를 리턴
@@ -67,11 +68,11 @@ public class Revolver : Skill
     {
         return Time.time + GetReloadTime() * AUTO_RELOAD_TIME_MULTIPLIER;
     }
-    
-    public static IEnumerator DelayAndSetControllable(Player p_player)
+
+    public static IEnumerator DelayAndSetControllable(Player p_player, float p_delay)
     {
         p_player.Controller.SetControllable(false);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(p_delay);
         p_player.Controller.SetControllable(true);
     }
 }

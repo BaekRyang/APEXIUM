@@ -45404,7 +45404,7 @@ MonoBehaviour:
   SpawnOffsetMin: {x: 0, y: 0, z: 0}
   SpawnOffsetMax: {x: 0, y: 0, z: 0}
   AnimateMovement: 1
-  AnimateX: 1
+  AnimateX: 0
   RemapXZero: {x: 0, y: 0}
   RemapXOne: {x: 1, y: 1}
   AnimateXCurve:
@@ -45433,36 +45433,36 @@ MonoBehaviour:
     m_RotationOrder: 4
   AnimateY: 1
   RemapYZero: {x: 0, y: 0}
-  RemapYOne: {x: 3, y: 3}
+  RemapYOne: {x: 2, y: 2}
   AnimateYCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 2
-      tangentMode: 69
-      weightedMode: 0
+      inSlope: 119.01926
+      outSlope: 119.01926
+      tangentMode: 0
+      weightedMode: 3
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.014072367
     - serializedVersion: 3
       time: 0.5
       value: 1
-      inSlope: 0
+      inSlope: -0.047648918
       outSlope: 0
-      tangentMode: 0
-      weightedMode: 3
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      tangentMode: 65
+      weightedMode: 2
+      inWeight: 0.88119304
+      outWeight: 0.33333325
     - serializedVersion: 3
       time: 1
-      value: 0.5
-      inSlope: -1
+      value: 1
+      inSlope: -0
       outSlope: 0
       tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
+      weightedMode: 1
+      inWeight: 0.33333337
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

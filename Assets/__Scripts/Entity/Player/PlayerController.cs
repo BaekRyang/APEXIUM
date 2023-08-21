@@ -26,9 +26,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
-    
-    public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
+    public Rigidbody2D Rigidbody2D => _rigidbody2D;
 
     public PlayerStats playerStats;
 
@@ -83,7 +82,6 @@ public class PlayerController : MonoBehaviour
         //jumpGraceTimer가 0이면 공중에 떠있는 상태이므로, 최대 점프 횟수를 -1 조정해준다.
         _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
 
-        SetLadderStatus();
         ClimbLadder(_position);
 
         Jump();
@@ -298,6 +296,8 @@ public class PlayerController : MonoBehaviour
             player._animator.speed = 0;
         }
 
+        SetLadderStatus();
+        
         //상하이동이 없거나 사다리를 타고있지 않으면 리턴
         if (_input.vertical == 0 || !onLadder) return;
 
@@ -355,16 +355,15 @@ public class PlayerController : MonoBehaviour
         {
             ladderPos = _hasTile.Item2;
             onLadder  = true;
+            return;
         }
-        else
-        {
-            if (!onLadder) return;
-            onLadder                  = false;
-            climbLadder               = false;
-            _rigidbody2D.gravityScale = 1;
-            _boxCollider2D.isTrigger  = false;
-            player._animator.SetBool("IsClimb", false);
-        }
+
+        if (!onLadder) return;
+        onLadder                  = false;
+        climbLadder               = false;
+        _rigidbody2D.gravityScale = 1;
+        _boxCollider2D.isTrigger  = false;
+        player._animator.SetBool("IsClimb", false);
     }
 
     /// <summary>
@@ -372,18 +371,21 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private (bool, Vector2) HasTile(Tilemap p_tilemap)
     {
+        Time.timeScale = 1f;
+
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
 
 
-        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x),
-                                                  Mathf.FloorToInt(_localPosition.y - (_input.vertical < 0 && _rigidbody2D.velocity.y == 0 ? 1f : 0)));
+        bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
+        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
+                                                  Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
 
 
-        Debug.DrawRay(p_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.yellow);
+        Debug.DrawRay(p_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.red);
         if (!p_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.

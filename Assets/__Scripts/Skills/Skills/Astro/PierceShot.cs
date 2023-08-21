@@ -28,7 +28,7 @@ public class PierceShot : AttackableSkill
 
         LayerMask      _layerMask = LayerMask.GetMask("Enemy", "Floor");
         RaycastHit2D[] _hit       = Physics2D.RaycastAll(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);
-        StartCoroutine(Revolver.DelayAndSetControllable(Player));
+        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f));
         foreach (var _hitObject in _hit)
         {
             StartCoroutine(VFXManager.PlayVFX("BulletPop", _hitObject.point, (int)Player.Controller.PlayerFacing));

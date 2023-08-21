@@ -9,7 +9,7 @@ public class Spree : AttackableSkill
     private const float COOLDOWN            = 12f;
     private const float STUN_DURATION       = 1f;
     private const float SKILL_DAMAGE        = 2.5f;
-    private const int   BULLET_SPREAD_ANGLE = 2;
+    private const int   BULLET_SPREAD_ANGLE = 1;
     private const float SPREE_SPEED         = 2f;
 
     public void OnEnable()

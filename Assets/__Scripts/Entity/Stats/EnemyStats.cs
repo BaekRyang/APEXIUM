@@ -14,6 +14,7 @@ public class EnemyStats : Stats<EnemyStats>
     [SerializeField] public string          enemyName;
     [SerializeField] public bool            canDazed;
     [SerializeField] public bool            canStun;
+    [SerializeField] public bool            canKnockback;
     [SerializeField] public float           chaseDistance;
     [SerializeField] public EnemyAttackType attackType;
     [SerializeField] public float           attackRange;
@@ -31,12 +32,13 @@ public class EnemyStats : Stats<EnemyStats>
         attackSpeed    = p_data.stats.attackSpeed;
         canDazed       = p_data.stats.canDazed;
         canStun        = p_data.stats.canStun;
+        canKnockback   = p_data.stats.canKnockback;
         chaseDistance  = p_data.stats.chaseDistance;
         attackType     = p_data.stats.attackType;
         attackRange    = p_data.stats.attackRange;
         stopWhenAttack = p_data.stats.stopWhenAttack;
     }
-    
+
     public EnemyStats(EnemyStats p_other)
     {
         enemyName      = p_other.enemyName;
@@ -49,6 +51,7 @@ public class EnemyStats : Stats<EnemyStats>
         attackSpeed    = p_other.attackSpeed;
         canDazed       = p_other.canDazed;
         canStun        = p_other.canStun;
+        canKnockback   = p_other.canKnockback;
         chaseDistance  = p_other.chaseDistance;
         attackType     = p_other.attackType;
         attackRange    = p_other.attackRange;

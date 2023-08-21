@@ -22,7 +22,7 @@ public struct Pair<T1, T2>
 {
     public T1 x;
     public T2 y;
-    
+
     public Pair(T1 xValue, T2 yValue)
     {
         x = xValue;
@@ -309,18 +309,27 @@ public class SAttack : State
     {
         enemyAI.animator.SetTrigger("Attack");
 
+        enemyAI.animator.speed = enemyAI.enemyBase.stats.attackSpeed * 2f;
+
         var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
         foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI.enemyBase.stats.attackDamage, 0, enemyAI.enemyBase);
 
-        int _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length;
+        float _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length / enemyAI.animator.speed; //공격속도 영향을 받음
+        
         await UniTask.Delay(TimeSpan.FromSeconds(_attackAnimationDelay));
-        enemyAI.waitForAttack = true;
+        
+        enemyAI.animator.speed = 1;
+        enemyAI.waitForAttack  = true;
     }
 
     private async void AttackDelay()
     {
         float _nextAttackDelay = _nextAttackTime - Time.time;
-        await UniTask.Delay(TimeSpan.FromSeconds(_nextAttackDelay));
+
+        if (_nextAttackDelay > 0) //공격 타이밍이 이미 지나갔으면 대기할 필요가 없으므로 대기하지 않음 (음수 대기는 Exception 발생)
+            await UniTask.Delay(TimeSpan.FromSeconds(_nextAttackDelay));
+        else
+            Debug.Log($"{_nextAttackDelay} : {_nextAttackTime} - {Time.time}");
         enemyAI.waitForAttack = false;
     }
 }

@@ -26,8 +26,6 @@ public class RevolverShot : AttackableSkill
 
     public override bool Play()
     {
-        
-        
         if (!CanUse()) return false;
         if (!ConsumeResource()) return false;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
@@ -62,7 +60,7 @@ public class RevolverShot : AttackableSkill
         //     Player.Controller.SetControllable(true);
         // });
 
-        StartCoroutine(Revolver.DelayAndSetControllable(Player));
+        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.attackSpeed));
 
         if (Stats.Resource == 0)
             Revolver.Reload();

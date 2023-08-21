@@ -24,6 +24,7 @@ MonoBehaviour:
     enemyName: 
     canDazed: 1
     canStun: 1
+    canKnockback: 1
     chaseDistance: 20
     attackType: 0
     attackRange: 5
