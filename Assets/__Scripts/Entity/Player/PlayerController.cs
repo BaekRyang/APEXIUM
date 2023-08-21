@@ -371,19 +371,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private (bool, Vector2) HasTile(Tilemap p_tilemap)
     {
-        Time.timeScale = 1f;
-
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
-
-
+        
         bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
         Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
                                                   Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
-
 
         Debug.DrawRay(p_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.red);
         if (!p_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);

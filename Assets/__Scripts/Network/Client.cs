@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using ProtoBuf;
+using Unity.VisualScripting;
 
 public class Client : MonoBehaviour
 {
@@ -19,7 +20,9 @@ public class Client : MonoBehaviour
 
     private readonly byte[] _receiveBuffer = new byte[1024]; //1KB
 
-    private void Start()
+    public bool BootClient = false;
+
+    private void StartClient()
     {
     #region TCP Init
 
@@ -36,14 +39,18 @@ public class Client : MonoBehaviour
         {
             ClientSocket.Connect(_serverEndPoint); //서버에 연결을 요청한다.
             Debug.Log($"{PREFIX} Connecting to Server");
-
-            BeginReceive(); //서버로부터 데이터를 받기 시작한다.
         }
         catch (SocketException e)
         {
             Debug.Log($"{PREFIX} Failed to Connect to Server");
             Debug.Log(e.Message);
+            ClientSocket.Close();
+            ClientSocket = null;
+            BootClient = false;
+            return;
         }
+
+        BeginReceive(); //서버로부터 데이터를 받기 시작한다.
 
     #endregion
 
@@ -63,8 +70,21 @@ public class Client : MonoBehaviour
 
     private void Update()
     {
+        switch (BootClient)
+        {
+            case true when ClientSocket == null:
+                StartClient();
+                break;
+            case false when ClientSocket != null && ClientSocket.Connected:
+                Shutdown();
+                break;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
+            if (ClientSocket == null)
+                return;
+
             Vector3Packet _mousePosition = new Vector3Packet(Camera.main.ScreenToWorldPoint(Input.mousePosition)); //마우스 클릭 위치를 얻어온다.
 
             using (var _stream = new MemoryStream()) //메모리 스트림을 이용하여 직렬화한다. MemoryStream()은 데이터를 쓸 수 있는 상태
@@ -110,25 +130,27 @@ public class Client : MonoBehaviour
     }
 
     private void BeginReceive() =>
-        ClientSocket.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+        ClientSocket.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, ReceiveCallback, null);
 
-    //비동기적으로 데이터를 받는다. - 서버의 Receive와 유사한데, 여기는 비동기적으로 받아서 Callback으로 처리한다.
+    //비동기적으로 데이터를 받는다. - 서버의 Receive와 유사한데
+    //여기는 데이터가 들어오면 비동기적으로 받아서 _receiveBuffer에 저장하고, Callback을 호출한다.
 
     private          int?      _totalPacketSize; //nullable int 타입
     private readonly ArrayList _pendingDataBuffer = new ArrayList();
 
     private void ReceiveCallback(IAsyncResult p_result)
     {
-        //이 함수가 실행되었다는것 => 데이터를 받아서 _receiveBuffer에 넣었음
-
         //데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
         int _received = ClientSocket.EndReceive(p_result);
 
         Debug.Log($"{PREFIX} Data Received / {_received}bytes");
 
+        //만약 받은 데이터가 0바이트라면
+
         if (_received <= 0)
         {
-            Debug.Log($"{PREFIX} 0 byte Received - Aborting");
+            Debug.Log($"{PREFIX} 0 byte Received - Server Closed");
+            Shutdown();
             return;
         }
 
@@ -171,6 +193,24 @@ public class Client : MonoBehaviour
         BeginReceive();
     }
 
+    private void Shutdown()
+    {
+        if (ClientSocket.Connected)
+        {
+            Debug.Log($"{PREFIX} Shutting Down");
+            ClientSocket.Shutdown(SocketShutdown.Both); //서버와의 연결을 끊는다.
+        }
+
+        ClientSocket.Close();
+        ClientSocket = null;
+
+        UDPClient.Close();
+        UDPClient = null;
+
+        UnityMainThreadDispatcher.Instance().Enqueue(() => GameManager.Instance.RemovePlayer(GameManager.Instance.playerID));
+        BootClient = false;
+    }
+
     private void HandleReceivedData(byte[] p_receivedData)
     {
         int        _additionalDataSize = 2;                             //헤더의 크기
@@ -200,6 +240,7 @@ public class Client : MonoBehaviour
         if (_packetType is PacketType.PlacePlayer)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(p_receivedData[2]); });
+
             // GameManager.Instance.InstantiatePlayer(p_receivedData[2]);
             Debug.Log($"{PREFIX} Player Placed : {p_receivedData[2]}");
             return; //여기에 return 안하니까 BeginReceive가 먹통이 되버리는 문제가 있었음

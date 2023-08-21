@@ -64,4 +64,10 @@ public class GameManager : MonoBehaviour
         _player.GetComponent<Player>().clientID = p_newPlayerID;
         _players.Add(p_newPlayerID, _player.GetComponent<Player>());
     }
+    
+    public void RemovePlayer(int p_playerID)
+    {
+        Destroy(_players[p_playerID].gameObject);
+        _players.Remove(p_playerID);
+    }
 }

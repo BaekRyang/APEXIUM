@@ -38824,6 +38824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05f894bf9bfe5af47a6c007036934176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BootClient: 0
 --- !u!4 &165695640
 Transform:
   m_ObjectHideFlags: 0
@@ -44984,6 +44985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb929866261dfd4095a76fdff50cfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BootServer: 0
 --- !u!4 &1458115171
 Transform:
   m_ObjectHideFlags: 0

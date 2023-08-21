@@ -6,7 +6,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using ProtoBuf;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Server : MonoBehaviour
 {
@@ -23,16 +25,35 @@ public class Server : MonoBehaviour
 
     private int _clientID;
 
-    private void Start()
+    public bool BootServer = false;
+
+    private void StartServer()
     {
         if (!SetupTcpServer())
             Debug.Log($"{PREFIX} Initialize TCP - Server Failed");
+        else
+            Debug.Log($"{PREFIX} Initialize Server Success");
 
         SetupUDPServer();
     }
 
     private void Update()
     {
+        switch (BootServer)
+        {
+            case true when _serverSocket == null:
+                StartServer();
+                break;
+            case false when _serverSocket != null:
+                Shutdown();
+                break;
+        }
+
+        //서버 소켓이 null이거나 연결되지 않았다면 리턴
+        if (_serverSocket == null) return;
+
+        //서버 소켓이 연결되었다면 연결 요청이 있는지 감시한다.
+
         ArrayList _listenList = new ArrayList();
 
         //외부에서 ArrayList를 선언하고 Update에서 Clear()하는 방식이 더 좋을거 같다.
@@ -73,6 +94,31 @@ public class Server : MonoBehaviour
             HandleUDPData();
 
     #endregion
+
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            Debug.Log($"{PREFIX} Server Closed");
+            BootServer = false;
+
+            //연결된 모든 클라이언트에 종료를 보낸다.
+            Shutdown();
+        }
+    }
+
+    private void Shutdown()
+    {
+        foreach (var _socket in _clientSocketList)
+            _socket.Shutdown(SocketShutdown.Both);
+
+        _serverSocket.Close();
+        _serverSocket = null;
+
+        _udpClient.Close();
+        _udpClient = null;
+
+        _clientSocketList.Clear();
+        _receivedDataList.Clear();
     }
 
     private void HandleUDPData()
@@ -130,6 +176,15 @@ public class Server : MonoBehaviour
 
     private void HandleClientData(Socket p_socket, int p_index)
     {
+        if (p_socket.Available == 0)
+        {
+            Debug.Log($"{PREFIX} Client Disconnected - {p_socket.RemoteEndPoint}");
+            p_socket.Shutdown(SocketShutdown.Both);
+            p_socket.Close();
+            _clientSocketList.Remove(p_socket);
+            return;
+        }
+
         if (_receivedDataList[p_index] is null) return; //아직 안만들어졌으면 무시
 
         byte[]    _receivedByteData = new byte[512];                                                                      //받은 데이터를 저장할 버퍼 생성
@@ -198,7 +253,7 @@ public class Server : MonoBehaviour
                 p_data.CopyTo(_fullPacket, PACKET_ADDITIONAL_DATA_SIZE);
 
                 await p_socket.SendAsync(_fullPacket, SocketFlags.None); //데이터를 보낸다.
-                
+
                 Debug.Log($"{PREFIX} Packet Sent : {p_data.Length} bytes / Type : {p_type}( {(byte)p_type} )");
             }
                 break;

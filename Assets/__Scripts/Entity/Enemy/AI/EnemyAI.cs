@@ -47,7 +47,6 @@ public class EnemyAI : MonoBehaviour
     
     public void Initialize(EnemyBase p_enemyBase)
     {
-        targetPlayer = GameManager.Instance.GetRandomPlayer();
         thisCollider = GetComponent<Collider2D>();
         enemyBase         = p_enemyBase;
         cachedTransform    = transform;
