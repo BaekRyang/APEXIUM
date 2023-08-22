@@ -31,7 +31,7 @@ public class PierceShot : AttackableSkill
         StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f));
         foreach (var _hitObject in _hit)
         {
-            StartCoroutine(VFXManager.PlayVFX("BulletPop", _hitObject.point, (int)Player.Controller.PlayerFacing));
+            VFXManager.PlayVFX("BulletPop", _hitObject.point, (int)Player.Controller.PlayerFacing);
             Collider2D _hitCollider = _hitObject.collider;
 
             if (_hitCollider == null) continue;
@@ -42,8 +42,8 @@ public class PierceShot : AttackableSkill
 
             if (_hitCollider.CompareTag("Enemy"))
             {
-                int _damage = GetDamage();
-                _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player);
+                (int _damage, bool _critical) = GetDamage();
+                _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, _critical, STUN_DURATION, Player);
             }
         }
 

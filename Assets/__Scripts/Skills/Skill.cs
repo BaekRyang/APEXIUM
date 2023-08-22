@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Skill : MonoBehaviour, IUseable
@@ -10,6 +11,7 @@ public class Skill : MonoBehaviour, IUseable
     public SkillTypes SkillType { get; protected set; }
 
     public float Cooldown { get; protected set; } //베이스 쿨타임(수정되면 안됨)
+    
 
     public float RemainingCooldown
     {
@@ -19,7 +21,7 @@ public class Skill : MonoBehaviour, IUseable
             if (SkillType == SkillTypes.Primary)
                 _remainingCooldown = Cooldown / Stats.attackSpeed - (Time.time - LastUsedTime);
             else
-                _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
+                _remainingCooldown = 0;
 
             /*쿨타임 Modifier가 있을때만 작동하도록 해야함 -- 아니면 Cooldown 프로퍼티를 수정하는 방법도 있을듯*/
             // if (SkillType != SkillTypes.Primary && _remainingCooldown < .5f) 

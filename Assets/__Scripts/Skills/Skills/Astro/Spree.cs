@@ -37,27 +37,25 @@ public class Spree : AttackableSkill
         do
         {
             Revolver.NextReloadTime = Revolver.GetNextReloadTime();
-            Debug.Log($"SpreeBullet - {Player.Stats.Resource}");
 
             Transform _cachedTransform = transform;
             Vector3   _position        = _cachedTransform.position;
 
             //Quaternion은 위 아래로 랜덤이어야 하므로 z축을 기준으로 회전한다.
-            var randDirection = Quaternion.Euler(0, 0, Random.Range(-BULLET_SPREAD_ANGLE, BULLET_SPREAD_ANGLE)) * (_cachedTransform.right * (int)Facing);
+            Vector3 _randDirection = Quaternion.Euler(0, 0, Random.Range(-BULLET_SPREAD_ANGLE, BULLET_SPREAD_ANGLE)) * (_cachedTransform.right * (int)Facing);
 
             LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
-            RaycastHit2D _hit       = Physics2D.BoxCast(_position, Vector2.one * .3f, 0, randDirection, RANGE, _layerMask);
-            Debug.DrawRay(_position, randDirection * RANGE, Color.red);
+            RaycastHit2D _hit       = Physics2D.BoxCast(_position, Vector2.one * .3f, 0, _randDirection, RANGE, _layerMask);
 
             Collider2D _hitCollider = _hit.collider;
 
             if (_hitCollider != null)
             {
-                StartCoroutine(VFXManager.PlayVFX("BulletPop", _hit.point, (int)Player.Controller.PlayerFacing));
+                VFXManager.PlayVFX("BulletPop", _hit.point, (int)Player.Controller.PlayerFacing);
                 if (_hitCollider.CompareTag("Enemy"))
                 {
-                    int _damage = GetDamage();
-                    _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, STUN_DURATION, Player, _attackID);
+                    (int _damage, bool _critical) = GetDamage();
+                    _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, _critical, STUN_DURATION, Player, _attackID);
                 }
             }
 

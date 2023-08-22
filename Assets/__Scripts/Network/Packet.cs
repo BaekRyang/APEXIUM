@@ -46,7 +46,7 @@ public readonly struct Vector3Packet
 
     public static implicit operator Vector3(Vector3Packet p_other) //Vector3Packet => Vector3 연산자
     {
-        return new Vector3(p_other.x, p_other.y, p_other.z);
+        return new(p_other.x, p_other.y, p_other.z);
     }
 
     public override string ToString()

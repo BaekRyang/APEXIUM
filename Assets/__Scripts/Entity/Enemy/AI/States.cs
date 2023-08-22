@@ -56,7 +56,7 @@ public abstract class State : IState
         int     _layerMask = 1 << LayerMask.NameToLayer("Floor");
         Vector3 _position  = p_enemyAI.cachedTransform.position;
 
-        Vector2 _checkPoint = new Vector2(
+        Vector2 _checkPoint = new(
             _position.x + p_enemyAI.targetDirection.x * p_enemyAI.bodySize.x / 2,
             _position.y - p_enemyAI.bodySize.y                               / 2
         );
@@ -66,7 +66,6 @@ public abstract class State : IState
                                               CLIFF_DETECT_DISTANCE,
                                               _layerMask);
         Debug.DrawRay(_checkPoint, Vector2.down * CLIFF_DETECT_DISTANCE, Color.red);
-        Debug.Log($"Cliff Detect : {_hit.collider == null}");
         return _hit.collider == null;
     }
 
@@ -80,7 +79,6 @@ public abstract class State : IState
                                               _layerMask);
 
         Debug.DrawRay(p_enemyAI.cachedTransform.position, p_enemyAI.targetDirection * p_enemyAI.bodySize.x, Color.blue);
-        Debug.Log($"Wall Detect : {_hit.collider != null}");
         return _hit.collider != null;
     }
 
@@ -126,8 +124,8 @@ public class SWander : State
 
     [SerializeField] private float nextMovableTime, nextWaitTime;
 
-    private readonly FloatPair _randomMovingTime = new FloatPair(5, 10), //이동 시간 랜덤 범위
-                               _randomWaitTime   = new FloatPair(1, 5);  //대기 시간 랜덤 범위
+    private readonly FloatPair _randomMovingTime = new(5, 10), //이동 시간 랜덤 범위
+                               _randomWaitTime   = new(1, 5);  //대기 시간 랜덤 범위
 
     public override void Enter()
     {

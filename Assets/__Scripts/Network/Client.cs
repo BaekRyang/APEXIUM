@@ -26,12 +26,12 @@ public class Client : MonoBehaviour
     {
     #region TCP Init
 
-        ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //클라이언트 소켓 준비
+        ClientSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //클라이언트 소켓 준비
 
         //Bind는 필요없음 : 클라이언트는 자동으로 포트를 골라서 서버에 연결함
 
-        IPAddress  _serverAddress  = IPAddress.Parse(_serverIP);                  //서버 주소를 IPAddress로 변환
-        IPEndPoint _serverEndPoint = new IPEndPoint(_serverAddress, _serverPort); //서버 주소와 포트를 IPEndPoint로 변환
+        IPAddress  _serverAddress  = IPAddress.Parse(_serverIP);       //서버 주소를 IPAddress로 변환
+        IPEndPoint _serverEndPoint = new(_serverAddress, _serverPort); //서버 주소와 포트를 IPEndPoint로 변환
 
     #region RequestConnection
 
@@ -46,7 +46,7 @@ public class Client : MonoBehaviour
             Debug.Log(e.Message);
             ClientSocket.Close();
             ClientSocket = null;
-            BootClient = false;
+            BootClient   = false;
             return;
         }
 
@@ -58,7 +58,7 @@ public class Client : MonoBehaviour
 
     #region UDP Init
 
-        UDPClient = new UdpClient();
+        UDPClient = new();
         UDPClient.Connect(_serverEndPoint);
 
         //UDP는 TCP의 Connect와 다르게 실제로 연결을 만드는것은 아니고
@@ -85,7 +85,7 @@ public class Client : MonoBehaviour
             if (ClientSocket == null)
                 return;
 
-            Vector3Packet _mousePosition = new Vector3Packet(Camera.main.ScreenToWorldPoint(Input.mousePosition)); //마우스 클릭 위치를 얻어온다.
+            Vector3Packet _mousePosition = new(Camera.main.ScreenToWorldPoint(Input.mousePosition)); //마우스 클릭 위치를 얻어온다.
 
             using (var _stream = new MemoryStream()) //메모리 스트림을 이용하여 직렬화한다. MemoryStream()은 데이터를 쓸 수 있는 상태
             {
@@ -136,7 +136,7 @@ public class Client : MonoBehaviour
     //여기는 데이터가 들어오면 비동기적으로 받아서 _receiveBuffer에 저장하고, Callback을 호출한다.
 
     private          int?      _totalPacketSize; //nullable int 타입
-    private readonly ArrayList _pendingDataBuffer = new ArrayList();
+    private readonly ArrayList _pendingDataBuffer = new();
 
     private void ReceiveCallback(IAsyncResult p_result)
     {
@@ -171,7 +171,7 @@ public class Client : MonoBehaviour
         if (_pendingDataBuffer.Count >= _totalPacketSize + 2)
         {
             Debug.Log($"{PREFIX} Full Packet Received - Pending : {_pendingDataBuffer.Count} / Total : {_totalPacketSize + 2} ");
-            StringBuilder _sb = new StringBuilder();
+            StringBuilder _sb = new();
             foreach (byte _b in _pendingDataBuffer)
                 _sb.Append(_b + " ");
             Debug.Log($"{PREFIX} Data : {_sb}");

@@ -34,7 +34,7 @@ namespace GamingGarrison
             if (m_target != null)
             {
                 Vector3 targetPosition = m_target.transform.position;
-                m_position = new Vector3(targetPosition.x, targetPosition.y, m_zDistance);
+                m_position = new(targetPosition.x, targetPosition.y, m_zDistance);
             }
             MakeCameraPixelPerfect();
         }
@@ -51,7 +51,7 @@ namespace GamingGarrison
 
         public Vector3 RoundVector3(Vector3 value)
         {
-            return new Vector3(Mathf.Round(value.x), Mathf.Round(value.y), Mathf.Round(value.z));
+            return new(Mathf.Round(value.x), Mathf.Round(value.y), Mathf.Round(value.z));
         }
 
         // Update is called once per frame
@@ -65,7 +65,7 @@ namespace GamingGarrison
 
             if (m_target != null)
             {
-                Vector3 targetCameraPosition = new Vector3(m_target.position.x, m_target.position.y, m_zDistance);
+                Vector3 targetCameraPosition = new(m_target.position.x, m_target.position.y, m_zDistance);
                 m_position = Vector3.SmoothDamp(m_position, targetCameraPosition, ref m_velocity, m_smoothTime);
             }
 

@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class BossHealthDisplay : MonoBehaviour
 {
+    public static BossHealthDisplay Instance;
+    
+    private void Awake() => Instance ??= this;
+
     [SerializeField] private MMProgressBar _bar;
     
     public void SetHealth(float health)

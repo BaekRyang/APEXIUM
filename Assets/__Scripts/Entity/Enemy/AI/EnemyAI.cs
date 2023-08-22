@@ -41,7 +41,7 @@ public class EnemyAI : MonoBehaviour
     
     [Space]
 
-    public readonly Dictionary<string, State> States = new Dictionary<string, State>();
+    public readonly Dictionary<string, State> States = new();
 
     [SerializeReference] private State  currentState;
     
@@ -88,7 +88,7 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-    private void FlipEntity() => cachedTransform.localScale = new Vector3(-targetDirection.normalized.x, 1, 1);
+    private void FlipEntity() => cachedTransform.localScale = new(-targetDirection.normalized.x, 1, 1);
     //_targetDirection은 언제나 단위벡터이지만, 혹시 모르니까 정규화 
 
     

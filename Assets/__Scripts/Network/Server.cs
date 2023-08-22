@@ -15,9 +15,9 @@ public class Server : MonoBehaviour
     private const string PREFIX                      = "<color=red>Server</color> -";
     private const int    PACKET_ADDITIONAL_DATA_SIZE = 2;
 
-    private          Socket       _serverSocket;                          //서버 소켓
-    private readonly List<Socket> _clientSocketList = new List<Socket>(); //연결된 클라이언트 소켓 목록
-    private readonly ArrayList    _receivedDataList = new ArrayList();    //각 클라이언트의 송신 데이터를 저장할 버퍼
+    private          Socket       _serverSocket;             //서버 소켓
+    private readonly List<Socket> _clientSocketList = new(); //연결된 클라이언트 소켓 목록
+    private readonly ArrayList    _receivedDataList = new(); //각 클라이언트의 송신 데이터를 저장할 버퍼
 
     private const int PORT = 11211;
 
@@ -54,7 +54,7 @@ public class Server : MonoBehaviour
 
         //서버 소켓이 연결되었다면 연결 요청이 있는지 감시한다.
 
-        ArrayList _listenList = new ArrayList();
+        ArrayList _listenList = new();
 
         //외부에서 ArrayList를 선언하고 Update에서 Clear()하는 방식이 더 좋을거 같다.
         _listenList.Add(_serverSocket);
@@ -74,8 +74,8 @@ public class Server : MonoBehaviour
 
         if (_clientSocketList.Count > 0) //연결된 클라이언트가 있다면
         {
-            ArrayList _copySockets = new ArrayList(_clientSocketList); //연결된 클라이언트 목록을 새 리스트에 복사하고
-            Socket.Select(_copySockets, null, null, 1000);             //연결된 클라이언트 목록을 감시한다.
+            ArrayList _copySockets = new(_clientSocketList); //연결된 클라이언트 목록을 새 리스트에 복사하고
+            Socket.Select(_copySockets, null, null, 1000);   //연결된 클라이언트 목록을 감시한다.
 
             //이 부분은 위와 다르게 _copySockets => _clientSockets 를 감시한다.
             //_clientSockets은 연결된 클라이언트가 있는곳으로, 연결된 클라이언트가 데이터를 보내는지 감시하고
@@ -123,7 +123,7 @@ public class Server : MonoBehaviour
 
     private void HandleUDPData()
     {
-        IPEndPoint _remoteEP = new IPEndPoint(IPAddress.Any, 0);  //모든 IP, Port에서 데이터를 받는다.
+        IPEndPoint _remoteEP = new(IPAddress.Any, 0);             //모든 IP, Port에서 데이터를 받는다.
         byte[]     _data     = _udpClient.Receive(ref _remoteEP); //데이터를 받는다. _remoteEP에 데이터를 보낸 클라이언트의 IP, Port가 저장된다.
 
         byte       _playerID   = _data[0];             //플레이어 ID를 받는다.
@@ -138,7 +138,7 @@ public class Server : MonoBehaviour
         if (_packetType is PacketType.Movement)
         {
             //데이터 역직렬화
-            using (MemoryStream _stream = new MemoryStream(_pureData))
+            using (MemoryStream _stream = new(_pureData))
             {
                 Vector3 _position = Serializer.Deserialize<Vector3Packet>(_stream);
                 Debug.Log($"{PREFIX} UDP Data Received - {_remoteEP.Address}:{_remoteEP.Port} - {_packetType}  #{_playerID}: {_position}");
@@ -270,7 +270,7 @@ public class Server : MonoBehaviour
 
     #region Socket Initialization
 
-        _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        _serverSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         //C++ : socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (_serverSocket == null)
@@ -283,7 +283,7 @@ public class Server : MonoBehaviour
 
     #region Socket Binding
 
-        IPEndPoint _ipEndPoint = new IPEndPoint(IPAddress.Any, PORT);
+        IPEndPoint _ipEndPoint = new(IPAddress.Any, PORT);
 
         //C++ : SOCKADDR_IN addr = {AF_INET, htons(PORT), INADDR_ANY}
         //C#에서는 IPEndPoint를 사용한다. C#은 C++과 다르게 IPv4/6을 모두 지원하므로 IP버젼을 명시적으로 지정하지 않는다.
@@ -327,6 +327,6 @@ public class Server : MonoBehaviour
 
     private void SetupUDPServer()
     {
-        _udpClient = new UdpClient(PORT);
+        _udpClient = new(PORT);
     }
 }

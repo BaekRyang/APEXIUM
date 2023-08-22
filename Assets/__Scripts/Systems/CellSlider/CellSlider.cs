@@ -10,8 +10,8 @@ public class CellSlider : MonoBehaviour
     [SerializeField]  public RectTransform backGroundRect;
     [SerializeField]  public RectTransform fillRect;
     [SerializeField]  public GameObject    cellObject;
-    [SerializeField]  public Color         enableColor  = new Color(1, 1, 1, 1);
-    [SerializeField]  public Color         disableColor = new Color(.25f, .25f, .25f, 1);
+    [SerializeField]  public Color         enableColor  = new(1, 1, 1, 1);
+    [SerializeField]  public Color         disableColor = new(.25f, .25f, .25f, 1);
     [HideInInspector] public int           value;
     [HideInInspector] public int           lastValue;
     [HideInInspector] public bool          firstLoad;
@@ -48,7 +48,7 @@ public class CellSlider : MonoBehaviour
         if (lastValue != value)
         {
             lastValue          = value;
-            fillRect.anchorMax = new Vector2((float)value / maxValue, 1);
+            fillRect.anchorMax = new((float)value / maxValue, 1);
         }
     }
     
@@ -61,7 +61,7 @@ public class CellSlider : MonoBehaviour
         _backGroundRect.SetParent(transform);
         backGroundRect = _backGroundRect;
         _backGroundRect.localScale  = _backGroundRect.anchorMax = Vector2.one;
-        _backGroundRect.anchorMin   = _backGroundRect.offsetMin = _backGroundRect.offsetMax = new Vector2(0, 0);
+        _backGroundRect.anchorMin   = _backGroundRect.offsetMin = _backGroundRect.offsetMax = new(0, 0);
 
         HorizontalLayoutGroup layoutGroup = _backGroundRect.AddComponent<HorizontalLayoutGroup>();
 
@@ -81,10 +81,10 @@ public class CellSlider : MonoBehaviour
         fillRect = _fillRect;
 
         _fillRect.localScale = _fillRect.anchorMax = Vector2.one;
-        _fillRect.anchorMin  = _fillRect.offsetMin = _fillRect.offsetMax = new Vector2(0, 0);
+        _fillRect.anchorMin  = _fillRect.offsetMin = _fillRect.offsetMax = new(0, 0);
 
         _fillRect.AddComponent<Mask>();
-        _fillRect.AddComponent<Image>().color = new Color(0, 0, 0, 0.01f);
+        _fillRect.AddComponent<Image>().color = new(0, 0, 0, 0.01f);
 
         //자식으로 CellObject를 maxValue만큼 생성해준다.
         for (int i = 0; i < maxValue; i++)
@@ -95,11 +95,11 @@ public class CellSlider : MonoBehaviour
             _cell.GetComponent<Image>().color = enableColor;
 
             RectTransform cellRect = _cell.GetComponent<RectTransform>();
-            cellRect.sizeDelta = new Vector2(backGroundRect.rect.width / maxValue, backGroundRect.rect.height);
+            cellRect.sizeDelta = new(backGroundRect.rect.width / maxValue, backGroundRect.rect.height);
             Vector2 cellSize = cellRect.sizeDelta;
 
-            cellRect.pivot            = new Vector2(.5f, .5f);
-            cellRect.anchoredPosition = new Vector2(i * cellSize.x + cellSize.x / 2, cellSize.y / 2);
+            cellRect.pivot            = new(.5f, .5f);
+            cellRect.anchoredPosition = new(i * cellSize.x + cellSize.x / 2, cellSize.y / 2);
         }
     }
 }

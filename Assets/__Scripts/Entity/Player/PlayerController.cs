@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     private void GetInput()
     {
-        _input = new InputValues
+        _input = new()
                  {
                      horizontal = Input.GetAxisRaw("Horizontal"),
                      vertical   = Input.GetAxisRaw("Vertical"),
@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!Controllable) return;
 
-        _rigidbody2D.velocity = new Vector2(_input.horizontal * Speed, _rigidbody2D.velocity.y);
+        _rigidbody2D.velocity = new(_input.horizontal * Speed, _rigidbody2D.velocity.y);
         player._animator.SetBool("IsWalk", _input.horizontal != 0);
         FlipSprite();
     }
@@ -184,8 +184,8 @@ public class PlayerController : MonoBehaviour
 
         _transformCache.localScale = _input.horizontal switch
         {
-            > 0 => new Vector3(-1, 1, 1),
-            < 0 => new Vector3(1,  1, 1),
+            > 0 => new(-1, 1, 1),
+            < 0 => new(1, 1, 1),
             _   => _transformCache.localScale
         };
     }
@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //실제 점프 및 점프관련 애니메이션 실행
-        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpHeight);
+        _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, _jumpHeight);
         Animation.PlayAnimation(player._animator, "Jump");
         player._animator.SetBool("IsJump", true);
 
@@ -312,8 +312,8 @@ public class PlayerController : MonoBehaviour
         player._animator.SetBool("IsClimb", true);
 
         climbLadder           = true;
-        transform.position    = new Vector3(ladderPos.x, p_position.y); //사다리에 붙여주고
-        _rigidbody2D.velocity = Vector2.zero;                           //가속 초기화
+        transform.position    = new(ladderPos.x, p_position.y); //사다리에 붙여주고
+        _rigidbody2D.velocity = Vector2.zero;                   //가속 초기화
 
         //사다리에서 나갈때 틩기는 현상을 막기위해 velocity사용을 하지 않게 변경
         // if (climbLadder) //타고있는중에는 상하 이동만 해준다.
@@ -375,8 +375,8 @@ public class PlayerController : MonoBehaviour
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
         
         bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
-        Vector3Int _tilePosition = new Vector3Int(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                                  Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
+        Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
+                                       Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
@@ -403,7 +403,7 @@ public class PlayerController : MonoBehaviour
     {
         //하강속도 제한
         if (_rigidbody2D.velocity.y < -maxFallSpeed)
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, -maxFallSpeed);
+            _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, -maxFallSpeed);
     }
 
 #endregion
@@ -438,6 +438,6 @@ public class PlayerController : MonoBehaviour
         //플레이어의 조작 가능 여부를 설정한다.
         Controllable = p_pControllable;
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
-            _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
+            _rigidbody2D.velocity = new(0, _rigidbody2D.velocity.y);
     }
 }

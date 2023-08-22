@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     private bool             _isImmune;
     public  Vector3          PlayerPosition => transform.position;
 
-    public readonly Dictionary<SkillTypes, Skill> skills = new Dictionary<SkillTypes, Skill>();
+    public readonly Dictionary<SkillTypes, Skill> skills = new();
 
     private MMF_Player       _statusFeedback;
     private MMF_FloatingText _floatingText;
@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
 
     private void LoadSettings(PlayerData p_playerData)
     {
-        _stats = new PlayerStats(p_playerData.stats);
+        _stats = new(p_playerData.stats);
         UIElements.Instance.SetHealth(_stats.health, _stats.maxHealth);
 
         _playerController      = gameObject.AddComponent<PlayerController>();
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        LoadSettings(GameManager.CharactersData["Astro"]);
+        LoadSettings(GameManager.Instance.GetCharacterData("Astro"));
     }
 
     public void PlayStatusFeedback(string p_pText)
@@ -95,7 +95,7 @@ public class Player : MonoBehaviour
         _animator.enabled = false;         //애니메이션을 수동으로 조작하기 위해서 비활성화
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
-        Vector2 _direction = new Vector2((transform.position - p_attacker.transform.position).normalized.x, 2f);
+        Vector2 _direction = new((transform.position - p_attacker.transform.position).normalized.x, 2f);
 
         //해당 x방향이 +이면 SR의 x Flip을 true 아니면 false
         GetComponent<SpriteRenderer>().flipX = _direction.x > 0;

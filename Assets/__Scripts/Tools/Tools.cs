@@ -7,7 +7,7 @@ public static class Tools
     /// </summary>
     public static void InvertX(ref this Vector3 p_value)
     {
-        p_value = new Vector3(-p_value.x, p_value.y, p_value.z);
+        p_value = new(-p_value.x, p_value.y, p_value.z);
     }
 
     /// <summary>
@@ -37,10 +37,13 @@ public static class Tools
         return new Vector3((to - from).x, (to - from).y, 0).normalized;
     }
 
-    private static uint ID = 0;
+    private static uint ID;
+
     public static uint GetAttackID()
     {
-        Debug.Log(ID);
+        //최대값 도달시 0으로 초기화
+        if (ID == uint.MaxValue) ID = 0;
+        
         return ID++;
     }
 }

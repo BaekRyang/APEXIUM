@@ -7,7 +7,7 @@ public class UIElements : MonoBehaviour
 {
     public static UIElements Instance;
 
-    public Dictionary<SkillTypes, SkillBlock> skillBlocks = new Dictionary<SkillTypes, SkillBlock>();
+    public Dictionary<SkillTypes, SkillBlock> skillBlocks = new();
 
     public Slider     healthBar;
     public TMP_Text   healthIndex;

@@ -45,7 +45,7 @@ public class EllipseCollider2D : CustomCollider2D
 
     public override Vector2[] getPoints()
     {
-        List<Vector2> points = new List<Vector2>();
+        List<Vector2> points = new();
 
         float ang = 0;
         float o = rotation * Mathf.Deg2Rad;
@@ -66,7 +66,7 @@ public class EllipseCollider2D : CustomCollider2D
             float x = radiusX * Mathf.Cos(a) * Mathf.Cos(o) - radiusY * Mathf.Sin(a) * Mathf.Sin(o);
             float y = -radiusX * Mathf.Cos(a) * Mathf.Sin(o) - radiusY * Mathf.Sin(a) * Mathf.Cos(o);
 
-            points.Add(new Vector2(x, y));
+            points.Add(new(x, y));
             ang += 360f / smoothness;
         }
 
