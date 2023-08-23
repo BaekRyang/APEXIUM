@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public static class Tools
@@ -43,7 +44,57 @@ public static class Tools
     {
         //최대값 도달시 0으로 초기화
         if (ID == uint.MaxValue) ID = 0;
-        
+
         return ID++;
+    }
+
+    //데미지를 한글단위로 사용?
+    private static bool UseKoreanUnit = true;
+
+    public enum DamageUnitType
+    {
+        Full,
+        Short
+    }
+    
+    public static string ConvertDamageUnit(this int p_pDamage, bool p_isCritical, DamageUnitType p_type = DamageUnitType.Full)
+    {
+        string _damage = "";
+        switch (p_type)
+        {
+            case DamageUnitType.Full:
+                _damage = UseKoreanUnit
+                    ? p_pDamage switch
+                    {
+                        >= 100000000 => $"{p_pDamage / 100000000:0}억{p_pDamage / 10000:0}만{p_pDamage % 1000:000}",
+                        >= 10000     => $"{p_pDamage / 10000:0}만{p_pDamage     % 10000:000}",
+                        _            => p_pDamage.ToString()
+                    }
+                    : p_pDamage.ToString();
+                break;
+            case DamageUnitType.Short:
+                _damage = UseKoreanUnit
+                ? p_pDamage switch
+                {
+                    //백만 단위에는 M 붙이고, 천 단위에는 K 붙인다. (소수 1~2자리까지, 나머지는 표시하지 않음)
+                    >= 100000000 => $"{p_pDamage / 100000000f:0.##}억",
+                    >= 10000     => $"{p_pDamage / 10000f:0.#}만",
+                    _            => p_pDamage.ToString()
+                } 
+                : p_pDamage switch
+                {
+                    //백만 단위에는 M 붙이고, 천 단위에는 K 붙인다. (소수 1~2자리까지, 나머지는 표시하지 않음)
+                    >= 1000000 => $"{p_pDamage / 1000000f:0.##}M",
+                    >= 1000    => $"{p_pDamage / 1000f:0.#}K",
+                    _          => p_pDamage.ToString()
+                };
+                break;
+        }
+
+        if (p_isCritical) _damage = "<size=12>" + _damage[0] + "</size>" + _damage.Substring(1); //맨 앞글자 강조
+
+        string _str = (p_isCritical ? "<color=#FF5500>" : "<color=#FFDDCC>") + _damage + (p_isCritical ? "!" : "") + "</color>";
+
+        return _str;
     }
 }

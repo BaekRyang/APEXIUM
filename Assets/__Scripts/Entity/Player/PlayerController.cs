@@ -140,28 +140,23 @@ public class PlayerController : MonoBehaviour
 
     private void GetInput()
     {
-        _input = new()
-                 {
-                     horizontal = Input.GetAxisRaw("Horizontal"),
-                     vertical   = Input.GetAxisRaw("Vertical"),
-                     jumpDown   = Input.GetButtonDown("Jump"),
-                     jumpUp     = Input.GetButtonUp("Jump"),
+#if UNITY_EDITOR
+        _input.horizontal     = Input.GetAxisRaw("Horizontal");
+        _input.vertical       = Input.GetAxisRaw("Vertical");
+        _input.jumpDown       = Input.GetButtonDown("Jump");
+        _input.jumpUp         = Input.GetButtonUp("Jump");
+        _input.primarySkill   = Input.GetButton("PrimarySkill");
+        _input.secondarySkill = Input.GetButton("SecondarySkill");
+        _input.movementSkill  = Input.GetButton("MovementSkill");
+        _input.ultimateSkill  = Input.GetButton("UltimateSkill");
+        _input.specialSkill   = Input.GetButton("SpecialSkill");
+        _input.itemSkill      = Input.GetButton("ItemSkill");
+        
+#elif UNITY_ANDROID
 
-                     primarySkill   = Input.GetButton("PrimarySkill"),
-                     secondarySkill = Input.GetButton("SecondarySkill"),
-                     movementSkill  = Input.GetButton("MovementSkill"),
-                     ultimateSkill  = Input.GetButton("UltimateSkill"),
-                     specialSkill   = Input.GetButton("SpecialSkill"),
-                     itemSkill      = Input.GetButton("ItemSkill")
-                 };
-
-        // _input = new InputValues
-        //          {
-        //              horizontal = VJoystick.MovementDirection,
-        //              vertical   = Input.GetAxisRaw("Vertical"),
-        //              jumpDown   = Input.GetButtonDown("Jump"),
-        //              jumpUp     = Input.GetButtonUp("Jump")
-        //          };
+        _input.horizontal = VJoystick.MovementDirection;
+        
+#endif
     }
 
 #endregion
@@ -297,7 +292,7 @@ public class PlayerController : MonoBehaviour
         }
 
         SetLadderStatus();
-        
+
         //상하이동이 없거나 사다리를 타고있지 않으면 리턴
         if (_input.vertical == 0 || !onLadder) return;
 
@@ -373,7 +368,7 @@ public class PlayerController : MonoBehaviour
     {
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
-        
+
         bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
                                        Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
@@ -435,6 +430,12 @@ public class PlayerController : MonoBehaviour
 
     public void SetControllable(bool p_pControllable)
     {
+        if (player.dead) //이미 죽었다면 다른 효과에 의한 조작을 무시한다.
+        {
+            Controllable = false;
+            return;
+        }
+
         //플레이어의 조작 가능 여부를 설정한다.
         Controllable = p_pControllable;
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.

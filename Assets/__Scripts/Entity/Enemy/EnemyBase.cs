@@ -30,7 +30,7 @@ public class EnemyBase : MonoBehaviour
 
     public void Attacked(int p_pDamage, bool p_isCritical, float p_stunDuration, Player p_pAttacker, uint? p_attackID = null)
     {
-        _floatingText.Value = (p_isCritical ? "<color=#FF5500>" : "<color=#FFDDCC>") + p_pDamage + (p_isCritical ? "!" : "") + "</color>";
+        _floatingText.Value = p_pDamage.ConvertDamageUnit(p_isCritical, Tools.DamageUnitType.Full);
 
         //크리티컬은 빨강 아니면 하양
         _floatingText.Intensity = p_isCritical ? 1.05f : 1;
@@ -48,14 +48,8 @@ public class EnemyBase : MonoBehaviour
             _floatingText.TargetPosition = transform.position + Vector3.up * (VERTICAL_OFFSEET * _attackID[p_attackID.Value]);
         }
 
-        try
-        {
-            _damageFeedback.PlayFeedbacks();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        //여기서 오류나면 Exception 처리만 해주면 됨
+        _damageFeedback.PlayFeedbacks();
         
 
         if (p_stunDuration == 0)
@@ -81,8 +75,10 @@ public class EnemyBase : MonoBehaviour
 
     private void GetDamage(int p_pDamage)
     {
-        //TODO: BossHealthBarDisplay에 어떤식으로 연결시켜서 값을 동기화 시킬까
         stats.health -= p_pDamage;
+        
+        //TODO: BossHealthBarDisplay에 어떤식으로 연결시켜서 값을 동기화 시킬까
+        // BossHealthDisplay.SetHealthByPercent((float)stats.health / stats.maxHealth);
     }
 
     private void Knockback(Player p_pAttacker, float p_pKnockbackForce)

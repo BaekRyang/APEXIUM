@@ -49,16 +49,16 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 170.66666666666666,
-                "y": 151.33333333333334
+                "x": 320,
+                "y": 159.83333333333331
             }
         },
         "Rules/autotile rules.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 301.5,
-                "y": 275
+                "x": 301,
+                "y": 274.5
             }
         },
         "Winter.tsx": {
@@ -74,11 +74,11 @@
             }
         },
         "prototype.tmx": {
-            "scale": 0.5,
-            "selectedLayer": -1,
+            "scale": 0.125,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 7338,
-                "y": 1862
+                "x": 4176,
+                "y": 2000
             }
         }
     },

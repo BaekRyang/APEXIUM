@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
 
     public PlayerStats Stats => _stats;
 
-    private bool _dead;
+    public bool dead;
 
     private void LoadSettings(PlayerData p_playerData)
     {
@@ -48,6 +48,11 @@ public class Player : MonoBehaviour
 
         _statusFeedback = GetComponentInChildren<MMF_Player>();
         _floatingText   = _statusFeedback.GetFeedbackOfType<MMF_FloatingText>();
+
+        Collider2D _collider2D = GetComponent<Collider2D>();
+        _collider2D.sharedMaterial.friction = 0f;
+        _collider2D.enabled                 = false;
+        _collider2D.enabled                 = true;
     }
 
     void Start()
@@ -69,7 +74,7 @@ public class Player : MonoBehaviour
 
     public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_attacker)
     {
-        if (_isImmune || _dead) return;
+        if (_isImmune || dead) return;
 
         PlayStatusFeedback(p_pDamage.ToString());
         bool _stillAlive = HealthChange(-p_pDamage);
@@ -89,10 +94,23 @@ public class Player : MonoBehaviour
 
     private void Die(EnemyBase p_attacker)
     {
-        _dead = true;                      //죽었음을 표시
+        dead = true;                       //죽었음을 표시
         Controller.SetControllable(false); //이동 불가
         _animator.SetTrigger("Dead");      //꼭 필요한지는 모르겠음 (체크 필요)
-        _animator.enabled = false;         //애니메이션을 수동으로 조작하기 위해서 비활성화
+        _animator.enabled = false;         //애니메이션을 수동으로 조작하기 위해서 비활성화'
+
+
+        Collider2D _collider2D = GetComponent<Collider2D>();
+
+        _collider2D.sharedMaterial.friction = 1f;
+
+        //이렇게 안하면 바로 적용이 안됨
+        _collider2D.enabled = false;
+        _collider2D.enabled = true;
+
+
+        Controller.Rigidbody2D.velocity = Vector2.zero; //속도 초기화
+
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
         Vector2 _direction = new((transform.position - p_attacker.transform.position).normalized.x, 2f);
@@ -109,7 +127,7 @@ public class Player : MonoBehaviour
         AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
 
         //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
-        
+
         if (_deadClip == null) yield break; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
 
         while (true)

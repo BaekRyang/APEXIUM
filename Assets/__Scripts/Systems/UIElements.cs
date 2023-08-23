@@ -19,20 +19,12 @@ public class UIElements : MonoBehaviour
     {
         Instance ??= this;
 
-        Transform _playerUI = transform.Find("PlayerUI");
+        Transform _playerUI = transform.Find("PlayerUI").Find("Contents");
         foreach (Transform _block in _playerUI.Find("Blocks"))
         {
-            SkillBlock _skillBlock = _block.GetComponent<SkillBlock>();
-            skillBlocks.Add(_skillBlock.skillType, _skillBlock);
+            if (_block.TryGetComponent<SkillBlock>(out var _skillBlock)) 
+                skillBlocks.Add(_skillBlock.skillType, _skillBlock);
         }
-
-        healthBar   = _playerUI.Find("Gauges").Find("HP").GetComponent<Slider>();
-        healthIndex = healthBar.transform.Find("Value").GetComponent<TMP_Text>();
-
-        expBar     = _playerUI.Find("EXP").GetComponent<Slider>();
-        levelIndex = expBar.transform.Find("Value").GetComponent<TMP_Text>();
-
-        resourceBar = _playerUI.Find("Gauges").Find("Resources").GetComponent<CellSlider>();
     }
 
     private int _cachedMaxHealth = -1;

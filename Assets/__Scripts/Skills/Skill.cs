@@ -21,7 +21,7 @@ public class Skill : MonoBehaviour, IUseable
             if (SkillType == SkillTypes.Primary)
                 _remainingCooldown = Cooldown / Stats.attackSpeed - (Time.time - LastUsedTime);
             else
-                _remainingCooldown = 0;
+                _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
 
             /*쿨타임 Modifier가 있을때만 작동하도록 해야함 -- 아니면 Cooldown 프로퍼티를 수정하는 방법도 있을듯*/
             // if (SkillType != SkillTypes.Primary && _remainingCooldown < .5f) 

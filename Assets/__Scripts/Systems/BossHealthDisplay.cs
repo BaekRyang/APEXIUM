@@ -1,16 +1,23 @@
 using MoreMountains.Tools;
 using UnityEngine;
 
-public class BossHealthDisplay : MonoBehaviour
+public static class BossHealthDisplay
 {
-    public static BossHealthDisplay Instance;
+    private static MMProgressBar Bar;
     
-    private void Awake() => Instance ??= this;
-
-    [SerializeField] private MMProgressBar _bar;
-    
-    public void SetHealth(float health)
+    public static void SetHealthByPercent(float p_health)
     {
-        _bar.UpdateBar01(health);
+        Bar.UpdateBar01(p_health);
     }
+
+    private static void Initialize(int p_maxHealth)
+    {
+        Bar.TextValueMultiplier = p_maxHealth;
+    }
+
+    // public static void SyncToBossHealthBar(this EnemyBase p_enemyBase)
+    // {
+    //     
+    // }
+
 }

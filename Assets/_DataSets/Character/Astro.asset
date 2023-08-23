@@ -30,6 +30,8 @@ MonoBehaviour:
     maxResource: 7
     commonResource: 0
     advancedResource: 0
+    criticalChance: 0.05
+    criticalDamage: 1.5
   skillPassive: Revolver
   skillPrimary: RevolverShot
   skillSecondary: PierceShot
