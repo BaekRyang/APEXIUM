@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     private void LoadSettings(PlayerData p_playerData)
     {
         _stats = new(p_playerData.stats);
-        UIElements.Instance.SetHealth(_stats.health, _stats.maxHealth);
+        UIElements.Instance.SetHealth(_stats.Health, _stats.MaxHealth);
 
         _playerController      = gameObject.AddComponent<PlayerController>();
         _animator              = GetComponent<Animator>();
@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
 
         Collider2D _collider2D = GetComponent<Collider2D>();
         _collider2D.sharedMaterial.friction = 0f;
+        
         _collider2D.enabled                 = false;
         _collider2D.enabled                 = true;
     }
@@ -85,11 +86,11 @@ public class Player : MonoBehaviour
 
     private bool HealthChange(int p_pDamage)
     {
-        Stats.health += p_pDamage;
+        Stats.Health += p_pDamage;
         if (clientID == GameManager.Instance.playerID) //해당 캐릭터가 자신의 캐릭터일때만 UI 업데이트
-            UIElements.Instance.SetHealth(Stats.health, Stats.maxHealth);
+            UIElements.Instance.SetHealth(Stats.Health, Stats.MaxHealth);
 
-        return Stats.health > 0; //체력이 0이하면 false 반환
+        return Stats.Health > 0; //체력이 0이하면 false 반환
     }
 
     private void Die(EnemyBase p_attacker)

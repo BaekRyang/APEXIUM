@@ -36,7 +36,7 @@ public class Revolver : Skill
     public static float GetReloadTime()
     {
         Player _player = GameManager.Instance.GetLocalPlayer();
-        return RELOAD_TIME_SECONDS / _player.Stats.attackSpeed; //공격속도에 따라 재장전 시간이 달라진다.
+        return RELOAD_TIME_SECONDS / _player.Stats.AttackSpeed; //공격속도에 따라 재장전 시간이 달라진다.
     }
 
     public static bool Reload()

@@ -3,44 +3,40 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [Serializable]
-public class PlayerStats : Stats<PlayerStats>
+public class PlayerStats : Stats
 {
-    [SerializeField] private int   ownerID;
-    [SerializeField] private int   exp;
-    [SerializeField] private int   maxExp;
-    [SerializeField] private int   maxJumpCount;
-    [SerializeField] private float jumpHeight;
-    [SerializeField] private int   resource;
-    [SerializeField] private int   maxResource;
-    [SerializeField] private int   commonResource;
-    [SerializeField] private int   advancedResource;
-    [SerializeField] private float   criticalChance;
-    [SerializeField] private float   criticalDamage;
-    
+    [SerializeField] protected int   exp;
+    [SerializeField] protected int   maxExp;
+    [SerializeField] protected int   maxJumpCount;
+    [SerializeField] protected float jumpHeight;
+    [SerializeField] protected int   resource;
+    [SerializeField] protected int   maxResource;
+    [SerializeField] protected int   commonResource;
+    [SerializeField] protected int   advancedResource;
+    [SerializeField] protected float criticalChance;
+    [SerializeField] protected float criticalDamage;
+
     public PlayerStats(PlayerStats p_other)
     {
-        ownerID         = p_other.ownerID;
-        health          = p_other.health;
-        maxHealth       = p_other.maxHealth;
-        attackDamage    = p_other.attackDamage;
-        speed           = p_other.speed;
-        level           = p_other.level;
-        defense         = p_other.defense;
-        attackSpeed     = p_other.attackSpeed;
-        exp             = p_other.exp;
-        maxExp          = p_other.maxExp;
-        maxJumpCount    = p_other.maxJumpCount;
-        jumpHeight      = p_other.jumpHeight;
-        resource        = p_other.resource;
-        maxResource     = p_other.maxResource;
-        commonResource  = p_other.commonResource;
+        health           = p_other.Health;
+        maxHealth        = p_other.MaxHealth;
+        attackDamage     = p_other.AttackDamage;
+        speed            = p_other.Speed;
+        level            = p_other.Level;
+        defense          = p_other.Defense;
+        attackSpeed      = p_other.AttackSpeed;
+        exp              = p_other.exp;
+        maxExp           = p_other.maxExp;
+        maxJumpCount     = p_other.maxJumpCount;
+        jumpHeight       = p_other.jumpHeight;
+        resource         = p_other.resource;
+        maxResource      = p_other.maxResource;
+        commonResource   = p_other.commonResource;
         advancedResource = p_other.advancedResource;
-        CriticalChance  = p_other.CriticalChance;
-        CriticalDamage  = p_other.CriticalDamage;
+        criticalChance   = p_other.CriticalChance;
+        criticalDamage   = p_other.CriticalDamage;
     }
-
-    public int OwnerID => ownerID;
-
+    
     public int Resource
     {
         get => resource;
@@ -97,7 +93,37 @@ public class PlayerStats : Stats<PlayerStats>
 
     public float CriticalDamage
     {
-        get => criticalDamage < 1 ? 1 : criticalDamage;
+        get
+        {
+            float _calculatedMultiplier = criticalDamage;
+            
+            //100%를 초과하는 크리티컬 확률의 50%만큼 크리티컬 데미지를 증가시킨다.
+            if (criticalChance > 1) 
+                _calculatedMultiplier += (1 - criticalChance) / 2;
+
+            //하한선 설정
+            if (_calculatedMultiplier < 1) _calculatedMultiplier = 1;
+
+            return _calculatedMultiplier;
+        }
         set => criticalDamage = value;
+    }
+
+    public int Exp
+    {
+        get => exp;
+        set
+        {
+            exp = value;
+            if (exp >= maxExp)
+                LevelUp();
+        }
+    }
+
+    private void LevelUp()
+    {
+        exp    -= maxExp;
+        maxExp += Convert.ToInt32(maxExp * 1.2f);
+        Level++;
     }
 }

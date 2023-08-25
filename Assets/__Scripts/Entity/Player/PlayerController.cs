@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private JumpDire _jumpDirection;
     private JumpDire _lastLadderJumpDirection;
 
-    private float Speed        => playerStats.speed;
+    private float Speed        => playerStats.Speed;
     private float JumpHeight   => playerStats.JumpHeight;
     private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
@@ -441,4 +441,6 @@ public class PlayerController : MonoBehaviour
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new(0, _rigidbody2D.velocity.y);
     }
+    
+    
 }

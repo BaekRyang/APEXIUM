@@ -28,7 +28,7 @@ public class UIElements : MonoBehaviour
 
     public void SetHealth(int p_currentHealth = -1, int p_maxHealth = -1)
     {
-        if (_cachedMaxHealth == -1) _cachedMaxHealth = GameManager.Instance.GetLocalPlayer().Stats.maxHealth;
+        if (_cachedMaxHealth == -1) _cachedMaxHealth = GameManager.Instance.GetLocalPlayer().Stats.MaxHealth;
         
         if (p_maxHealth == -1) //최대 체력이 -1이면 기존 최대 체력으로 설정
             p_maxHealth = _cachedMaxHealth;

@@ -105,7 +105,7 @@ public abstract class State : IState
     protected static void Move(EnemyAI p_enemyAI)
     {
         p_enemyAI.cachedTransform.position +=
-            p_enemyAI.targetDirection * (Time.deltaTime * p_enemyAI.enemyBase.stats.speed);
+            p_enemyAI.targetDirection * (Time.deltaTime * p_enemyAI.enemyBase.stats.Speed);
     }
 }
 
@@ -170,7 +170,7 @@ public class SWander : State
                 enemyAI.targetDirection.Normalize();
 
                 enemyAI.animator.SetBool("IsWalk", true);
-                enemyAI.cachedTransform.position += enemyAI.targetDirection * (Time.deltaTime * enemyAI.enemyBase.stats.speed);
+                enemyAI.cachedTransform.position += enemyAI.targetDirection * (Time.deltaTime * enemyAI.enemyBase.stats.Speed);
                 break;
 
             case WanderState.Waiting:
@@ -292,7 +292,7 @@ public class SAttack : State
         if (Time.time >= _nextAttackTime)
         {
             _lastAttackTime = Time.time;
-            _nextAttackTime = _lastAttackTime + 1 / enemyAI.enemyBase.stats.attackSpeed; //공격속도에 따라 다음 공격시간 계산
+            _nextAttackTime = _lastAttackTime + 1 / enemyAI.enemyBase.stats.AttackSpeed; //공격속도에 따라 다음 공격시간 계산
 
             _attackTask = Attack();
         }
@@ -307,10 +307,10 @@ public class SAttack : State
     {
         enemyAI.animator.SetTrigger("Attack");
 
-        enemyAI.animator.speed = enemyAI.enemyBase.stats.attackSpeed * 2f;
+        enemyAI.animator.speed = enemyAI.enemyBase.stats.AttackSpeed * 2f;
 
         var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
-        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI.enemyBase.stats.attackDamage, 0, enemyAI.enemyBase);
+        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI.enemyBase.stats.AttackDamage, 0, enemyAI.enemyBase);
 
         float _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length / enemyAI.animator.speed; //공격속도 영향을 받음
         

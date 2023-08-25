@@ -24,14 +24,14 @@ public class Roll : Skill
 
         var _force = (int)Player.Controller.PlayerFacing * //방향
                      POWER                               * //스킬 기본 속도
-                     Player.Stats.speed                  * //플레이어 속도
+                     Player.Stats.Speed                  * //플레이어 속도
                      Vector2.right;
         
         Player.Controller.Rigidbody2D.AddForce(_force, ForceMode2D.Impulse);
         //AddForce를 사용하면 플레이어가 점프를 했을때 속도가 크게 증가하는 현상이 있어서 속도 제한
-        if (Mathf.Abs(Player.Controller.Rigidbody2D.velocity.x) > Player.Stats.speed * POWER) //플레이어의 속도가 의도보다 높다면
+        if (Mathf.Abs(Player.Controller.Rigidbody2D.velocity.x) > Player.Stats.Speed * POWER) //플레이어의 속도가 의도보다 높다면
             Player.Controller.Rigidbody2D.velocity =  //의도한 속도 + 20% 정도로 제한
-                new(Player.Stats.speed * POWER * (int)Player.Controller.PlayerFacing * 1.2f,
+                new(Player.Stats.Speed * POWER * (int)Player.Controller.PlayerFacing * 1.2f,
                     Player.Controller.Rigidbody2D.velocity.y);
         
         Player._animator.SetTrigger("Roll");

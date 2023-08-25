@@ -57,7 +57,7 @@ public class RevolverShot : AttackableSkill
         //     Player.Controller.SetControllable(true);
         // });
 
-        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.attackSpeed));
+        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.AttackSpeed));
 
         if (Stats.Resource == 0)
             Revolver.Reload();

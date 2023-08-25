@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class AttackableSkill : Skill, IAttackable
 {
     protected Facing Facing        => Player.Controller.PlayerFacing;
-    private   float  StatDamage    => GameManager.Instance.GetLocalPlayer().Stats.attackDamage;
+    private   float  StatDamage    => GameManager.Instance.GetLocalPlayer().Stats.AttackDamage;
     private   float  CriticalChance => GameManager.Instance.GetLocalPlayer().Stats.CriticalChance;
     private   float  CriticalDamage => GameManager.Instance.GetLocalPlayer().Stats.CriticalDamage;
     public    float  SkillDamage   { get; set; }

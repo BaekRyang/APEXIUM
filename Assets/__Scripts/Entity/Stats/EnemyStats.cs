@@ -21,7 +21,7 @@ public enum EliteType
 }
 
 [Serializable]
-public class EnemyStats : Stats<EnemyStats>
+public class EnemyStats : Stats
 {
     [SerializeField] public string          enemyName;
     [SerializeField] public bool            canDazed;
@@ -36,13 +36,13 @@ public class EnemyStats : Stats<EnemyStats>
     public EnemyStats(EnemyData p_data)
     {
         enemyName      = p_data.enemyName;
-        health         = p_data.stats.health;
-        maxHealth      = p_data.stats.maxHealth;
-        attackDamage   = p_data.stats.attackDamage;
-        speed          = p_data.stats.speed;
-        level          = p_data.stats.level;
-        defense        = p_data.stats.defense;
-        attackSpeed    = p_data.stats.attackSpeed;
+        Health         = p_data.stats.Health;
+        MaxHealth      = p_data.stats.MaxHealth;
+        AttackDamage   = p_data.stats.AttackDamage;
+        Speed          = p_data.stats.Speed;
+        Level          = p_data.stats.Level;
+        Defense        = p_data.stats.Defense;
+        AttackSpeed    = p_data.stats.AttackSpeed;
         canDazed       = p_data.stats.canDazed;
         canStun        = p_data.stats.canStun;
         canKnockback   = p_data.stats.canKnockback;
@@ -56,13 +56,13 @@ public class EnemyStats : Stats<EnemyStats>
     public EnemyStats(EnemyStats p_other)
     {
         enemyName      = p_other.enemyName;
-        health         = p_other.health;
-        maxHealth      = p_other.maxHealth;
-        attackDamage   = p_other.attackDamage;
-        speed          = p_other.speed;
-        level          = p_other.level;
-        defense        = p_other.defense;
-        attackSpeed    = p_other.attackSpeed;
+        Health         = p_other.Health;
+        MaxHealth      = p_other.MaxHealth;
+        AttackDamage   = p_other.AttackDamage;
+        Speed          = p_other.Speed;
+        Level          = p_other.Level;
+        Defense        = p_other.Defense;
+        AttackSpeed    = p_other.AttackSpeed;
         canDazed       = p_other.canDazed;
         canStun        = p_other.canStun;
         canKnockback   = p_other.canKnockback;

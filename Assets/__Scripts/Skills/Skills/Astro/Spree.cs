@@ -59,7 +59,7 @@ public class Spree : AttackableSkill
                 }
             }
 
-            yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Stats.attackSpeed);
+            yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Stats.AttackSpeed);
         } while (ConsumeResource());
 
         Revolver.Reload();

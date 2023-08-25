@@ -19,7 +19,7 @@ public class Skill : MonoBehaviour, IUseable
         {
             float _remainingCooldown;
             if (SkillType == SkillTypes.Primary)
-                _remainingCooldown = Cooldown / Stats.attackSpeed - (Time.time - LastUsedTime);
+                _remainingCooldown = Cooldown / Stats.AttackSpeed - (Time.time - LastUsedTime);
             else
                 _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
 
@@ -39,7 +39,7 @@ public class Skill : MonoBehaviour, IUseable
         {
             float _realCooldown;
             if (SkillType == SkillTypes.Primary)
-                _realCooldown = Cooldown / Stats.attackSpeed;
+                _realCooldown = Cooldown / Stats.AttackSpeed;
             else
                 _realCooldown = Cooldown;
 

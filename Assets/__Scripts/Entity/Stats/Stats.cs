@@ -1,46 +1,59 @@
 using System;
+using UnityEngine;
 
 [Serializable]
-public class Stats<T> where T : Stats<T>
+public class Stats
 {
-    //제네릭 자기참조 형식으로 정의되었기 때문에, "T"는 Stats<T>를 상속받는 클래스여야 한다.
-    //Stats는 자신을 상속받아야 하기 때문에 인스턴스화 할 수 없다.
-
-    public int   health       = 100;
-    public int   maxHealth    = 100;
-    public int   attackDamage = 10;
-    public float speed        = 5;
-    public int   level        = 1;
-    public int   defense      = 1;
-    public float attackSpeed  = 1;
-
-    public T SetHealth(int p_health)
+    [SerializeField] protected int   health       = 100;
+    [SerializeField] protected int   maxHealth    = 100;
+    [SerializeField] protected int   attackDamage = 10;
+    [SerializeField] protected float speed        = 5;
+    [SerializeField] protected int   level        = 1;
+    [SerializeField] protected int   defense      = 1;
+    [SerializeField] protected float attackSpeed  = 1;
+    
+    public int Health
     {
-        health = maxHealth = p_health;
-        return (T)this;
+        get => health;
+
+        set => health = (health + value > MaxHealth) ?
+            MaxHealth :
+            value; //초과분 생기지 않도록 제한
     }
 
-    public T SetAttackDamage(int p_attackDamage)
+    public int MaxHealth
     {
-        attackDamage = p_attackDamage;
-        return (T)this;
+        get => maxHealth;
+        set => maxHealth = value;
     }
 
-    public T SetSpeed(float p_speed)
+    public int AttackDamage
     {
-        speed = p_speed;
-        return (T)this;
+        get => attackDamage;
+        set => attackDamage = value;
     }
 
-    public T SetDefense(int p_defense)
+    public float Speed
     {
-        defense = p_defense;
-        return (T)this;
+        get => speed;
+        set => speed = value;
     }
 
-    public T SetAttackSpeed(float p_attackSpeed)
+    public int Level
     {
-        attackSpeed = p_attackSpeed;
-        return (T)this;
+        get => level;
+        set => level = value;
+    }
+
+    public int Defense
+    {
+        get => defense;
+        set => defense = value;
+    }
+
+    public float AttackSpeed
+    {
+        get => attackSpeed;
+        set => attackSpeed = value;
     }
 }

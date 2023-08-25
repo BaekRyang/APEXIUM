@@ -15,7 +15,7 @@ public class BossHealthDisplay : MonoBehaviour
 
     private void UpdateHealth()
     {
-        bar.UpdateBar(Math.Max(0, _syncedEnemyBase.stats.health), 0, _syncedEnemyBase.stats.maxHealth);
+        bar.UpdateBar(Math.Max(0, _syncedEnemyBase.stats.Health), 0, _syncedEnemyBase.stats.MaxHealth);
     }
 
     public void SyncToBossHealthBar(EnemyBase p_enemyBase, int p_priority = 0)
@@ -24,7 +24,7 @@ public class BossHealthDisplay : MonoBehaviour
 
         _syncedEnemyBase = p_enemyBase;
 
-        bar.TextValueMultiplier = p_enemyBase.stats.maxHealth;
+        bar.TextValueMultiplier = p_enemyBase.stats.MaxHealth;
         _priority               = p_priority;
 
         _syncedEnemyBase.OnEnemyHpChange += OnHealthChange;
@@ -43,6 +43,7 @@ public class BossHealthDisplay : MonoBehaviour
 
     private void OnHealthChange(object p_sender, EventArgs p_args)
     {
+        Debug.Log("ACTIVATE");
         if (_syncedEnemyBase != (EnemyBase)p_sender) return;
         UpdateHealth();
     }

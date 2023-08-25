@@ -68,7 +68,7 @@ public class EnemyBase : MonoBehaviour
         if (stats.canKnockback)
             Knockback(p_pAttacker, 200);
 
-        if (stats.health <= 0)
+        if (stats.Health <= 0)
         {
             _enemyAI.animator.SetTrigger("Die");
             Destroy(this);
@@ -76,14 +76,14 @@ public class EnemyBase : MonoBehaviour
             GetComponent<Rigidbody2D>().simulated = false;
             GetComponent<Collider2D>().enabled    = false;
             
-            if (OnEnemyHpChange.GetInvocationList().Length > 0) //구독중이면
+            if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
                 BossHealthDisplay.Instance.UnSyncToBossHealthBar(this);
         }
     }
 
     private void GetDamage(int p_pDamage)
     {
-        stats.health -= p_pDamage;
+        stats.Health -= p_pDamage;
 
         //TODO: BossHealthBarDisplay에 어떤식으로 연결시켜서 값을 동기화 시킬까
         OnEnemyHpChange?.Invoke(this, EventArgs.Empty);
