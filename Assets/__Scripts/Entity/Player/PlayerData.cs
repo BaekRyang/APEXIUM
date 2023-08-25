@@ -18,14 +18,6 @@ public class PlayerData : ScriptableObject
     public string skillPrimary;
     public string skillSecondary;
     public string skillUtility;
-    public string skillUltimate; }
-
-public class TestEvent
-{
-    public event EventHandler OnTestEvent;
-    
-    public void Test()
-    {
-        OnTestEvent?.Invoke(this, EventArgs.Empty);
-    }
+    public string skillUltimate; 
 }
+    

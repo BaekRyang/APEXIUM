@@ -11,4 +11,8 @@ public class EnemyData : ScriptableObject
 
     [Space] [Header("Stats")]
     public EnemyStats stats;
+    
+    
+    [Space] [Header("Is Boss")]
+    public bool isBoss;
 }

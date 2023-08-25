@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Frost
   stats:
-    health: 200
-    maxHealth: 200
+    health: 2147483647
+    maxHealth: 2147483647
     attackDamage: 10
     speed: 4
     level: 1
@@ -26,6 +26,8 @@ MonoBehaviour:
     canStun: 1
     canKnockback: 1
     chaseDistance: 20
+    eliteType: 0
     attackType: 0
     attackRange: 5
     stopWhenAttack: 1
+  isBoss: 1

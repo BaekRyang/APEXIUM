@@ -14,17 +14,14 @@ public class UIElements : MonoBehaviour
     public Slider     expBar;
     public TMP_Text   levelIndex;
     public CellSlider resourceBar;
-
     private void Awake()
     {
         Instance ??= this;
-
-        Transform _playerUI = transform.Find("PlayerUI").Find("Contents");
-        foreach (Transform _block in _playerUI.Find("Blocks"))
-        {
-            if (_block.TryGetComponent<SkillBlock>(out var _skillBlock)) 
-                skillBlocks.Add(_skillBlock.skillType, _skillBlock);
-        }
+    }
+    
+    public void AddSkillBlock(SkillTypes p_skillType, SkillBlock p_skillBlock)
+    {
+        skillBlocks[p_skillType] = p_skillBlock;
     }
 
     private int _cachedMaxHealth = -1;
@@ -51,7 +48,8 @@ public class UIElements : MonoBehaviour
 
     public void SetLevelIndex(int p_level) => levelIndex.text = $"{p_level}";
 
-    public void SetCoolDown(SkillTypes p_skillType, float p_cooldown) => skillBlocks[p_skillType].SetCoolDown(p_cooldown);
+    public void SetCoolDown(SkillTypes p_skillType, float p_cooldown, float p_remainCooldown) =>
+        skillBlocks[p_skillType].SetCoolDown(p_cooldown, p_remainCooldown);
 
     // public void Notified(NotifyTypes p_type, object p_value)
     // {

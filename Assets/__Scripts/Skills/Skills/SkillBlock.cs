@@ -10,15 +10,22 @@ public class SkillBlock : MonoBehaviour
     public  SkillTypes skillType;
     private float      _blockSize;
     private Image      _mainImage;
-    private GameObject _cooldownImage;
+    private GameObject _cooldownObject;
     private TMP_Text   _cooldownText;
+    private Image      _cooldownImage;
 
     private void Awake()
     {
         _blockSize     = transform.GetComponent<RectTransform>().rect.width;
         _mainImage     = transform.GetComponent<Image>();
-        _cooldownImage = transform.Find("Disabled").gameObject;
-        _cooldownText  = _cooldownImage.transform.GetChild(0).GetComponent<TMP_Text>();
+        _cooldownObject = transform.Find("Disabled").gameObject;
+        _cooldownText  = _cooldownObject.transform.GetChild(0).GetComponent<TMP_Text>();
+        _cooldownImage = _cooldownObject.GetComponent<Image>();
+    }
+
+    private void Start()
+    {
+        UIElements.Instance.AddSkillBlock(skillType, this);
     }
 
     public void SetMainImage(Image p_image)
@@ -26,15 +33,19 @@ public class SkillBlock : MonoBehaviour
         _mainImage = p_image;
     }
 
-    public void SetCoolDown(float p_cooldown)
+    public void SetCoolDown(float p_cooldown, float p_remainCooldown)
     {
-        if (p_cooldown > 0)
+        if (p_remainCooldown > 0)
         {
-            _cooldownImage.SetActive(true);
-            _cooldownText.text = p_cooldown >= 1 ? $"{p_cooldown:0.0}" : $"{p_cooldown:0.00}"; //1초 이상이면 정수, 1초 미만이면 소수점 첫째자리까지
+            _cooldownObject.SetActive(true);
+            _cooldownText.text = p_remainCooldown >= 1
+                ? $"{p_remainCooldown:0.0}"   //1초 이상이면 소수점 첫째자리까지
+                : $"{p_remainCooldown:0.00}"; //1초 미만이면 소수점 둘째자리까지
+            _cooldownImage                                   = _cooldownObject.GetComponent<Image>();
+            _cooldownImage.fillAmount = p_remainCooldown / p_cooldown;
         }
         else
-            _cooldownImage.SetActive(false);
+            _cooldownObject.SetActive(false);
     }
 }
 

@@ -13,17 +13,24 @@ public class EnemyBase : MonoBehaviour
     private MMF_FloatingText _floatingText;
 
     public EnemyStats stats;
+    
+    public event EventHandler OnEnemyHpChange;
+    
 
     private void Start()
     {
-        stats = new(GameManager.Instance.GetEnemyData("Frost"));
+        var _enemyData = GameManager.Instance.GetEnemyData("Frost");
+        stats = new(_enemyData);
+
+        if (_enemyData.isBoss)
+            BossHealthDisplay.Instance.SyncToBossHealthBar(this);
 
         _enemyAI = GetComponent<EnemyAI>();
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
         _damageFeedback.Initialization();
-        
-        _floatingText   = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
+
+        _floatingText = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
     }
 
     private readonly Dictionary<uint, uint> _attackID = new();
@@ -50,7 +57,6 @@ public class EnemyBase : MonoBehaviour
 
         //여기서 오류나면 Exception 처리만 해주면 됨
         _damageFeedback.PlayFeedbacks();
-        
 
         if (p_stunDuration == 0)
             _enemyAI.Daze();
@@ -62,7 +68,6 @@ public class EnemyBase : MonoBehaviour
         if (stats.canKnockback)
             Knockback(p_pAttacker, 200);
 
-
         if (stats.health <= 0)
         {
             _enemyAI.animator.SetTrigger("Die");
@@ -70,15 +75,19 @@ public class EnemyBase : MonoBehaviour
             Destroy(_enemyAI);
             GetComponent<Rigidbody2D>().simulated = false;
             GetComponent<Collider2D>().enabled    = false;
+            
+            if (OnEnemyHpChange.GetInvocationList().Length > 0) //구독중이면
+                BossHealthDisplay.Instance.UnSyncToBossHealthBar(this);
         }
     }
 
     private void GetDamage(int p_pDamage)
     {
         stats.health -= p_pDamage;
-        
+
         //TODO: BossHealthBarDisplay에 어떤식으로 연결시켜서 값을 동기화 시킬까
-        // BossHealthDisplay.SetHealthByPercent((float)stats.health / stats.maxHealth);
+        OnEnemyHpChange?.Invoke(this, EventArgs.Empty);
+        
     }
 
     private void Knockback(Player p_pAttacker, float p_pKnockbackForce)
@@ -87,5 +96,15 @@ public class EnemyBase : MonoBehaviour
 
         // GetComponent<Rigidbody2D>().velocity = _knockbackDirection * p_pKnockbackForce;
         GetComponent<Rigidbody2D>().AddForce(_knockbackDirection * p_pKnockbackForce, ForceMode2D.Impulse);
+    }
+}
+
+public class EEnemyHpChange
+{
+    public event EventHandler OnEnemyHpChange;
+
+    public void HpChanged()
+    {
+        OnEnemyHpChange?.Invoke(this, EventArgs.Empty);
     }
 }

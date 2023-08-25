@@ -33,14 +33,28 @@ public class Skill : MonoBehaviour, IUseable
         set => LastUsedTime = Time.time + value - Cooldown; //설정한 값으로 쿨타임 변경
     }
 
+    public float RealCooldown
+    {
+        get
+        {
+            float _realCooldown;
+            if (SkillType == SkillTypes.Primary)
+                _realCooldown = Cooldown / Stats.attackSpeed;
+            else
+                _realCooldown = Cooldown;
+
+            return _realCooldown;
+        }
+    }
+
     public float LastUsedTime { get; set; } = float.MinValue; //최소값 안쓰면 쿨타임이 돌아가는 상태로 시작함
 
     public virtual bool Play() => false;
 
     protected virtual void Update()
     {
-        // if (SkillType != SkillTypes.Primary) //쿨타임 UI 업데이트
-        UIElements.Instance.SetCoolDown(SkillType, RemainingCooldown);
+        if (RealCooldown > .1f) //너무 짧은 쿨타임은 보여주지 않음
+        UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown);
     }
 
     protected bool CanUse()

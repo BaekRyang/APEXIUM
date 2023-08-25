@@ -64,8 +64,9 @@ public class CellSlider : MonoBehaviour
         _backGroundRect.anchorMin   = _backGroundRect.offsetMin = _backGroundRect.offsetMax = new(0, 0);
 
         HorizontalLayoutGroup layoutGroup = _backGroundRect.AddComponent<HorizontalLayoutGroup>();
-
-        layoutGroup.childControlHeight = layoutGroup.childControlWidth = layoutGroup.childForceExpandHeight = layoutGroup.childControlWidth = true;
+        layoutGroup.childAlignment     = TextAnchor.MiddleLeft;
+        layoutGroup.spacing            = 10;
+        layoutGroup.childControlHeight = layoutGroup.childControlWidth = layoutGroup.childForceExpandHeight = layoutGroup.childForceExpandWidth = false;
 
         //자식으로 CellObject를 maxValue만큼 생성해준다.
         for (int i = 0; i < maxValue; i++)
