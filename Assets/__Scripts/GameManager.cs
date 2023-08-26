@@ -17,26 +17,28 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerData[] characters;
     [SerializeField] private EnemyData[]  monsters;
 
-    [DoNotSerialize] private readonly Dictionary<int, Player>        Players        = new();
-    [DoNotSerialize] private readonly Dictionary<string, PlayerData> CharactersData = new();
-    [DoNotSerialize] private readonly Dictionary<string, EnemyData>  MonstersData   = new();
+    [DoNotSerialize] private readonly Dictionary<int, Player>        _players        = new();
+    [DoNotSerialize] private readonly Dictionary<string, PlayerData> _charactersData = new();
+    [DoNotSerialize] private readonly Dictionary<string, EnemyData>  _monstersData   = new();
 
+
+    
     public CinemachineVirtualCamera virtualCamera;
 
     public Player GetRandomPlayer()
     {
-        if (Players.Count <= 0)
+        if (_players.Count <= 0)
             return null;
 
-        return Players[Random.Range(0, Players.Count)];
+        return _players[Random.Range(0, _players.Count)];
     }
 
-    public Player[] GetPlayers() => Players.Values.ToArray();
+    public Player[] GetPlayers() => _players.Values.ToArray();
 
-    public Player GetLocalPlayer() => Players[playerID];
+    public Player GetLocalPlayer() => _players[playerID];
 
-    public PlayerData GetCharacterData(string p_name) => CharactersData[p_name];
-    public EnemyData  GetEnemyData(string     p_name) => MonstersData[p_name];
+    public PlayerData GetCharacterData(string p_name) => _charactersData[p_name];
+    public EnemyData  GetEnemyData(string     p_name) => _monstersData[p_name];
 
     private void Awake()
     {
@@ -44,10 +46,12 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         foreach (var _character in characters)
-            CharactersData.Add(_character.name, _character);
+            _charactersData.Add(_character.name, _character);
 
         foreach (var _monster in monsters)
-            MonstersData.Add(_monster.name, _monster);
+            _monstersData.Add(_monster.name, _monster);
+
+
     }
 
     public void InstantiatePlayer(int p_newPlayerID)
@@ -60,12 +64,12 @@ public class GameManager : MonoBehaviour
         _player.transform.name = $"Player {p_newPlayerID}";
 
         _player.GetComponent<Player>().clientID = p_newPlayerID;
-        Players.Add(p_newPlayerID, _player.GetComponent<Player>());
+        _players.Add(p_newPlayerID, _player.GetComponent<Player>());
     }
 
     public void RemovePlayer(int p_playerID)
     {
-        Destroy(Players[p_playerID].gameObject);
-        Players.Remove(p_playerID);
+        Destroy(_players[p_playerID].gameObject);
+        _players.Remove(p_playerID);
     }
 }

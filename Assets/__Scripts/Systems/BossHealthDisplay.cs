@@ -43,7 +43,6 @@ public class BossHealthDisplay : MonoBehaviour
 
     private void OnHealthChange(object p_sender, EventArgs p_args)
     {
-        Debug.Log("ACTIVATE");
         if (_syncedEnemyBase != (EnemyBase)p_sender) return;
         UpdateHealth();
     }

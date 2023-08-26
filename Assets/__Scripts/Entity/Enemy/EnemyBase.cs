@@ -31,6 +31,8 @@ public class EnemyBase : MonoBehaviour
         _damageFeedback.Initialization();
 
         _floatingText = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
+
+        DifficultyManager.Instance.OnDifficultyChange += LevelUp;
     }
 
     private readonly Dictionary<uint, uint> _attackID = new();
@@ -96,6 +98,11 @@ public class EnemyBase : MonoBehaviour
 
         // GetComponent<Rigidbody2D>().velocity = _knockbackDirection * p_pKnockbackForce;
         GetComponent<Rigidbody2D>().AddForce(_knockbackDirection * p_pKnockbackForce, ForceMode2D.Impulse);
+    }
+    
+    private void LevelUp(object p_sender, EventArgs p_args)
+    {
+        
     }
 }
 

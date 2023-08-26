@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -36,7 +37,7 @@ public class PlayerStats : Stats
         criticalChance   = p_other.CriticalChance;
         criticalDamage   = p_other.CriticalDamage;
     }
-    
+
     public int Resource
     {
         get => resource;
@@ -87,7 +88,9 @@ public class PlayerStats : Stats
 
     public float CriticalChance
     {
-        get => criticalChance > 1 ? 1 : criticalChance;
+        get => criticalChance > 1 ?
+            1 :
+            criticalChance;
         set => criticalChance = value;
     }
 
@@ -96,9 +99,9 @@ public class PlayerStats : Stats
         get
         {
             float _calculatedMultiplier = criticalDamage;
-            
+
             //100%를 초과하는 크리티컬 확률의 50%만큼 크리티컬 데미지를 증가시킨다.
-            if (criticalChance > 1) 
+            if (criticalChance > 1)
                 _calculatedMultiplier += (1 - criticalChance) / 2;
 
             //하한선 설정
@@ -120,10 +123,16 @@ public class PlayerStats : Stats
         }
     }
 
-    private void LevelUp()
+    private async void LevelUp()
     {
-        exp    -= maxExp;
-        maxExp += Convert.ToInt32(maxExp * 1.2f);
-        Level++;
+        Debug.Log("levelup");
+        do
+        {
+            exp    -= maxExp;
+            Debug.Log($"max exp: {maxExp} => {Convert.ToInt32(maxExp * 1.2f)}");
+            maxExp += Convert.ToInt32(maxExp * 0.2f);
+            Level++;
+            await UniTask.Delay(10);
+        } while (exp >= maxExp);
     }
 }
