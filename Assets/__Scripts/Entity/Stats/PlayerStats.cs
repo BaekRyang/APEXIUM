@@ -72,7 +72,7 @@ public class PlayerStats : Stats
         set
         {
             commonResource                        = value;
-            Resources.Instance.ResourceValue.text = value.ToString();
+            // Resources.Instance.ResourceValue.text = value.ToString();
         }
     }
 
@@ -82,7 +82,7 @@ public class PlayerStats : Stats
         set
         {
             advancedResource                              = value;
-            Resources.Instance.AdvancedResourceValue.text = value.ToString();
+            // Resources.Instance.AdvancedResourceValue.text = value.ToString();
         }
     }
 
@@ -132,7 +132,7 @@ public class PlayerStats : Stats
             Debug.Log($"max exp: {maxExp} => {Convert.ToInt32(maxExp * 1.2f)}");
             maxExp += Convert.ToInt32(maxExp * 0.2f);
             Level++;
-            await UniTask.Delay(10);
+            await UniTask.Delay(10); //TODO: 무한 루프 방지용(없애야함)
         } while (exp >= maxExp);
     }
 }

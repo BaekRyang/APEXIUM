@@ -21,9 +21,8 @@ MonoBehaviour:
     level: 1
     defense: 1
     attackSpeed: 1
-    ownerID: 0
     exp: 0
-    maxExp: 0
+    maxExp: 100
     maxJumpCount: 1
     jumpHeight: 10
     resource: 7

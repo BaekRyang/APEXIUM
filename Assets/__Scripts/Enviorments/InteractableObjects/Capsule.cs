@@ -16,8 +16,8 @@ public class Capsule : InteractableObject
 
     protected override void InteractAction()
     {
-        ItemManager.Instance.GetPickupObject(PickupType.Exp, _expAmount, transform);
-        ItemManager.Instance.GetPickupObject(PickupType.Resource, _resourceAmount, transform);
+        ItemManager.Instance.InstantiatePickupObjects(PickupType.Exp, _expAmount, transform);
+        ItemManager.Instance.InstantiatePickupObjects(PickupType.Resource, _resourceAmount, transform);
 
     }
 }

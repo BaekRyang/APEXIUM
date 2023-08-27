@@ -26,7 +26,7 @@ public class ItemManager : MonoBehaviour
     [SerializeField] private Sprite     exp, health, resource;
     [SerializeField] private GameObject pickupPrefab;
 
-    public void GetPickupObject(PickupType p_pickupType, int p_value, Transform p_transform)
+    public void InstantiatePickupObjects(PickupType p_pickupType, int p_value, Transform p_transform)
     {
         if (p_value <= 0) return;
 
@@ -34,33 +34,37 @@ public class ItemManager : MonoBehaviour
         int _medium = (p_value % (int)PickupSize.Large) / (int)PickupSize.Medium;
         int _small  = (p_value % (int)PickupSize.Large) % (int)PickupSize.Medium;
 
-        List<GameObject> _pickups = new List<GameObject>();
 
-        for (int _i = 0; _i < _large; _i++) _pickups.Add(GetPickupObject(p_pickupType,  PickupSize.Large,  p_transform));
-        for (int _i = 0; _i < _medium; _i++) _pickups.Add(GetPickupObject(p_pickupType, PickupSize.Medium, p_transform));
-        for (int _i = 0; _i < _small; _i++) _pickups.Add(GetPickupObject(p_pickupType,  PickupSize.Small,  p_transform));
-    }
-
-    private GameObject GetPickupObject(PickupType p_pickupType, PickupSize p_pickupSize, Transform p_transform)
-    {
-        GameObject     _pickup               = Instantiate(pickupPrefab, p_transform);
-        Pickup         _pickupComponent      = _pickup.GetComponent<Pickup>();
-        SpriteRenderer _pickupSpriteRenderer = _pickup.GetComponent<SpriteRenderer>();
-
-        _pickup.transform.localScale *= GetPickupSize(p_pickupSize);
-        
-        _pickupComponent.Initialize(p_pickupType, p_pickupSize);
-
-        _pickupSpriteRenderer.sprite = p_pickupType switch
+        PickupPool.Instance.GetAvailablePickupComponents(p_pickupType, _large).ForEach(p_pickup =>
         {
-            PickupType.Resource => resource,
-            PickupType.Exp      => exp,
-            PickupType.Health   => health,
-            _                   => throw new ArgumentOutOfRangeException(nameof(p_pickupType), p_pickupType, null)
-        };
-
-        return _pickup;
+            p_pickup.PickupValue = (int)PickupSize.Large;
+            p_pickup.transform.position = p_transform.position + Vector3.up;
+            p_pickup.transform.localScale *= GetPickupSize(PickupSize.Large);
+            p_pickup.gameObject.SetActive(true);
+            p_pickup.InitializeMove();
+        });
+        PickupPool.Instance.GetAvailablePickupComponents(p_pickupType, _medium).ForEach(p_pickup =>
+        {
+            p_pickup.PickupValue = (int)PickupSize.Medium;
+            p_pickup.transform.position = p_transform.position + Vector3.up;
+            p_pickup.transform.localScale *= GetPickupSize(PickupSize.Large);
+            p_pickup.gameObject.SetActive(true);
+            p_pickup.InitializeMove();
+        });
+        PickupPool.Instance.GetAvailablePickupComponents(p_pickupType, _small).ForEach(p_pickup =>
+        {
+            p_pickup.PickupValue = (int)PickupSize.Small;
+            p_pickup.transform.position = p_transform.position + Vector3.up;
+            p_pickup.transform.localScale *= GetPickupSize(PickupSize.Large);
+            p_pickup.gameObject.SetActive(true);
+            p_pickup.InitializeMove();
+        });
+        
+        // for (int _i = 0; _i < _large; _i++) InstantiatePickupObject(p_pickupType,  PickupSize.Large,  p_transform);
+        // for (int _i = 0; _i < _medium; _i++) InstantiatePickupObject(p_pickupType, PickupSize.Medium, p_transform);
+        // for (int _i = 0; _i < _small; _i++) InstantiatePickupObject(p_pickupType,  PickupSize.Small,  p_transform);
     }
+
 
     private float GetPickupSize(PickupSize p_pickupSize) => p_pickupSize switch
     {

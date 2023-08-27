@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &318169722571219088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3061965199755538840}
+  - component: {fileID: 1754374989283793338}
+  m_Layer: 10
+  m_Name: PickupRadius
+  m_TagString: PlayerPickRadius
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3061965199755538840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318169722571219088}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4767530001285458281}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1754374989283793338
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318169722571219088}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 4
 --- !u!1 &8507936562652422801
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,6 +302,7 @@ MonoBehaviour:
         Lifetime: 0.5
         PositionMode: 1
         TargetTransform: {fileID: 0}
+        TargetPosition: {x: 0, y: 0, z: 0}
         Direction: {x: 0, y: 0, z: 0}
 --- !u!1001 &4647587252540870357
 PrefabInstance:
@@ -440,6 +508,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 903870790415719040}
+    - targetCorrespondingSourceObject: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3061965199755538840}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -476,6 +548,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientID: 0
   _animator: {fileID: 0}
+  dead: 0
 --- !u!61 &1567256225218026895
 BoxCollider2D:
   m_ObjectHideFlags: 0

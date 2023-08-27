@@ -7,44 +7,35 @@ using Random = UnityEngine.Random;
 public class Pickup : MonoBehaviour
 {
     [SerializeField] private PickupType type;
-    [SerializeField] private int        value;
+    [SerializeField] private int        size;
     [SerializeField] private bool       interactable;
     public                   Vector2    _targetPosition;
     public                   Vector2    _randomDirection;
 
-    public void Initialize(PickupType p_type, PickupSize p_pickupSize)
+    public Rigidbody2D _rigidbody2D;
+    
+    
+    public PickupType PickupType
     {
-        type  = p_type;
-        value = (int)p_pickupSize;
-
-        InitializeMove();
+        get => type;
+        set => type = value;
+    }
+    
+    public int PickupValue
+    {
+        get => size;
+        set => size = value;
     }
 
-    private async void InitializeMove()
+    public async void InitializeMove()
     {
         Debug.Log("InitializeMove");
         switch (type)
         {
             case PickupType.Resource:
-                Rigidbody2D _rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
-                _rigidbody2D.freezeRotation = true;
-                _rigidbody2D.gravityScale   = 2;
-                _rigidbody2D.angularDrag    = Random.Range(1f, 2f);
-
-                _rigidbody2D.sharedMaterial = new PhysicsMaterial2D
-                                              {
-                                                  bounciness = Random.Range(0.5f, .8f),
-                                                  friction   = Random.Range(0.2f, .4f)
-                                              };
-
-                
-                BoxCollider2D _collider = gameObject.AddComponent<BoxCollider2D>();
-                _collider.excludeLayers = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Pickup");
-
-                
                 //위쪽 방향으로 랜덤한 힘을 가함
-                _rigidbody2D.AddForce(new Vector2(Random.Range(-1f, 1f), Random.Range(0f, 1f)) * 5f, ForceMode2D.Impulse);
-                await UniTask.Delay(1000);
+                _rigidbody2D.AddForce(new Vector2(Random.Range(-.7f, .7f), Random.Range(1f, 2f)) * 7.5f, ForceMode2D.Impulse);
+                await UniTask.Delay(1500);
                 break;
 
             case PickupType.Exp:
@@ -72,37 +63,46 @@ public class Pickup : MonoBehaviour
         //해당 방향으로 0.2초동안 이동한다.
         //TODO: duration은 다른곳에 옮기는것이 좋을듯
         float _elapsedTime = 0;
-        float _duration    = .5f;
+        float _duration    = 1f;
         while (_elapsedTime < _duration)
         {
             transform.position =  Vector2.Lerp(_originPosition, _targetPosition, EaseOut(_elapsedTime / _duration));
-            _elapsedTime        += Time.deltaTime;
+            _elapsedTime       += Time.deltaTime;
             await UniTask.Yield();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D p_other)
     {
-        if (!interactable && !p_other.CompareTag("Player")) return;
+        if (!interactable || !p_other.CompareTag("Player")) return;
         if (!p_other.TryGetComponent(out Player _player)) return;
-
-        Destroy(gameObject);
-
+        
         switch (type)
         {
             case PickupType.Resource:
-                _player.Stats.CommonResource += value;
+                _player.Stats.CommonResource += size;
                 break;
             case PickupType.Exp:
-                _player.Stats.Exp += value;
+                _player.Stats.Exp += size;
                 break;
             case PickupType.Health:
-                _player.Stats.Health += value;
+                _player.Stats.Health += size;
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+        
+        gameObject.SetActive(false);
     }
 
-    
+    private void OnTriggerStay2D(Collider2D p_other)
+    {
+        if (!interactable || !p_other.CompareTag("PlayerPickRadius")) return;
+
+        //닿아있으면 플레이어 방향으로 끌려간다.
+        transform.Translate((p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f);
+    }
+
     //TODO: 임시로 만들었음(옮기거나 삭제)
     public static float Linear(float t) //선형보간
     {
