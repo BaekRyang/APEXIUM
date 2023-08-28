@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
@@ -39,7 +40,9 @@ public class PlayerController : MonoBehaviour
     private float JumpHeight   => playerStats.JumpHeight;
     private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
-    public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
+    public Facing PlayerFacing => transform.localScale.x > 0 ?
+        Facing.Left :
+        Facing.Right;
 
     public bool Controllable { get; private set; } = true;
 
@@ -75,12 +78,16 @@ public class PlayerController : MonoBehaviour
         _boxCollider2D.isTrigger = climbLadder;
 
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
-        _rigidbody2D.gravityScale = climbLadder ? 0 : 3;
+        _rigidbody2D.gravityScale = climbLadder ?
+            0 :
+            3;
 
         //공중점프 제한 및 코요테타임 구현용
         //코요테 타임은 바닥에 붙어있을때 언제나 일정 수준을 유지하므로
         //jumpGraceTimer가 0이면 공중에 떠있는 상태이므로, 최대 점프 횟수를 -1 조정해준다.
-        _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
+        _jumpCountOffset = jumpGraceTimer <= 0 ?
+            -1 :
+            0;
 
         ClimbLadder(_position);
 
@@ -100,7 +107,20 @@ public class PlayerController : MonoBehaviour
 
         _jumpDirection = GetNowJumpDirection();
 
+        CheckInteraction();
+
         UseSkill();
+    }
+
+    private void CheckInteraction()
+    {
+        if (!Input.GetButtonDown("Interact")) return;
+        
+        
+
+        foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
+            if (_collider.TryGetComponent(out InteractableObject _interactableObject))
+                _interactableObject.Interact();
     }
 
     private void FixedUpdate()
@@ -151,11 +171,10 @@ public class PlayerController : MonoBehaviour
         _input.ultimateSkill  = Input.GetButton("UltimateSkill");
         _input.specialSkill   = Input.GetButton("SpecialSkill");
         _input.itemSkill      = Input.GetButton("ItemSkill");
-        
-#elif UNITY_ANDROID
 
+#elif UNITY_ANDROID
         _input.horizontal = VJoystick.MovementDirection;
-        
+
 #endif
     }
 
@@ -220,7 +239,9 @@ public class PlayerController : MonoBehaviour
 
         //사다리에서 아래방향 점프를 했다면 아래 방향으로 떨어뜨려준다.
         //=>내리려는 의도로 점프를 했을때 작동
-        var _jumpHeight = climbLadder && _input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
+        var _jumpHeight = climbLadder && _input.vertical < 0 ?
+            -JumpHeight * .5f :
+            JumpHeight;
 
         jumpBuffer = 0; //점프 했으므로 버퍼 초기화
         jumpCount++;    //점프횟수 증가
@@ -371,7 +392,9 @@ public class PlayerController : MonoBehaviour
 
         bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                       Mathf.FloorToInt(_localPosition.y - (_condition ? 1 : 0)));
+                                       Mathf.FloorToInt(_localPosition.y - (_condition ?
+                                                            1 :
+                                                            0)));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
@@ -414,9 +437,9 @@ public class PlayerController : MonoBehaviour
 
         //이외는 사다리에서 사용 불가능
 
-        if (_input.primarySkill)
+        if (_input.primarySkill && player.skills[SkillTypes.Primary].IsReady)
             player.skills[SkillTypes.Primary].Play();
-        else if (_input.secondarySkill)
+        else if (_input.secondarySkill && player.skills[SkillTypes.Secondary].IsReady)
             player.skills[SkillTypes.Secondary].Play();
         else if (_input.movementSkill)
             player.skills[SkillTypes.Utility].Play();
@@ -441,6 +464,4 @@ public class PlayerController : MonoBehaviour
         if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new(0, _rigidbody2D.velocity.y);
     }
-    
-    
 }

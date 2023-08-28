@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6364309550976738222}
   - component: {fileID: 4219680960925770471}
   - component: {fileID: 1401718130119595140}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,6 +168,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4219680960925770471}
   text: {fileID: 8570174366137264133}
+  _expAmount: 0
+  _resourceAmount: 0
+  open: 0
 --- !u!1 &4814117010971938254
 GameObject:
   m_ObjectHideFlags: 0

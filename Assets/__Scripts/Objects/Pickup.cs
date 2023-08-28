@@ -8,7 +8,7 @@ public class Pickup : MonoBehaviour
 {
     [SerializeField] private PickupType type;
     [SerializeField] private int        size;
-    [SerializeField] private bool       interactable;
+    [SerializeField] private bool       interactable = false;
     public                   Vector2    _targetPosition;
     public                   Vector2    _randomDirection;
 
@@ -61,9 +61,8 @@ public class Pickup : MonoBehaviour
         _targetPosition = _originPosition + _randomDirection;
 
         //해당 방향으로 0.2초동안 이동한다.
-        //TODO: duration은 다른곳에 옮기는것이 좋을듯
         float _elapsedTime = 0;
-        float _duration    = 1f;
+        float _duration    = 1f; //TODO: duration은 다른곳에 옮기는것이 좋을듯
         while (_elapsedTime < _duration)
         {
             transform.position =  Vector2.Lerp(_originPosition, _targetPosition, EaseOut(_elapsedTime / _duration));
@@ -92,6 +91,7 @@ public class Pickup : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
         
+        interactable = false;
         gameObject.SetActive(false);
     }
 

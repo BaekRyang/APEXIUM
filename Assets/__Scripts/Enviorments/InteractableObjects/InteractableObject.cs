@@ -8,27 +8,19 @@ public abstract class InteractableObject : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private TMP_Text text;
 
-    private bool _closeToInteract;
-
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D p_other)
     {
-        if (other.CompareTag("Player"))
-            _closeToInteract = text.enabled = true;
+        if (p_other.CompareTag("Player"))
+            text.enabled = true;
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit2D(Collider2D p_other)
     {
-        if (other.CompareTag("Player"))
-            _closeToInteract = text.enabled = false;
+        if (p_other.CompareTag("Player"))
+            text.enabled = false;
     }
 
-    private void Update()
-    {
-        if (_closeToInteract && Input.GetKeyDown(KeyCode.A))
-            Interact();
-    }
-
-    protected void Interact()
+    public void Interact()
     {
         animator.Play("Interact");
         

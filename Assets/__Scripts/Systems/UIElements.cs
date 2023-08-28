@@ -9,11 +9,11 @@ public class UIElements : MonoBehaviour
 
     public Dictionary<SkillTypes, SkillBlock> skillBlocks = new();
 
-    public Slider     healthBar;
-    public TMP_Text   healthIndex;
-    public Slider     expBar;
-    public TMP_Text   levelIndex;
-    public CellSlider resourceBar;
+    [SerializeField] private Slider     healthBar;
+    [SerializeField] private TMP_Text   healthIndex;
+    [SerializeField] private Slider     expBar;
+    [SerializeField] private TMP_Text   levelIndex;
+    [SerializeField] public CellSlider resourceBar;
     private void Awake()
     {
         Instance ??= this;
@@ -44,9 +44,10 @@ public class UIElements : MonoBehaviour
         healthIndex.text = $"{p_currentHealth:0}/{p_maxHealth:0}";
     }
 
-    public void SetExp(int p_currentExp) => expBar.value = p_currentExp;
+    public void SetExp(int p_currentExp) => expBar.value =p_currentExp;
+    public void SetMaxExp(int p_maxExp) => expBar.maxValue = p_maxExp;
 
-    public void SetLevelIndex(int p_level) => levelIndex.text = $"{p_level}";
+    public void SetLevelIndex(int p_level) => levelIndex.text = $"{p_level} Level";
 
     public void SetCoolDown(SkillTypes p_skillType, float p_cooldown, float p_remainCooldown) =>
         skillBlocks[p_skillType].SetCoolDown(p_cooldown, p_remainCooldown);

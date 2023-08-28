@@ -27,8 +27,11 @@ public class PickupPool : MonoBehaviour
         Instance ??= this;
 
         //PickupTypes의 각 오브젝트를 Pool로 만들기 위해 저장한다.
-        foreach (var _type in Enum.GetValues(typeof(PickupType)).Cast<PickupType>())
-            _pickupPoolTransforms.Add(_type, new GameObject(_type.ToString()).transform);
+         // foreach (var _type in Enum.GetValues(typeof(PickupType)).Cast<PickupType>())
+         //     _pickupPoolTransforms.Add(_type, new GameObject(_type.ToString()).transform);
+        
+        foreach (var _convertEnumValue in Tools.GetEnumValues<PickupType>()) 
+            _pickupPoolTransforms.Add(_convertEnumValue, new GameObject(_convertEnumValue.ToString()).transform);
 
         //위치 조정
         foreach ((_, Transform _transform) in _pickupPoolTransforms)
@@ -119,6 +122,7 @@ public class PickupPool : MonoBehaviour
                 _pickupComponent._rigidbody2D = _rigidbody2D;
                 break;
             case PickupType.Exp:
+                _pickupSpriteRenderer.color = new Color(.5f, 0.9212599f, 1, 1);
                 break;
             case PickupType.Health:
                 break;

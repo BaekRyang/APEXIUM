@@ -25,8 +25,8 @@ public class PlayTimer : MonoBehaviour
 
     private void UpdateTimer()
     {
-        timerTextHm.text = $"{(int)playTime         / 60:00}:{(int)playTime % 60:00}";
-        timerTextMs.text = $"{(int)(playTime * 100) % 100:00}";
+        timerTextHm.text = $"{((int)playTime / 60):00}:{(int)playTime % 60:00}";
+        timerTextMs.text = $"{(int)(playTime * 100)                   % 100:00}";
     }
 
     public static void ResetTimer() => playTime = 0;

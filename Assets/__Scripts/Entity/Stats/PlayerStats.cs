@@ -72,7 +72,7 @@ public class PlayerStats : Stats
         set
         {
             commonResource                        = value;
-            // Resources.Instance.ResourceValue.text = value.ToString();
+            Resources.Instance.SetResource(value);
         }
     }
 
@@ -118,6 +118,7 @@ public class PlayerStats : Stats
         set
         {
             exp = value;
+            UIElements.Instance.SetExp(value);
             if (exp >= maxExp)
                 LevelUp();
         }
@@ -125,13 +126,13 @@ public class PlayerStats : Stats
 
     private async void LevelUp()
     {
-        Debug.Log("levelup");
         do
         {
             exp    -= maxExp;
-            Debug.Log($"max exp: {maxExp} => {Convert.ToInt32(maxExp * 1.2f)}");
             maxExp += Convert.ToInt32(maxExp * 0.2f);
-            Level++;
+            level++;
+            UIElements.Instance.SetMaxExp(maxExp);
+            UIElements.Instance.SetLevelIndex(level);
             await UniTask.Delay(10); //TODO: 무한 루프 방지용(없애야함)
         } while (exp >= maxExp);
     }

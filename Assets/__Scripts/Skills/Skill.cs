@@ -11,7 +11,8 @@ public class Skill : MonoBehaviour, IUseable
     public SkillTypes SkillType { get; protected set; }
 
     public float Cooldown { get; protected set; } //베이스 쿨타임(수정되면 안됨)
-    
+
+    public bool IsReady => RemainingCooldown <= 0;
 
     public float RemainingCooldown
     {
@@ -59,7 +60,7 @@ public class Skill : MonoBehaviour, IUseable
 
     protected bool CanUse()
     {
-        if (RemainingCooldown > 0) return false;           //쿨타임 체크
+        if (!IsReady) return false;           //쿨타임 체크
         if (!Player.Controller.Controllable) return false; //사용 가능한 상태인지 체크
 
         return true;
