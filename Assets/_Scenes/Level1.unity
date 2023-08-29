@@ -39284,7 +39284,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0bb119450d9ad0d47911d82f55f4b0b5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 318baa31078977042b454e4ee39e0cf6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -46780,9 +46780,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolSize: 0
   activatedPickupCount: 0
-  exp: {fileID: 21300000, guid: 072f2b0e7ff72034998ddd8f8d800655, type: 3}
-  health: {fileID: 21300000, guid: 072f2b0e7ff72034998ddd8f8d800655, type: 3}
-  resource: {fileID: 21300000, guid: 072f2b0e7ff72034998ddd8f8d800655, type: 3}
+  exp:
+  - {fileID: 21300000, guid: 072f2b0e7ff72034998ddd8f8d800655, type: 3}
+  health: []
+  resource:
+  - {fileID: -1796931207, guid: 66102ec710d03be4bb1d2b3d58c6cae9, type: 3}
+  - {fileID: -1587179283, guid: 66102ec710d03be4bb1d2b3d58c6cae9, type: 3}
+  - {fileID: 1640633698, guid: 66102ec710d03be4bb1d2b3d58c6cae9, type: 3}
   pickupPrefab: {fileID: 8272492641095341926, guid: 89989f696a1b7ef4d95987b6ec156c52,
     type: 3}
 --- !u!4 &1689316548 stripped

@@ -27,10 +27,10 @@ public class PickupPool : MonoBehaviour
         Instance ??= this;
 
         //PickupTypes의 각 오브젝트를 Pool로 만들기 위해 저장한다.
-         // foreach (var _type in Enum.GetValues(typeof(PickupType)).Cast<PickupType>())
-         //     _pickupPoolTransforms.Add(_type, new GameObject(_type.ToString()).transform);
-        
-        foreach (var _convertEnumValue in Tools.GetEnumValues<PickupType>()) 
+        // foreach (var _type in Enum.GetValues(typeof(PickupType)).Cast<PickupType>())
+        //     _pickupPoolTransforms.Add(_type, new GameObject(_type.ToString()).transform);
+
+        foreach (var _convertEnumValue in Tools.GetEnumValues<PickupType>())
             _pickupPoolTransforms.Add(_convertEnumValue, new GameObject(_convertEnumValue.ToString()).transform);
 
         //위치 조정
@@ -41,7 +41,7 @@ public class PickupPool : MonoBehaviour
         }
     }
 
-    [SerializeField] private Sprite     exp, health, resource;
+    [SerializeField] private Sprite[]   exp, health, resource;
     [SerializeField] private GameObject pickupPrefab;
 
     public List<GameObject> GetAvailablePickupObjects(PickupType p_pickupType, int p_count)
@@ -94,9 +94,10 @@ public class PickupPool : MonoBehaviour
 
         _pickupSpriteRenderer.sprite = p_pickupType switch
         {
-            PickupType.Resource => resource,
-            PickupType.Exp      => exp,
-            PickupType.Health   => health,
+            //해당 배열의 랜덤값을 가져온다.
+            PickupType.Resource => resource[Random.Range(0, resource.Length)],
+            PickupType.Exp      => exp[Random.Range(0,      exp.Length)],
+            PickupType.Health   => health[Random.Range(0,   health.Length)],
             _                   => throw new ArgumentOutOfRangeException(nameof(p_pickupType), p_pickupType, null)
         };
 
@@ -104,7 +105,7 @@ public class PickupPool : MonoBehaviour
         {
             case PickupType.Resource:
                 Rigidbody2D _rigidbody2D = _pickup.AddComponent<Rigidbody2D>();
-                _rigidbody2D.freezeRotation         = true;
+                // _rigidbody2D.freezeRotation         = true;
                 _rigidbody2D.gravityScale           = 2;
                 _rigidbody2D.angularDrag            = Random.Range(1f, 2f);
                 _rigidbody2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
@@ -116,8 +117,7 @@ public class PickupPool : MonoBehaviour
                                               };
 
 
-                BoxCollider2D _collider = _pickup.AddComponent<BoxCollider2D>();
-                _collider.size                = new(.4f, .4f);
+                PolygonCollider2D _collider = _pickup.AddComponent<PolygonCollider2D>();
                 _collider.excludeLayers       = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Pickup");
                 _pickupComponent._rigidbody2D = _rigidbody2D;
                 break;

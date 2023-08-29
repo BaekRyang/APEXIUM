@@ -33,10 +33,8 @@ public class ItemManager : MonoBehaviour
 
 
         foreach ((PickupSize _pickupSize, int _pickupValue) in new[] { (PickupSize.Large, _large), (PickupSize.Medium, _medium), (PickupSize.Small, _small) })
-        {
             foreach (Pickup _pickup in PickupPool.Instance.GetAvailablePickupComponents(p_pickupType, _pickupValue))
                 PickupInitialize(_pickup, _pickupSize);
-        }
 
         return;
     
@@ -46,7 +44,7 @@ public class ItemManager : MonoBehaviour
             p_pickup.transform.position   = p_transform.position + Vector3.up;
             p_pickup.transform.localScale = Vector3.one * GetPickupSize(p_size);
             p_pickup.gameObject.SetActive(true);
-            p_pickup.InitializeMove();
+            p_pickup.Initialize();
         }
     }
 

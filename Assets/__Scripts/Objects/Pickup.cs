@@ -13,21 +13,27 @@ public class Pickup : MonoBehaviour
     public                   Vector2    _randomDirection;
 
     public Rigidbody2D _rigidbody2D;
-    
-    
+
     public PickupType PickupType
     {
         get => type;
         set => type = value;
     }
-    
+
     public int PickupValue
     {
         get => size;
         set => size = value;
     }
 
-    public async void InitializeMove()
+    public void Initialize()
+    {
+        if (_rigidbody2D != null) _rigidbody2D.gravityScale = 2;
+        interactable              = false;
+        InitializeMove();
+    }
+
+    private async void InitializeMove()
     {
         Debug.Log("InitializeMove");
         switch (type)
@@ -73,34 +79,50 @@ public class Pickup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D p_other)
     {
-        if (!interactable || !p_other.CompareTag("Player")) return;
-        if (!p_other.TryGetComponent(out Player _player)) return;
-        
-        switch (type)
+        if (!interactable) return;
+
+        if (p_other.CompareTag("Player"))
         {
-            case PickupType.Resource:
-                _player.Stats.CommonResource += size;
-                break;
-            case PickupType.Exp:
-                _player.Stats.Exp += size;
-                break;
-            case PickupType.Health:
-                _player.Stats.Health += size;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            if (!p_other.TryGetComponent(out Player _player)) return;
+
+            switch (type)
+            {
+                case PickupType.Resource:
+                    _player.Stats.CommonResource += size;
+                    break;
+                case PickupType.Exp:
+                    _player.Stats.Exp += size;
+                    break;
+                case PickupType.Health:
+                    _player.Stats.Health += size;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            interactable = false;
+            gameObject.SetActive(false);
         }
-        
-        interactable = false;
-        gameObject.SetActive(false);
+        else if (p_other.CompareTag("PlayerPickRadius"))
+            _rigidbody2D.gravityScale = 0;
     }
 
     private void OnTriggerStay2D(Collider2D p_other)
     {
-        if (!interactable || !p_other.CompareTag("PlayerPickRadius")) return;
+        if (!interactable) return;
+        if (!p_other.CompareTag("PlayerPickRadius")) return;
 
         //닿아있으면 플레이어 방향으로 끌려간다.
-        transform.Translate((p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f);
+        // transform.Translate((p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f);
+        transform.position += (p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f;
+    }
+
+    private void OnTriggerExit2D(Collider2D p_other)
+    {
+        if (!interactable) return;
+        
+        if (!p_other.CompareTag("PlayerPickRadius")) return;
+        _rigidbody2D.gravityScale = 2;
     }
 
     //TODO: 임시로 만들었음(옮기거나 삭제)
