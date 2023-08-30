@@ -521,6 +521,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1567256225218026895}
+    - targetCorrespondingSourceObject: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8884443616131738164}
   m_SourcePrefab: {fileID: 100100000, guid: 31dbabe34224369498f5cb358cb33d5f, type: 3}
 --- !u!4 &4767530001285458281 stripped
 Transform:
@@ -594,3 +598,42 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.15, y: 2}
   m_EdgeRadius: 0
+--- !u!114 &8884443616131738164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142645116984913145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 87cb231e36195cd44a104c3d5acee43b,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1c3a12eb-0ed4-490f-8a37-83ac46e58aaa
+    m_ActionName: PlayerActions/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5c721238-e545-4000-9ad0-222139159e32
+    m_ActionName: PlayerActions/Actions[/Keyboard/z,/Keyboard/x,/Keyboard/c,/Keyboard/v,/Keyboard/a,/Keyboard/g]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: PC
+  m_DefaultActionMap: PlayerActions
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

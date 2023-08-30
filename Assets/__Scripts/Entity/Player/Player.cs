@@ -5,16 +5,18 @@ using System.Linq;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
     public int clientID;
 
-    private PlayerController _playerController;
-    private PlayerStats      _stats;
-    private bool             _isImmune;
-    public  Vector3          PlayerPosition => transform.position;
+    
+    private PlayerController   _playerController;
+    private PlayerStats        _stats;
+    private bool               _isImmune;
+    public  Vector3            PlayerPosition => transform.position;
 
     public readonly Dictionary<SkillTypes, Skill> skills = new();
 
@@ -32,7 +34,7 @@ public class Player : MonoBehaviour
     {
         _stats = new(p_playerData.stats);
         UIElements.Instance.SetHealth(_stats.Health, _stats.MaxHealth);
-
+        
         _playerController      = gameObject.AddComponent<PlayerController>();
         _animator              = GetComponent<Animator>();
         Controller.player      = this;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     {
         LoadSettings(GameManager.Instance.GetCharacterData("Astro"));
     }
+
 
     public void PlayStatusFeedback(string p_pText)
     {
@@ -146,4 +149,5 @@ public class Player : MonoBehaviour
             yield return null;
         }
     }
+    
 }

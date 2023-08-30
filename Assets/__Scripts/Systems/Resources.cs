@@ -19,12 +19,16 @@ public class Resources : MonoBehaviour
         Instance ??= this;
     }
 
-    public async void SetResource(int p_currentResource)
+    UniTask _task;
+
+    public void SetResource(int p_currentResource)
     {
         _resourceValue.text = $"{p_currentResource:0}";
-
-        if (IsEmphasis) return;
-        EmphasisResourceIndex();
+        Debug.Log(_task.Status);
+        _remainingEmphasisTime = EMPHASIS_TIME;
+        _remainingReturnTime   = RETURN_TIME;
+        if (_task.Status == UniTaskStatus.Pending) return;
+        _task = EmphasisResourceIndex();
     }
 
     private const float EMPHASIS_TIME = 1.2f;
@@ -36,12 +40,9 @@ public class Resources : MonoBehaviour
     [SerializeField] [Range(0, RETURN_TIME)]
     private float _remainingReturnTime;
 
-    private async void EmphasisResourceIndex()
+    private async UniTask EmphasisResourceIndex()
     {
         Debug.Log("EmphasisResourceIndex");
-        _remainingEmphasisTime = EMPHASIS_TIME;
-        _remainingReturnTime   = RETURN_TIME;
-
         while (IsEmphasis)
         {
             if (_remainingEmphasisTime > 0)

@@ -32,9 +32,13 @@ public class Settings : MonoBehaviour
         SetResolution(int.Parse(widthInputField.text), int.Parse(heightInputField.text));
         pixelPerfectCamera.assetsPPU = int.Parse(ppuInputField.text);
         var cinemachineCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
-        cinemachineCamera.m_Lens.OrthographicSize= CalculateOrthographicSize(pixelPerfectCamera.assetsPPU, int.Parse(heightInputField.text));
+        cinemachineCamera.m_Lens.OrthographicSize = CalculateOrthographicSize(pixelPerfectCamera.assetsPPU, int.Parse(heightInputField.text));
         cinemachineCamera.GetComponent<CinemachineConfiner2D>().InvalidateCache(); //CinemachineConfiner2D의 캐시를 갱신한다.
+    }
 
-
+    public static bool RemappingKey(string p_sourceKey, string p_destinationKey)
+    {
+        if (p_sourceKey == p_destinationKey) return false;
+        return true;
     }
 }

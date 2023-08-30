@@ -28,8 +28,8 @@ public class Pickup : MonoBehaviour
 
     public void Initialize()
     {
-        if (_rigidbody2D != null) _rigidbody2D.gravityScale = 2;
-        interactable              = false;
+        if (PickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
+        interactable = false;
         InitializeMove();
     }
 
@@ -103,7 +103,8 @@ public class Pickup : MonoBehaviour
             interactable = false;
             gameObject.SetActive(false);
         }
-        else if (p_other.CompareTag("PlayerPickRadius"))
+        else if (p_other.CompareTag("PlayerPickRadius") &&
+                 PickupType == PickupType.Resource)
             _rigidbody2D.gravityScale = 0;
     }
 
@@ -120,9 +121,9 @@ public class Pickup : MonoBehaviour
     private void OnTriggerExit2D(Collider2D p_other)
     {
         if (!interactable) return;
-        
+
         if (!p_other.CompareTag("PlayerPickRadius")) return;
-        _rigidbody2D.gravityScale = 2;
+        if (PickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
     }
 
     //TODO: 임시로 만들었음(옮기거나 삭제)

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -9,8 +10,9 @@ public struct InputValues
 {
     public float horizontal,   vertical;
     public bool  jumpDown,     jumpUp;
-    public bool  primarySkill, secondarySkill, movementSkill, ultimateSkill;
+    public bool  primarySkill, secondarySkill, utilitySkill, ultimateSkill;
     public bool  specialSkill, itemSkill;
+    public bool  interact;
 }
 
 public class PlayerController : MonoBehaviour
@@ -18,12 +20,14 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_GRACE_TIME = 0.2f;
     private const float JUMP_BUFFER     = 0.2f;
 
+    [SerializeField] private PlayerInput playerInput;
+
     [SerializeField] private Tilemap ladderTilemap;
     [SerializeField] private Tilemap floorTilemap;
 
     public Player player;
 
-    private InputValues _input;
+    [SerializeField] private InputValues _input;
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
@@ -56,8 +60,11 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
+        playerInput    = GetComponent<PlayerInput>();
         ladderTilemap  = GameObject.Find("prototype").transform.Find("Ladder").GetComponent<Tilemap>();
         floorTilemap   = GameObject.Find("prototype").transform.Find("Tile").GetComponent<Tilemap>();
+
+        InitializePlayerInput();
 
         GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
     }
@@ -72,7 +79,7 @@ public class PlayerController : MonoBehaviour
         jumpGraceTimer -= Time.deltaTime;
         jumpBuffer     -= Time.deltaTime;
 
-        GetInput(); //Key Input 값 받아오기
+        // GetInput(); //Key Input 값 받아오기
 
         // //점프중일때(상승) 바닥을 뚫고 올라갈 수 있게 해준다. (Obsoleted - Collider 안에서 점프 못하게 막았음)
         _boxCollider2D.isTrigger = climbLadder;
@@ -112,11 +119,36 @@ public class PlayerController : MonoBehaviour
         UseSkill();
     }
 
+    private void InitializePlayerInput()
+    {
+        playerInput.actions["HorizontalMove"].performed += OnHorizontalMove;
+        playerInput.actions["VerticalMove"].performed   += OnVerticalMove;
+        playerInput.actions["Jump"].performed           += OnJump;
+        playerInput.actions["Special"].performed        += OnSpecial;
+        playerInput.actions["Primary"].performed        += OnPrimary;
+        playerInput.actions["Secondary"].performed      += OnSecondary;
+        playerInput.actions["Utility"].performed        += OnUtility;
+        playerInput.actions["Ultimate"].performed       += OnUltimate;
+        playerInput.actions["UseItem"].performed        += OnUseItem;
+        playerInput.actions["Interact"].performed       += OnInteract;
+        playerInput.actions["Interact"].performed       += OnInteract;
+    }
+
+    public void OnHorizontalMove(InputAction.CallbackContext p_context) => _input.horizontal = p_context.ReadValue<float>();
+    public void OnVerticalMove(InputAction.CallbackContext   p_context) => _input.vertical = p_context.ReadValue<float>();
+    public void OnJump(InputAction.CallbackContext           p_context) => _input.jumpDown = p_context.ReadValue<float>()       > 0;
+    public void OnSpecial(InputAction.CallbackContext        p_context) => _input.specialSkill = p_context.ReadValue<float>()   > 0;
+    public void OnPrimary(InputAction.CallbackContext        p_context) => _input.primarySkill = p_context.ReadValue<float>()   > 0;
+    public void OnSecondary(InputAction.CallbackContext      p_context) => _input.secondarySkill = p_context.ReadValue<float>() > 0;
+    public void OnUtility(InputAction.CallbackContext        p_context) => _input.utilitySkill = p_context.ReadValue<float>()   > 0;
+    public void OnUltimate(InputAction.CallbackContext       p_context) => _input.ultimateSkill = p_context.ReadValue<float>()  > 0;
+    public void OnUseItem(InputAction.CallbackContext        p_context) => _input.itemSkill = p_context.ReadValue<float>()      > 0;
+    public void OnInteract(InputAction.CallbackContext       p_context) => _input.interact = p_context.ReadValue<float>()       > 0;
+
     private void CheckInteraction()
     {
         if (!Input.GetButtonDown("Interact")) return;
-        
-        
+
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
@@ -167,7 +199,7 @@ public class PlayerController : MonoBehaviour
         _input.jumpUp         = Input.GetButtonUp("Jump");
         _input.primarySkill   = Input.GetButton("PrimarySkill");
         _input.secondarySkill = Input.GetButton("SecondarySkill");
-        _input.movementSkill  = Input.GetButton("MovementSkill");
+        _input.utilitySkill   = Input.GetButton("MovementSkill");
         _input.ultimateSkill  = Input.GetButton("UltimateSkill");
         _input.specialSkill   = Input.GetButton("SpecialSkill");
         _input.itemSkill      = Input.GetButton("ItemSkill");
@@ -441,11 +473,11 @@ public class PlayerController : MonoBehaviour
             player.skills[SkillTypes.Primary].Play();
         else if (_input.secondarySkill && player.skills[SkillTypes.Secondary].IsReady)
             player.skills[SkillTypes.Secondary].Play();
-        else if (_input.movementSkill)
+        else if (_input.utilitySkill && player.skills[SkillTypes.Utility].IsReady)
             player.skills[SkillTypes.Utility].Play();
-        else if (_input.ultimateSkill)
+        else if (_input.ultimateSkill && player.skills[SkillTypes.Ultimate].IsReady)
             player.skills[SkillTypes.Ultimate].Play();
-        else if (_input.specialSkill)
+        else if (_input.specialSkill && player.skills[SkillTypes.Passive].IsReady)
             player.skills[SkillTypes.Passive].Play();
     }
 
