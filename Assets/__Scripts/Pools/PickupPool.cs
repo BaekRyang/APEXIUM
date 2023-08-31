@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Unity.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class PickupPool : MonoBehaviour
 {
     public static PickupPool Instance;
-
-    [ReadOnly, SerializeField] private uint poolSize;
-    [ReadOnly, SerializeField] private uint activatedPickupCount;
 
     private static Dictionary<PickupType, List<Pickup>> _pickupPools = new()
                                                                        {

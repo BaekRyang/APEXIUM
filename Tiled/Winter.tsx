@@ -121,4 +121,22 @@
    <object id="1" x="0" y="0" width="16" height="16"/>
   </objectgroup>
  </tile>
+ <wangsets>
+  <wangset name="Unnamed Set" type="mixed" tile="-1">
+   <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangtile tileid="0" wangid="0,0,0,1,0,0,0,0"/>
+   <wangtile tileid="1" wangid="0,0,0,1,1,1,0,0"/>
+   <wangtile tileid="2" wangid="0,0,0,0,0,1,0,0"/>
+   <wangtile tileid="16" wangid="0,1,1,1,0,0,0,0"/>
+   <wangtile tileid="17" wangid="1,1,1,1,1,1,1,1"/>
+   <wangtile tileid="18" wangid="0,0,0,0,0,1,1,1"/>
+   <wangtile tileid="32" wangid="0,1,0,0,0,0,0,0"/>
+   <wangtile tileid="33" wangid="1,1,0,0,0,0,0,1"/>
+   <wangtile tileid="34" wangid="0,0,0,0,0,0,0,1"/>
+   <wangtile tileid="64" wangid="1,1,0,0,0,1,1,1"/>
+   <wangtile tileid="65" wangid="1,1,1,1,0,0,0,1"/>
+   <wangtile tileid="80" wangid="0,0,0,1,1,1,1,1"/>
+   <wangtile tileid="81" wangid="0,1,1,1,1,1,0,0"/>
+  </wangset>
+ </wangsets>
 </tileset>

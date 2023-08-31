@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -134,20 +136,43 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Interact"].performed       += OnInteract;
     }
 
+    private void ResetPlayerInput()
+    {
+        playerInput.actions["HorizontalMove"].performed -= OnHorizontalMove;
+        playerInput.actions["VerticalMove"].performed   -= OnVerticalMove;
+        playerInput.actions["Jump"].performed           -= OnJump;
+        playerInput.actions["Special"].performed        -= OnSpecial;
+        playerInput.actions["Primary"].performed        -= OnPrimary;
+        playerInput.actions["Secondary"].performed      -= OnSecondary;
+        playerInput.actions["Utility"].performed        -= OnUtility;
+        playerInput.actions["Ultimate"].performed       -= OnUltimate;
+        playerInput.actions["UseItem"].performed        -= OnUseItem;
+        playerInput.actions["Interact"].performed       -= OnInteract;
+        playerInput.actions["Interact"].performed       -= OnInteract;
+    }
+
     public void OnHorizontalMove(InputAction.CallbackContext p_context) => _input.horizontal = p_context.ReadValue<float>();
     public void OnVerticalMove(InputAction.CallbackContext   p_context) => _input.vertical = p_context.ReadValue<float>();
-    public void OnJump(InputAction.CallbackContext           p_context) => _input.jumpDown = p_context.ReadValue<float>()       > 0;
-    public void OnSpecial(InputAction.CallbackContext        p_context) => _input.specialSkill = p_context.ReadValue<float>()   > 0;
-    public void OnPrimary(InputAction.CallbackContext        p_context) => _input.primarySkill = p_context.ReadValue<float>()   > 0;
-    public void OnSecondary(InputAction.CallbackContext      p_context) => _input.secondarySkill = p_context.ReadValue<float>() > 0;
-    public void OnUtility(InputAction.CallbackContext        p_context) => _input.utilitySkill = p_context.ReadValue<float>()   > 0;
-    public void OnUltimate(InputAction.CallbackContext       p_context) => _input.ultimateSkill = p_context.ReadValue<float>()  > 0;
-    public void OnUseItem(InputAction.CallbackContext        p_context) => _input.itemSkill = p_context.ReadValue<float>()      > 0;
-    public void OnInteract(InputAction.CallbackContext       p_context) => _input.interact = p_context.ReadValue<float>()       > 0;
+
+    public async void OnJump(InputAction.CallbackContext p_context)
+    {
+        await UniTask.Yield();                              //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
+        _input.jumpDown = p_context.ReadValue<float>() > 0; //유니티 업데이트 타임때 값을 업데이트 해주고
+        await UniTask.Yield();                              //다음프레임에
+        _input.jumpDown = false;                            //초기화
+    }
+
+    public void OnSpecial(InputAction.CallbackContext   p_context) => _input.specialSkill = p_context.ReadValue<float>()   > 0;
+    public void OnPrimary(InputAction.CallbackContext   p_context) => _input.primarySkill = p_context.ReadValue<float>()   > 0;
+    public void OnSecondary(InputAction.CallbackContext p_context) => _input.secondarySkill = p_context.ReadValue<float>() > 0;
+    public void OnUtility(InputAction.CallbackContext   p_context) => _input.utilitySkill = p_context.ReadValue<float>()   > 0;
+    public void OnUltimate(InputAction.CallbackContext  p_context) => _input.ultimateSkill = p_context.ReadValue<float>()  > 0;
+    public void OnUseItem(InputAction.CallbackContext   p_context) => _input.itemSkill = p_context.ReadValue<float>()      > 0;
+    public void OnInteract(InputAction.CallbackContext  p_context) => _input.interact = p_context.ReadValue<float>()       > 0;
 
     private void CheckInteraction()
     {
-        if (!Input.GetButtonDown("Interact")) return;
+        if (!_input.interact) return;
 
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
