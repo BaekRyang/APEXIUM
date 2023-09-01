@@ -397,7 +397,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 77fb09bcc8d505e46ae09d35c3fdf201, type: 2}
+      objectReference: {fileID: -876546973899608171, guid: 8ed31cc9e8ee7c64c8bf022510d8504e,
+        type: 3}
     - target: {fileID: 3615315402637145345, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_Size.x
@@ -630,8 +631,40 @@ MonoBehaviour:
     m_ActionName: PlayerActions/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 5c721238-e545-4000-9ad0-222139159e32
-    m_ActionName: PlayerActions/Actions[/Keyboard/z,/Keyboard/x,/Keyboard/c,/Keyboard/v,/Keyboard/a,/Keyboard/g]
+    m_ActionId: b6304dc7-94d2-4b90-9158-8177a78d04d1
+    m_ActionName: PlayerActions/VerticalMove[/Keyboard/downArrow,/Keyboard/upArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e3c1fa84-a4bd-4c19-89fc-e15ccd905c56
+    m_ActionName: PlayerActions/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e091f00a-e7f7-468d-abbb-6ca7b02bca66
+    m_ActionName: PlayerActions/Special[/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7caedf1e-f8f6-4fc5-bb70-ca8826e08c79
+    m_ActionName: PlayerActions/Primary[/Keyboard/z]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b01b5089-0e3d-4366-bc7e-75e6d25d4369
+    m_ActionName: PlayerActions/Secondary[/Keyboard/x]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1f092dc6-700a-4843-aedb-a448fd73a416
+    m_ActionName: PlayerActions/Utility[/Keyboard/c]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 888d2ae6-ccd9-48f8-9862-4dfa41e55540
+    m_ActionName: PlayerActions/Ultimate[/Keyboard/v]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1be5efe5-f777-4e45-883b-366a6b7f426d
+    m_ActionName: PlayerActions/UseItem[/Keyboard/g]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e195eb48-e4a6-4b36-a43a-4ad3b9fb5baf
+    m_ActionName: PlayerActions/Interact[/Keyboard/a]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: PC
   m_DefaultActionMap: PlayerActions

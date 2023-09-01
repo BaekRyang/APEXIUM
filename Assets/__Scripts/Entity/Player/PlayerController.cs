@@ -133,7 +133,6 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Ultimate"].performed       += OnUltimate;
         playerInput.actions["UseItem"].performed        += OnUseItem;
         playerInput.actions["Interact"].performed       += OnInteract;
-        playerInput.actions["Interact"].performed       += OnInteract;
     }
 
     private void ResetPlayerInput()
@@ -147,7 +146,6 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Utility"].performed        -= OnUtility;
         playerInput.actions["Ultimate"].performed       -= OnUltimate;
         playerInput.actions["UseItem"].performed        -= OnUseItem;
-        playerInput.actions["Interact"].performed       -= OnInteract;
         playerInput.actions["Interact"].performed       -= OnInteract;
     }
 

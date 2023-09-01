@@ -3,11 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
+    "activeFile": "Rules/autotile rules.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "Rules",
         ".",
-        "Rules"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -47,18 +49,18 @@
                 12
             ],
             "scale": 1.5,
-            "selectedLayer": -1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 61.333333333333314,
-                "y": -224
+                "x": 201.66666666666669,
+                "y": 67
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx": {
             "scale": 4.82421875,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 128.10364372469635,
-                "y": 128.10364372469635
+                "x": 127.89635627530365,
+                "y": 127.89635627530363
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx": {
@@ -79,11 +81,11 @@
             "scaleInEditor": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx": {
-            "scale": 2,
-            "selectedLayer": -1,
+            "scale": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": -7,
-                "y": -1000.5
+                "x": 87,
+                "y": -931
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemaps/Winter.tsx": {
@@ -101,16 +103,16 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 215,
-                "y": 266.3333333333333
+                "x": 320,
+                "y": 159.83333333333331
             }
         },
         "Rules/autotile rules.tmx": {
             "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 263.75,
-                "y": 221.5
+                "x": 536.5,
+                "y": 170
             }
         },
         "Winter.tsx": {
@@ -128,10 +130,10 @@
         },
         "prototype.tmx": {
             "scale": 0.75,
-            "selectedLayer": -1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 4588,
-                "y": 2498.6666666666665
+                "x": 4096,
+                "y": 1535.3333333333333
             }
         }
     },
@@ -143,28 +145,28 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
-        "Winter.tsx",
         "prototype.tmx",
         "Rules/autotile rules.tmx",
         "Rules/LadderRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx"
     ],
     "project": "ProjectR.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "prototype.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
+        "Rules/LadderRules.tmx",
+        "Rules/autotile rules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
         "Winter.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/AutotileRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
-        "prototype.tmx",
-        "Rules/autotile rules.tmx",
-        "Rules/LadderRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
         "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
-        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx",
-        "autotile rules.tmx"
+        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
