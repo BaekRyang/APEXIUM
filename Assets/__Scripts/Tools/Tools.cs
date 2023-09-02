@@ -108,12 +108,20 @@ public static class Tools
 
     public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
 
-    public static int GetMask(params string[] p_layerNames)
+    private static void CustomShader(Vector4 Source, Vector4 Target, float Range)
     {
-        int _layerMask = 0;
-        foreach (var _layerName in p_layerNames)
-            _layerMask |= 1 << LayerMask.NameToLayer(_layerName);
+        Vector4 returnColor;
+        
+        //Source의 RGB값중 Target의 값과 Range만큼 범위 안으로 비슷한 값을 찾는다.
+        //그 값을 returnColor에 저장한다.
+        
+        if (Source.x >= Target.x - Range && Source.x <= Target.x + Range)
+            returnColor.x = Source.x;
+        
+        if (Source.y >= Target.y - Range && Source.y <= Target.y + Range)
+            returnColor.y = Source.y;
 
-        return _layerMask;
+        if (Source.z >= Target.z - Range && Source.z <= Target.z + Range)
+            returnColor.z = Source.z;
     }
 }
