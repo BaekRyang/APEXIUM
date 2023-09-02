@@ -107,4 +107,13 @@ public static class Tools
     }
 
     public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
+
+    public static int GetMask(params string[] p_layerNames)
+    {
+        int _layerMask = 0;
+        foreach (var _layerName in p_layerNames)
+            _layerMask |= 1 << LayerMask.NameToLayer(_layerName);
+
+        return _layerMask;
+    }
 }

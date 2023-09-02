@@ -171,8 +171,7 @@ public class PlayerController : MonoBehaviour
     private void CheckInteraction()
     {
         if (!_input.interact) return;
-
-
+        
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
                 _interactableObject.Interact();
