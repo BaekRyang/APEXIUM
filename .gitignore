@@ -71,11 +71,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-/[Aa]ssets/AssetKits
-/[Aa]ssets/CurissVRCTools
-/[Aa]ssets/Feel
-/[Aa]ssets/GamingGarrison
-/[Aa]ssets/ParrelSync
-/[Aa]ssets/RiderFlow.UserData
-/[Aa]ssets/Ultimate Game Music Collection
-/[Aa]ssets/UnityMainThreadDispatcher-master
+/[Aa]ssets/AssetKits/
+/[Aa]ssets/CurissVRCTools/
+/[Aa]ssets/Feel/
+/[Aa]ssets/GamingGarrison/
+/[Aa]ssets/ParrelSync/
+/[Aa]ssets/RiderFlow.UserData/
+/[Aa]ssets/Ultimate Game Music Collection/
+/[Aa]ssets/UnityMainThreadDispatcher-master/
