@@ -20,11 +20,11 @@ public class GameManager : MonoBehaviour
     [DoNotSerialize] private readonly Dictionary<int, Player>        _players        = new();
     [DoNotSerialize] private readonly Dictionary<string, PlayerData> _charactersData = new();
     [DoNotSerialize] private readonly Dictionary<string, EnemyData>  _monstersData   = new();
-
-
     
     public CinemachineVirtualCamera virtualCamera;
 
+    public PlayMap currentMap;
+    
     public Player GetRandomPlayer()
     {
         if (_players.Count <= 0)

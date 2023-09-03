@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity.Mathematics;
 using UnityEngine;
 
 public static class Tools
@@ -108,20 +109,20 @@ public static class Tools
 
     public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
 
-    private static void CustomShader(Vector4 Source, Vector4 Target, float Range)
-    {
-        Vector4 returnColor;
-        
-        //Source의 RGB값중 Target의 값과 Range만큼 범위 안으로 비슷한 값을 찾는다.
-        //그 값을 returnColor에 저장한다.
-        
-        if (Source.x >= Target.x - Range && Source.x <= Target.x + Range)
-            returnColor.x = Source.x;
-        
-        if (Source.y >= Target.y - Range && Source.y <= Target.y + Range)
-            returnColor.y = Source.y;
+    public static float Remap(float p_value, Vector2 p_origin, Vector2 p_target) => 
+        p_target.x + (p_value - p_origin.x) * (p_target.y - p_target.x) / (p_origin.y - p_origin.x);
 
-        if (Source.z >= Target.z - Range && Source.z <= Target.z + Range)
-            returnColor.z = Source.z;
+    public static Vector2 Remap(Vector2 p_value, Vector2[] p_origin, Vector2[] p_target)
+    {
+        return new Vector2(
+            Remap(p_value.x, new Vector2(p_origin[0].x, p_origin[1].x), new Vector2(p_target[0].x, p_target[1].x)),
+            Remap(p_value.y, new Vector2(p_origin[0].y, p_origin[1].y), new Vector2(p_target[0].y, p_target[1].y)));
+    } 
+    
+    
+    public static Vector2 GetResolution(this Sprite p_sprite)
+    {
+        Debug.Log($"{p_sprite.texture.width}, {p_sprite.texture.height}");
+        return new Vector2(p_sprite.texture.width, p_sprite.texture.height);
     }
 }
