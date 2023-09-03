@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -102,7 +103,6 @@ public class EnemyBase : MonoBehaviour
     
     private void LevelUp(object p_sender, EventArgs p_args)
     {
-        
     }
 }
 

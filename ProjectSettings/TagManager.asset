@@ -16,8 +16,8 @@ TagManager:
   - UI
   - Floor
   - Player
+  - PickupRadius
   - Enemy
-  - Ladder
   - Pickup
   - Interactable
   - 

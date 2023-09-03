@@ -39047,6 +39047,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1406627094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &188333442 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6290005279379259483, guid: e86160f79a48e5647afa6d806f25d572,
+    type: 3}
+  m_PrefabInstance: {fileID: 547091484}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &194554996
 GameObject:
   m_ObjectHideFlags: 0
@@ -41037,22 +41043,22 @@ PrefabInstance:
     - target: {fileID: 6290005279379259483, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7218951290771295168, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: abc8925c128cf33478bc13bd779bff6b, type: 2}
+      objectReference: {fileID: 2100000, guid: ce4648e5579a6e444bed9f28ebdcf1b5, type: 2}
     - target: {fileID: 7746770201873532363, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: -26.78221
       objectReference: {fileID: 0}
     - target: {fileID: 7746770201873532363, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.38
+      value: 6.410168
       objectReference: {fileID: 0}
     - target: {fileID: 7746770201873532363, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
@@ -41097,7 +41103,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6290005279379259483, guid: e86160f79a48e5647afa6d806f25d572,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 547091492}
   m_SourcePrefab: {fileID: 100100000, guid: e86160f79a48e5647afa6d806f25d572, type: 3}
 --- !u!4 &547091485 stripped
 Transform:
@@ -41105,6 +41115,57 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 547091484}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &547091492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188333442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.371
+  m_Color: {r: 1, g: 0.36320752, b: 0.36320752, a: 1}
+  m_Intensity: 2
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 0
+  m_ApplyToSortingLayers: 00000000
+  m_LightCookieSprite: {fileID: 1971348537, guid: d4a72dcf95cb9724286d96fc607cc8e3,
+    type: 3}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 3
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &557385083
 GameObject:
   m_ObjectHideFlags: 0
@@ -52174,7 +52235,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 2
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000
@@ -53254,7 +53315,7 @@ Transform:
   m_GameObject: {fileID: 2111224284}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -29.799982, y: 16.875, z: -10}
+  m_LocalPosition: {x: -29.799982, y: 16, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -11,14 +11,13 @@ public class Stats
     [SerializeField] protected int   level        = 1;
     [SerializeField] protected int   defense      = 1;
     [SerializeField] protected float attackSpeed  = 1;
-    
+
     public int Health
     {
         get => health;
 
-        set => health = (health + value > MaxHealth) ?
-            MaxHealth :
-            value; //초과분 생기지 않도록 제한
+        set => health = value >= MaxHealth ? MaxHealth : value;
+        //초과분 생기지 않도록 제한
     }
 
     public int MaxHealth

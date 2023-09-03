@@ -99,7 +99,9 @@ public abstract class State : IState
             _targetPlayer   = _player;
         }
 
-        return _targetDistance <= p_enemyAI.enemyBase.stats.chaseDistance ? (_targetPlayer, _targetDistance) : (null, -1);
+        return _targetDistance <= p_enemyAI.enemyBase.stats.chaseDistance ?
+            (_targetPlayer, _targetDistance) :
+            (null, -1);
     }
 
     protected static void Move(EnemyAI p_enemyAI)
@@ -268,9 +270,9 @@ public class SAttack : State
 
     public override void Execute()
     {
+        Debug.Log(_attackTask.Status);
         if (_attackTask.Status == UniTaskStatus.Pending) return;
         if (enemyAI.waitForAttack) AttackDelay();
-
 
         (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
 
@@ -310,14 +312,17 @@ public class SAttack : State
         enemyAI.animator.speed = enemyAI.enemyBase.stats.AttackSpeed * 2f;
 
         var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
-        foreach (Collider2D _player in _attacked) _player.GetComponent<Player>().Attacked(enemyAI.enemyBase.stats.AttackDamage, 0, enemyAI.enemyBase);
+        foreach (Collider2D _player in _attacked)
+        {
+            if (_player.TryGetComponent(out Player _playerComponent)) //PickupRadius도 여기 걸려서 오류남 (지금은 레이어 분리하였음)
+                _playerComponent.Attacked(enemyAI.enemyBase.stats.AttackDamage, 0, enemyAI.enemyBase);
+        }
 
         float _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length / enemyAI.animator.speed; //공격속도 영향을 받음
-        
         await UniTask.Delay(TimeSpan.FromSeconds(_attackAnimationDelay));
-        
-        enemyAI.animator.speed = 1;
+
         enemyAI.waitForAttack  = true;
+        enemyAI.animator.speed = 1;
     }
 
     private async void AttackDelay()
@@ -328,6 +333,7 @@ public class SAttack : State
             await UniTask.Delay(TimeSpan.FromSeconds(_nextAttackDelay));
         else
             Debug.Log($"{_nextAttackDelay} : {_nextAttackTime} - {Time.time}");
+
         enemyAI.waitForAttack = false;
     }
 }

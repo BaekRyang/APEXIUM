@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3061965199755538840}
   - component: {fileID: 1754374989283793338}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: PickupRadius
   m_TagString: PlayerPickRadius
   m_Icon: {fileID: 0}
@@ -330,17 +330,17 @@ PrefabInstance:
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.030715764
+      value: -28.055
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.641032
+      value: 6.95
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.42549992
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -379,9 +379,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1007384899167168951, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007384899167168951, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1007384899167168951, guid: 31dbabe34224369498f5cb358cb33d5f,
+        type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: d2a66d8431f839e49a84eb5fe01ed7c3,
+      objectReference: {fileID: 21300000, guid: 718a323c745221f4ebdef3915a58b541,
         type: 3}
     - target: {fileID: 1007384899167168951, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -591,7 +601,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 2, y: 2}
-    newSize: {x: 0.16, y: 0.16}
+    newSize: {x: 2, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
