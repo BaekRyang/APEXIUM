@@ -52,7 +52,6 @@ public class UIElements : MonoBehaviour
 
     public void SetCoolDown(SkillTypes p_skillType, float p_cooldown, float p_remainCooldown)
     {
-        Debug.Log("FFF");
         skillBlocks[p_skillType].SetCoolDown(p_cooldown, p_remainCooldown);
     }
 

@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 using Facing = PlayerController.Facing;
 using Random = UnityEngine.Random;
 
-public class AttackableSkill : Skill, IAttackable
+public abstract class AttackableSkill : Skill, IAttackable, IUseable
 {
     protected Facing Facing        => Player.Controller.PlayerFacing;
     private   float  StatDamage    => GameManager.Instance.GetLocalPlayer().Stats.AttackDamage;
@@ -28,4 +28,5 @@ public class AttackableSkill : Skill, IAttackable
 
         return ((int)_damage, _isCritical);
     }
+
 }

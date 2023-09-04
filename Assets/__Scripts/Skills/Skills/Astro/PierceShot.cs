@@ -17,10 +17,10 @@ public class PierceShot : AttackableSkill
         SkillDamage = SKILL_DAMAGE;
     }
 
-    public override bool Play()
+    public override void Play()
     {
-        if (!CanUse()) return false;
-        if (!ConsumeResource()) return false;
+        if (!CanUse()) return;
+        if (!ConsumeResource()) return;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
         Transform _cachedTransform = Player.transform;
@@ -47,10 +47,12 @@ public class PierceShot : AttackableSkill
             }
         }
 
-        if (Stats.Resource == 0)
-            return Revolver.Reload();
+        if (Player.Stats.Resource == 0)
+        {
+            Revolver.Reload();
+            return;
+        }
 
         LastUsedTime = Time.time;
-        return true;
     }
 }

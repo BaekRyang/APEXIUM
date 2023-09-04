@@ -274,7 +274,7 @@ public class PlayerController : MonoBehaviour
 
         //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
         if (HasTile(floorTilemap).Item1)
-        {
+        { //TODO:PolygonCollider로 바꿨으므로 정확하게 벽 안에 있는지 판별하는 식으로 변경해야함(현재 방식은 아주 작은 타일이 있어도 점프를 막음)
             Debug.Log("Ladder Jump in Wall");
             return;
         }
@@ -442,11 +442,9 @@ public class PlayerController : MonoBehaviour
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
 
-        bool _condition = _input.vertical < 0 && _rigidbody2D.velocity.y == 0;
+        int _condition = _input.vertical > 0 ? 1 : 0;
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                       Mathf.FloorToInt(_localPosition.y - (_condition ?
-                                                            1 :
-                                                            0)));
+                                       Mathf.FloorToInt(_localPosition.y + (_condition)));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.

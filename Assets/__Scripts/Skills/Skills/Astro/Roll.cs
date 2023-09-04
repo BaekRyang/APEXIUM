@@ -15,9 +15,9 @@ public class Roll : Skill
         Cooldown  = COOLDOWN;
     }
 
-    public override bool Play()
+    public override void Play()
     {
-        if (!CanUse()) return false;
+        if (!CanUse()) return;
 
         //바라보고 있는 방향으로 구르기
         Player.Controller.SetControllable(false);
@@ -41,12 +41,11 @@ public class Roll : Skill
             Player.Controller.SetControllable(true);
         });
 
-        Stats.Resource = Stats.MaxResource;
+        Player.Stats.Resource = Player.Stats.MaxResource;
 
         GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Secondary].RemainingCooldown = 0;
         GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Ultimate].RemainingCooldown  = 0;
 
         LastUsedTime = Time.time;
-        return true;
     }
 }

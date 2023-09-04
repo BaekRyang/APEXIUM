@@ -1,14 +1,11 @@
 using System;
 using UnityEngine;
 
-public class Skill : IUseable
+public abstract class Skill
 {
-    public    Player      Player { get; set; }
-    protected PlayerStats Stats  => Player.Stats;
+    public Player Player { get; set; }
 
-    public virtual void Initialize()
-    {
-    }
+    public abstract void Initialize();
 
     public SkillTypes SkillType { get; protected set; }
 
@@ -22,7 +19,7 @@ public class Skill : IUseable
         {
             float _remainingCooldown;
             if (SkillType == SkillTypes.Primary)
-                _remainingCooldown = Cooldown / Stats.AttackSpeed - (Time.time - LastUsedTime);
+                _remainingCooldown = Cooldown / Player.Stats.AttackSpeed - (Time.time - LastUsedTime);
             else
                 _remainingCooldown = Cooldown - (Time.time - LastUsedTime);
 
@@ -42,7 +39,7 @@ public class Skill : IUseable
         {
             float _realCooldown;
             if (SkillType == SkillTypes.Primary)
-                _realCooldown = Cooldown / Stats.AttackSpeed;
+                _realCooldown = Cooldown / Player.Stats.AttackSpeed;
             else
                 _realCooldown = Cooldown;
 
@@ -52,13 +49,12 @@ public class Skill : IUseable
 
     public float LastUsedTime { get; set; } = float.MinValue; //최소값 안쓰면 쿨타임이 돌아가는 상태로 시작함
 
-    public virtual bool Play() => false;
+    public abstract void Play();
 
     public virtual void Update()
     {
         if (RealCooldown > .1f) //너무 짧은 쿨타임은 보여주지 않음
-            UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown);
-        Debug.Log($"{LastUsedTime} -- {RemainingCooldown}");
+            UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown); 
     }
 
     protected bool CanUse()
@@ -71,9 +67,9 @@ public class Skill : IUseable
 
     protected bool ConsumeResource(int p_amount = 1)
     {
-        if (Stats.Resource >= p_amount) //자원이 충분한지 체크
+        if (Player.Stats.Resource >= p_amount) //자원이 충분한지 체크
         {
-            Stats.Resource -= p_amount;
+            Player.Stats.Resource -= p_amount;
             return true;
         }
 

@@ -22,10 +22,10 @@ public class RevolverShot : AttackableSkill
         SkillDamage = DAMAGE_MULTIPLIER;
     }
 
-    public override bool Play()
+    public override void Play()
     {
-        if (!CanUse()) return false;
-        if (!ConsumeResource()) return false;
+        if (!CanUse()) return;
+        if (!ConsumeResource()) return;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
         
         Player._animator.SetTrigger("Primary");
@@ -59,11 +59,9 @@ public class RevolverShot : AttackableSkill
 
         Player.StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.AttackSpeed));
 
-        if (Stats.Resource == 0)
+        if (Player.Stats.Resource == 0)
             Revolver.Reload();
 
         LastUsedTime = Time.time;
-
-        return true;
     }
 }

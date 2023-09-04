@@ -19,16 +19,15 @@ public class Spree : AttackableSkill
         SkillDamage = SKILL_DAMAGE;
     }
 
-    public override bool Play()
+    public override void Play()
     {
-        if (!CanUse()) return false;
-        if (!ConsumeResource()) return false;
+        if (!CanUse()) return;
+        if (!ConsumeResource()) return;
 
         Player.Controller.SetControllable(false);
         Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
         Player.StartCoroutine(SpreeBullet());
         LastUsedTime = Time.time;
-        return true;
     }
 
     private IEnumerator SpreeBullet()
@@ -59,7 +58,7 @@ public class Spree : AttackableSkill
                 }
             }
 
-            yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Stats.AttackSpeed);
+            yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Player.Stats.AttackSpeed);
         } while (ConsumeResource());
 
         Revolver.Reload();

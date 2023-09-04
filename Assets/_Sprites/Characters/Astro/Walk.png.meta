@@ -46,8 +46,8 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 7
+  spritePivot: {x: 0.5, y: 0}
   spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -123,85 +123,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uAC77\uAE30_0"
+      name: Walk_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dde136f0d86c46746ab1ccaeec02dea0
-      internalID: 793364692
+      spriteID: 5758c3484af9bf248abe13164ae315d7
+      internalID: -1769285503
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC77\uAE30_1"
+      name: Walk_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1831b1cf31b645546b78cd12f098bc40
-      internalID: -469716353
+      spriteID: 1c507c3fe3d2b9e4baee30e07d5592f2
+      internalID: -1003309541
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC77\uAE30_2"
+      name: Walk_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 85a0ed80a6358524f9d60bdcacc4ebff
-      internalID: -1307159877
+      spriteID: 47734bd65c86f7a44b4ca0eec8814569
+      internalID: 1635346121
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uAC77\uAE30_3"
+      name: Walk_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e487ae1ee7de0c4ab883f4106613ba4
-      internalID: 951066148
+      spriteID: 22f7390b796462e438fa30bb501dc93a
+      internalID: 2072033991
       vertices: []
       indices: 
       edges: []
@@ -217,10 +217,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\uAC77\uAE30_0": 793364692
-      "\uAC77\uAE30_1": -469716353
-      "\uAC77\uAE30_2": -1307159877
-      "\uAC77\uAE30_3": 951066148
+      Walk_0: -1769285503
+      Walk_1: -1003309541
+      Walk_2: 1635346121
+      Walk_3: 2072033991
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

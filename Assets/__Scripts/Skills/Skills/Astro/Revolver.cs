@@ -19,17 +19,19 @@ public class Revolver : Skill
         SkillType = SkillTypes.Passive;
     }
 
+    public override void Play() {}
+
     public override void Update()
     {
         Debug.Log("AAA");
         base.Update();
-        if (Stats.Resource == Stats.MaxResource) return; //재장전이 되었으면 리턴
+        if (Player.Stats.Resource == Player.Stats.MaxResource) return; //재장전이 되었으면 리턴
 
         //총알이 다 채워지지 않은 상태로 재장전시간 +50% 초만큼 지나면 총알을 채운다.
         if (Time.time > NextReloadTime)
         {
-            Stats.Resource = Stats.MaxResource;
-            NextReloadTime = GetNextReloadTime();
+            Player.Stats.Resource = Player.Stats.MaxResource;
+            NextReloadTime        = GetNextReloadTime();
             Debug.Log($"{NextReloadTime - Time.time}");
         }
     }

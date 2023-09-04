@@ -18,9 +18,12 @@ public class PlayMap : MonoBehaviour
 
     public Vector2 GetMapSize()
     {
-        var _size = GetComponentInChildren<Tilemap>().localBounds.size;
-        return new Vector2(_size.x, _size.y);
+        Vector3 _size = GetComponentInChildren<Tilemap>().localBounds.size;
+        return _size;
     }
+
+    public Vector2 GetMapCenterPosition() => 
+        (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
     public void Initialize()
     {
@@ -47,11 +50,5 @@ public class PlayMap : MonoBehaviour
                                       new Vector2(_mapSize.x, 0),
                                       new Vector2(0,          0)
                                   });
-    }
-
-    public void GetRelativePosition(Player p_player)
-    {
-        var _playerPosition = p_player.transform.position;
-        var _mapPosition    = transform.position;
     }
 }
