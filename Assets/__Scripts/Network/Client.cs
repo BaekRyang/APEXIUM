@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using ProtoBuf;
 using Unity.VisualScripting;
@@ -70,6 +71,8 @@ public class Client : MonoBehaviour
 
     private void Update()
     {
+        
+        
         switch (BootClient)
         {
             case true when ClientSocket == null:

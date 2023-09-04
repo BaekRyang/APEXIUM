@@ -23,7 +23,7 @@ public class PlayMap : MonoBehaviour
     public void Initialize()
     {
         _mapSize           = GetMapSize();
-        transform.position = new Vector3(-_mapSize.x / 2, _mapSize.y / 2);
+        transform.position = new Vector3(0, _mapSize.y);
     }
 
     public void GetRelativePosition(Player p_player)

@@ -119,6 +119,13 @@ public static class Tools
             Remap(p_value.y, new Vector2(p_origin[0].y, p_origin[1].y), new Vector2(p_target[0].y, p_target[1].y)));
     } 
     
+    public static Vector2 Remap(Vector3 p_value, Vector2[] p_origin, Vector2[] p_target)
+    {
+        return new Vector2(
+            Remap(p_value.x, new Vector2(p_origin[0].x, p_origin[1].x), new Vector2(p_target[0].x, p_target[1].x)),
+            Remap(p_value.y, new Vector2(p_origin[0].y, p_origin[1].y), new Vector2(p_target[0].y, p_target[1].y)));
+    } 
+    
     
     public static Vector2 GetResolution(this Sprite p_sprite)
     {

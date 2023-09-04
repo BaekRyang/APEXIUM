@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,7 +26,14 @@ public class GameManager : MonoBehaviour
     public CinemachineVirtualCamera virtualCamera;
 
     public PlayMap currentMap;
-    
+
+    private void Update()
+    {
+        Vector2 _mapCenter = currentMap.GetMapSize() / 2;
+        Debug.Log(_mapCenter);
+        Debug.DrawRay(_mapCenter, Vector2.down * 200, Color.red);
+    }
+
     public Player GetRandomPlayer()
     {
         if (_players.Count <= 0)
@@ -51,14 +60,16 @@ public class GameManager : MonoBehaviour
         foreach (var _monster in monsters)
             _monstersData.Add(_monster.name, _monster);
 
-
+        currentMap = GetComponentInChildren<PlayMap>();
     }
 
     public void InstantiatePlayer(int p_newPlayerID)
     {
         //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
         //RaycastNonAlloc이 성능상 더 좋아보이긴 하지만 단발적으로 사용할거라 큰 차이는 없을듯
-        var _spawnPosition = Physics2D.RaycastAll(new(0, 100), Vector2.down, 100, LayerMask.GetMask("Floor"))[^1].point;
+        Vector2 _mapCenter = currentMap.GetMapSize() / 2;
+        
+        var _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
         _spawnPosition.y += 1.5f;
         GameObject _player = Instantiate(playerPrefab, _spawnPosition, Quaternion.identity);
         _player.transform.name = $"Player {p_newPlayerID}";
