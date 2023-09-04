@@ -12,7 +12,7 @@ public class Spree : AttackableSkill
     private const int   BULLET_SPREAD_ANGLE = 1;
     private const float SPREE_SPEED         = 2f;
 
-    public void OnEnable()
+    public override void Initialize()
     {
         SkillType   = SkillTypes.Ultimate;
         Cooldown    = COOLDOWN;
@@ -26,7 +26,7 @@ public class Spree : AttackableSkill
 
         Player.Controller.SetControllable(false);
         Player.Controller.AddLandingAction(() => Player.Controller.Rigidbody2D.velocity = Vector2.zero);
-        StartCoroutine(SpreeBullet());
+        Player.StartCoroutine(SpreeBullet());
         LastUsedTime = Time.time;
         return true;
     }
@@ -38,7 +38,7 @@ public class Spree : AttackableSkill
         {
             Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
-            Transform _cachedTransform = transform;
+            Transform _cachedTransform = Player.transform;
             Vector3   _position        = _cachedTransform.position;
 
             //Quaternion은 위 아래로 랜덤이어야 하므로 z축을 기준으로 회전한다.

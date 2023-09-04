@@ -109,6 +109,15 @@ public static class Tools
 
     public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
 
+    public static IEnumerable<T> GetEnumValues2<T>()
+    {
+        foreach (var v in Enum.GetValues(typeof(T)))
+        {
+            yield return (T)v;
+        }
+        
+    }
+
     public static float Remap(float p_value, Vector2 p_origin, Vector2 p_target) => 
         p_target.x + (p_value - p_origin.x) * (p_target.y - p_target.x) / (p_origin.y - p_origin.x);
 

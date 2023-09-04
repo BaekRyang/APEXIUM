@@ -14,13 +14,14 @@ public class Revolver : Skill
 
     public static float NextReloadTime;
 
-    public void OnEnable()
+    public override void Initialize()
     {
         SkillType = SkillTypes.Passive;
     }
 
-    protected override void Update()
+    public override void Update()
     {
+        Debug.Log("AAA");
         base.Update();
         if (Stats.Resource == Stats.MaxResource) return; //재장전이 되었으면 리턴
 

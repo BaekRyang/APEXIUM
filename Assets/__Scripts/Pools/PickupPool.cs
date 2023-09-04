@@ -26,7 +26,7 @@ public class PickupPool : MonoBehaviour
         // foreach (var _type in Enum.GetValues(typeof(PickupType)).Cast<PickupType>())
         //     _pickupPoolTransforms.Add(_type, new GameObject(_type.ToString()).transform);
 
-        foreach (var _convertEnumValue in Tools.GetEnumValues<PickupType>())
+        foreach (var _convertEnumValue in Tools.GetEnumValues2<PickupType>())
             _pickupPoolTransforms.Add(_convertEnumValue, new GameObject(_convertEnumValue.ToString()).transform);
 
         //위치 조정

@@ -10,7 +10,7 @@ public class PierceShot : AttackableSkill
     private const float STUN_DURATION = 1f;
     private const float SKILL_DAMAGE  = 3f;
 
-    public void OnEnable()
+    public override void Initialize()
     {
         SkillType   = SkillTypes.Secondary;
         Cooldown    = COOLDOWN;
@@ -23,12 +23,12 @@ public class PierceShot : AttackableSkill
         if (!ConsumeResource()) return false;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
-        Transform _cachedTransform = transform;
+        Transform _cachedTransform = Player.transform;
         Vector3   _position        = _cachedTransform.position;
 
         LayerMask      _layerMask = LayerMask.GetMask("Enemy", "Floor");
         RaycastHit2D[] _hit       = Physics2D.RaycastAll(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);
-        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f));
+        Player.StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f));
         foreach (var _hitObject in _hit)
         {
             VFXManager.PlayVFX("BulletPop", _hitObject.point, (int)Player.Controller.PlayerFacing);

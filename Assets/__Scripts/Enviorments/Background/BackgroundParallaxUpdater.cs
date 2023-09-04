@@ -13,11 +13,12 @@ public class BackgroundParallaxUpdater : MonoBehaviour
             _backgrounds.Add(_child.transform, _child.GetComponent<SpriteRenderer>().sprite.GetResolution());
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        UpdateParallax(
-            GameManager.Instance.currentMap.GetMapSize(),
-            GameManager.Instance.GetLocalPlayer());
+        if (GameManager.Instance.GetLocalPlayer() != null)
+            UpdateParallax(
+                GameManager.Instance.currentMap.GetMapSize(),
+                GameManager.Instance.GetLocalPlayer());
     }
 
     //이미지가 작을수록 느리게 움직이고, 크면 빠르게 움직인다.
@@ -27,13 +28,14 @@ public class BackgroundParallaxUpdater : MonoBehaviour
     //배경도 플레이어가 이동한 가장자리 방향으로 이동한다. (동일한 방향)
     private void UpdateParallax(Vector2 p_totalSize, Player p_refPlayer)
     {
-        foreach ((Transform backgroundTransform, Vector2 spriteSize) in _backgrounds)
+        foreach ((Transform _backgroundTransform, Vector2 _spriteSize) in _backgrounds)
         {
-            backgroundTransform.position =
+            _backgroundTransform.position =
                 Tools.Remap(
                     p_refPlayer.transform.position,
-                    new[] { Vector2.zero, p_totalSize },
-                    new[] { Vector2.zero, spriteSize }
+                    
+                    new[] { Vector2.zero, _spriteSize },
+                    new[] { Vector2.zero, p_totalSize }
                 );
         }
     }

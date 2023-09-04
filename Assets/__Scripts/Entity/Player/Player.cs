@@ -12,11 +12,10 @@ public class Player : MonoBehaviour
 {
     public int clientID;
 
-    
-    private PlayerController   _playerController;
-    private PlayerStats        _stats;
-    private bool               _isImmune;
-    public  Vector3            PlayerPosition => transform.position;
+    private PlayerController _playerController;
+    private PlayerStats      _stats;
+    private bool             _isImmune;
+    public  Vector3          PlayerPosition => transform.position;
 
     public readonly Dictionary<SkillTypes, Skill> skills = new();
 
@@ -34,7 +33,7 @@ public class Player : MonoBehaviour
     {
         _stats = new(p_playerData.stats);
         UIElements.Instance.SetHealth(_stats.Health, _stats.MaxHealth);
-        
+
         _playerController      = gameObject.AddComponent<PlayerController>();
         _animator              = GetComponent<Animator>();
         Controller.player      = this;
@@ -42,20 +41,20 @@ public class Player : MonoBehaviour
 
         _animator.runtimeAnimatorController = Animation.GetAnimatorController(p_playerData.characterName);
 
-        skills.Add(SkillTypes.Passive,   gameObject.AddComponent(Type.GetType(p_playerData.skillPassive)) as Skill);
-        skills.Add(SkillTypes.Primary,   gameObject.AddComponent(Type.GetType(p_playerData.skillPrimary)) as Skill);
-        skills.Add(SkillTypes.Secondary, gameObject.AddComponent(Type.GetType(p_playerData.skillSecondary)) as Skill);
-        skills.Add(SkillTypes.Utility,   gameObject.AddComponent(Type.GetType(p_playerData.skillUtility)) as Skill);
-        skills.Add(SkillTypes.Ultimate,  gameObject.AddComponent(Type.GetType(p_playerData.skillUltimate)) as Skill);
+        skills.Add(SkillTypes.Passive,   SkillFactory.MakeSkill(p_playerData.skillPassive,   this));
+        skills.Add(SkillTypes.Primary,   SkillFactory.MakeSkill(p_playerData.skillPrimary,   this));
+        skills.Add(SkillTypes.Secondary, SkillFactory.MakeSkill(p_playerData.skillSecondary, this));
+        skills.Add(SkillTypes.Utility,   SkillFactory.MakeSkill(p_playerData.skillUtility,   this));
+        skills.Add(SkillTypes.Ultimate,  SkillFactory.MakeSkill(p_playerData.skillUltimate,  this));
 
         _statusFeedback = GetComponentInChildren<MMF_Player>();
         _floatingText   = _statusFeedback.GetFeedbackOfType<MMF_FloatingText>();
 
         Collider2D _collider2D = GetComponent<Collider2D>();
         _collider2D.sharedMaterial.friction = 0f;
-        
-        _collider2D.enabled                 = false;
-        _collider2D.enabled                 = true;
+
+        _collider2D.enabled = false;
+        _collider2D.enabled = true;
     }
 
     void Start()
@@ -63,6 +62,11 @@ public class Player : MonoBehaviour
         LoadSettings(GameManager.Instance.GetCharacterData("Astro"));
     }
 
+    private void Update()
+    {
+        foreach ((SkillTypes _, Skill _skill) in skills) 
+            _skill.Update();
+    }
 
     public void PlayStatusFeedback(string p_pText)
     {
@@ -149,5 +153,4 @@ public class Player : MonoBehaviour
             yield return null;
         }
     }
-    
 }

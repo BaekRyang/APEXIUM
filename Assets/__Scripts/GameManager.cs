@@ -27,13 +27,6 @@ public class GameManager : MonoBehaviour
 
     public PlayMap currentMap;
 
-    private void Update()
-    {
-        Vector2 _mapCenter = currentMap.GetMapSize() / 2;
-        Debug.Log(_mapCenter);
-        Debug.DrawRay(_mapCenter, Vector2.down * 200, Color.red);
-    }
-
     public Player GetRandomPlayer()
     {
         if (_players.Count <= 0)
@@ -42,9 +35,14 @@ public class GameManager : MonoBehaviour
         return _players[Random.Range(0, _players.Count)];
     }
 
-    public Player[] GetPlayers() => _players.Values.ToArray();
+    public IEnumerable<Player> GetPlayers() => _players.Values.ToArray();
 
-    public Player GetLocalPlayer() => _players[playerID];
+    public Player GetLocalPlayer()
+    {
+        return _players.TryGetValue(playerID, out Player _player) ?
+            _player :
+            null;
+    }
 
     public PlayerData GetCharacterData(string p_name) => _charactersData[p_name];
     public EnemyData  GetEnemyData(string     p_name) => _monstersData[p_name];
@@ -60,7 +58,13 @@ public class GameManager : MonoBehaviour
         foreach (var _monster in monsters)
             _monstersData.Add(_monster.name, _monster);
 
-        currentMap = GetComponentInChildren<PlayMap>();
+        currentMap = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").GetComponent<PlayMap>();
+    }
+
+    private void Start()
+    {
+        var cinemachineCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
+        cinemachineCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = currentMap.GetBound;
     }
 
     public void InstantiatePlayer(int p_newPlayerID)
@@ -76,6 +80,9 @@ public class GameManager : MonoBehaviour
 
         _player.GetComponent<Player>().clientID = p_newPlayerID;
         _players.Add(p_newPlayerID, _player.GetComponent<Player>());
+        
+        if(p_newPlayerID == playerID)
+            virtualCamera.Follow = _player.transform;
     }
 
     public void RemovePlayer(int p_playerID)

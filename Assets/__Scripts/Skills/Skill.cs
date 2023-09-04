@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
 
-public class Skill : MonoBehaviour, IUseable
+public class Skill : IUseable
 {
-    private void Start() => Player = GetComponent<Player>();
-
-    public    Player      Player { get; private set; }
+    public    Player      Player { get; set; }
     protected PlayerStats Stats  => Player.Stats;
+
+    public virtual void Initialize()
+    {
+    }
 
     public SkillTypes SkillType { get; protected set; }
 
@@ -52,15 +54,16 @@ public class Skill : MonoBehaviour, IUseable
 
     public virtual bool Play() => false;
 
-    protected virtual void Update()
+    public virtual void Update()
     {
         if (RealCooldown > .1f) //너무 짧은 쿨타임은 보여주지 않음
-        UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown);
+            UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown);
+        Debug.Log($"{LastUsedTime} -- {RemainingCooldown}");
     }
 
     protected bool CanUse()
     {
-        if (!IsReady) return false;           //쿨타임 체크
+        if (!IsReady) return false;                        //쿨타임 체크
         if (!Player.Controller.Controllable) return false; //사용 가능한 상태인지 체크
 
         return true;

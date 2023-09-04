@@ -63,12 +63,10 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         playerInput    = GetComponent<PlayerInput>();
-        ladderTilemap  = GameObject.Find("prototype").transform.Find("Ladder").GetComponent<Tilemap>();
-        floorTilemap   = GameObject.Find("prototype").transform.Find("Tile").GetComponent<Tilemap>();
+        ladderTilemap  = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Ladder").GetComponent<Tilemap>();
+        floorTilemap   = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Tile").GetComponent<Tilemap>();
 
         InitializePlayerInput();
-
-        GameManager.Instance.virtualCamera.Follow = transform; //수정 필요 (GameManager보다 먼저 Awake되는 경우가 있을 수 있음)
     }
 
     private void Update()
@@ -171,7 +169,7 @@ public class PlayerController : MonoBehaviour
     private void CheckInteraction()
     {
         if (!_input.interact) return;
-        
+
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
                 _interactableObject.Interact();
@@ -482,6 +480,27 @@ public class PlayerController : MonoBehaviour
 
 #region SkillUse
 
+    public bool IsPressedSkill(SkillTypes skillType)
+    {
+        switch (skillType)
+        {
+            case SkillTypes.Primary:
+                return _input.primarySkill;
+            case SkillTypes.Secondary:
+                return _input.secondarySkill;
+            case SkillTypes.Utility:
+                return _input.utilitySkill;
+            case SkillTypes.Ultimate:
+                return _input.ultimateSkill;
+            case SkillTypes.Passive:
+                return _input.specialSkill;
+            case SkillTypes.Item:
+                return _input.itemSkill;
+            default:
+                return false;
+        }
+    }
+
     private void UseSkill()
     {
         if (_input.itemSkill) //아이템 스킬은 언제나 사용가능
@@ -491,16 +510,16 @@ public class PlayerController : MonoBehaviour
 
         //이외는 사다리에서 사용 불가능
 
-        if (_input.primarySkill && player.skills[SkillTypes.Primary].IsReady)
-            player.skills[SkillTypes.Primary].Play();
-        else if (_input.secondarySkill && player.skills[SkillTypes.Secondary].IsReady)
-            player.skills[SkillTypes.Secondary].Play();
-        else if (_input.utilitySkill && player.skills[SkillTypes.Utility].IsReady)
-            player.skills[SkillTypes.Utility].Play();
-        else if (_input.ultimateSkill && player.skills[SkillTypes.Ultimate].IsReady)
-            player.skills[SkillTypes.Ultimate].Play();
-        else if (_input.specialSkill && player.skills[SkillTypes.Passive].IsReady)
-            player.skills[SkillTypes.Passive].Play();
+
+        foreach (SkillTypes _skillTypes in Tools.GetEnumValues<SkillTypes>())
+        {
+            if (IsPressedSkill(_skillTypes) && player.skills[_skillTypes].IsReady)
+            {      
+                player.skills[_skillTypes].Play();
+                break;
+            }
+        }
+
     }
 
 #endregion

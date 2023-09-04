@@ -9,7 +9,7 @@ public class Roll : Skill
     private const float POWER    = 1.65f;
     private const float COOLDOWN = 2f;
 
-    public void OnEnable()
+    public override void Initialize()
     {
         SkillType = SkillTypes.Utility;
         Cooldown  = COOLDOWN;

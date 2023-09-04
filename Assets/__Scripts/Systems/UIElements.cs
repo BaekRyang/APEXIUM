@@ -13,12 +13,13 @@ public class UIElements : MonoBehaviour
     [SerializeField] private TMP_Text   healthIndex;
     [SerializeField] private Slider     expBar;
     [SerializeField] private TMP_Text   levelIndex;
-    [SerializeField] public CellSlider resourceBar;
+    [SerializeField] public  CellSlider resourceBar;
+
     private void Awake()
     {
         Instance ??= this;
     }
-    
+
     public void AddSkillBlock(SkillTypes p_skillType, SkillBlock p_skillBlock)
     {
         skillBlocks[p_skillType] = p_skillBlock;
@@ -29,7 +30,7 @@ public class UIElements : MonoBehaviour
     public void SetHealth(int p_currentHealth = -1, int p_maxHealth = -1)
     {
         if (_cachedMaxHealth == -1) _cachedMaxHealth = GameManager.Instance.GetLocalPlayer().Stats.MaxHealth;
-        
+
         if (p_maxHealth == -1) //최대 체력이 -1이면 기존 최대 체력으로 설정
             p_maxHealth = _cachedMaxHealth;
         else //아니면 최대 체력 갱신
@@ -44,13 +45,16 @@ public class UIElements : MonoBehaviour
         healthIndex.text = $"{p_currentHealth:0}/{p_maxHealth:0}";
     }
 
-    public void SetExp(int p_currentExp) => expBar.value =p_currentExp;
-    public void SetMaxExp(int p_maxExp) => expBar.maxValue = p_maxExp;
+    public void SetExp(int    p_currentExp) => expBar.value = p_currentExp;
+    public void SetMaxExp(int p_maxExp)     => expBar.maxValue = p_maxExp;
 
     public void SetLevelIndex(int p_level) => levelIndex.text = $"{p_level} Level";
 
-    public void SetCoolDown(SkillTypes p_skillType, float p_cooldown, float p_remainCooldown) =>
+    public void SetCoolDown(SkillTypes p_skillType, float p_cooldown, float p_remainCooldown)
+    {
+        Debug.Log("FFF");
         skillBlocks[p_skillType].SetCoolDown(p_cooldown, p_remainCooldown);
+    }
 
     // public void Notified(NotifyTypes p_type, object p_value)
     // {

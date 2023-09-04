@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 public class EnemyBase : MonoBehaviour
 {
-    private const float VERTICAL_OFFSEET = .7f;
+    private const float VERTICAL_OFFSET = .7f;
 
     private EnemyAI          _enemyAI;
     private MMF_Player       _damageFeedback;
@@ -55,7 +55,7 @@ public class EnemyBase : MonoBehaviour
                 _attackID.Add(p_attackID.Value, 0);      //해당 ID의 공격을 만들고 value를 초기화
 
 
-            _floatingText.TargetPosition = transform.position + Vector3.up * (VERTICAL_OFFSEET * _attackID[p_attackID.Value]);
+            _floatingText.TargetPosition = transform.position + Vector3.up * (VERTICAL_OFFSET * _attackID[p_attackID.Value]);
         }
 
         //여기서 오류나면 Exception 처리만 해주면 됨

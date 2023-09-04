@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Tools;
@@ -87,9 +88,9 @@ public abstract class State : IState
     /// </summary>
     protected static (Player, float) PlayerInRange(EnemyAI p_enemyAI)
     {
-        Player[] _players        = GameManager.Instance.GetPlayers();
-        Player   _targetPlayer   = null;
-        float    _targetDistance = Mathf.Infinity;
+        IEnumerable<Player> _players        = GameManager.Instance.GetPlayers();
+        Player        _targetPlayer   = null;
+        float         _targetDistance = Mathf.Infinity;
 
         foreach (Player _player in _players)
         {

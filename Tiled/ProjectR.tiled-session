@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Rules/autotile rules.tmx",
+    "activeFile": "prototype.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
         "Rules",
-        ".",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -129,11 +129,11 @@
             }
         },
         "prototype.tmx": {
-            "scale": 0.0625,
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 5744,
-                "y": 1872
+                "x": 8264,
+                "y": 3319
             }
         }
     },
@@ -151,20 +151,21 @@
         "Rules/LadderRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
+        "Winter.tsx"
     ],
     "project": "ProjectR.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "prototype.tmx",
+        "Winter.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
         "Rules/LadderRules.tmx",
         "Rules/autotile rules.tmx",
+        "prototype.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
-        "Winter.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/AutotileRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
         "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx"

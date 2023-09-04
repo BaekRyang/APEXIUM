@@ -15,7 +15,7 @@ public class RevolverShot : AttackableSkill
     private const float DAMAGE_MULTIPLIER = 1f;
 
 
-    public void OnEnable()
+    public override void Initialize()
     {
         SkillType   = SkillTypes.Primary;
         Cooldown    = COOLDOWN;
@@ -30,7 +30,7 @@ public class RevolverShot : AttackableSkill
         
         Player._animator.SetTrigger("Primary");
         Player._animator.SetBool("Playing", true);
-        Transform _cachedTransform = transform;
+        Transform _cachedTransform = Player.transform;
         Vector3   _position        = _cachedTransform.position;
 
         LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
@@ -57,7 +57,7 @@ public class RevolverShot : AttackableSkill
         //     Player.Controller.SetControllable(true);
         // });
 
-        StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.AttackSpeed));
+        Player.StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.AttackSpeed));
 
         if (Stats.Resource == 0)
             Revolver.Reload();

@@ -7,4 +7,5 @@ public interface IUseable
     public float      LastUsedTime      { get; set; }
 
     public bool Play();
+    public void Update();
 }
