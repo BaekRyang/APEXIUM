@@ -1,17 +1,15 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public abstract class Skill
 {
-    public Player Player { get; set; }
-
     public abstract void Initialize();
 
-    public SkillTypes SkillType { get; protected set; }
-
-    public float Cooldown { get; protected set; } //베이스 쿨타임(수정되면 안됨)
-
-    public bool IsReady => RemainingCooldown <= 0;
+    public    Player     Player    { get; set; }
+    protected SkillTypes SkillType { get; set; }
+    public    float      Cooldown  { get; protected set; } //베이스 쿨타임(수정되면 안됨)
+    public    bool       IsReady   => RemainingCooldown <= 0;
 
     public float RemainingCooldown
     {
@@ -49,12 +47,10 @@ public abstract class Skill
 
     public float LastUsedTime { get; set; } = float.MinValue; //최소값 안쓰면 쿨타임이 돌아가는 상태로 시작함
 
-    public abstract void Play();
-
     public virtual void Update()
     {
-        if (RealCooldown > .1f) //너무 짧은 쿨타임은 보여주지 않음
-            UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown); 
+        // if (RealCooldown > .1f) //너무 짧은 쿨타임은 보여주지 않음
+        //     UIElements.Instance.SetCoolDown(SkillType, RealCooldown, RemainingCooldown);
     }
 
     protected bool CanUse()

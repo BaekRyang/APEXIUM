@@ -19,8 +19,6 @@ public class Revolver : Skill
         SkillType = SkillTypes.Passive;
     }
 
-    public override void Play() {}
-
     public override void Update()
     {
         base.Update();
@@ -31,7 +29,6 @@ public class Revolver : Skill
         {
             Player.Stats.Resource = Player.Stats.MaxResource;
             NextReloadTime        = GetNextReloadTime();
-            Debug.Log($"{NextReloadTime - Time.time}");
         }
     }
 

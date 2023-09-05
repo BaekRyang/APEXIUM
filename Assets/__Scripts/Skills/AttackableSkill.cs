@@ -8,11 +8,11 @@ using Random = UnityEngine.Random;
 
 public abstract class AttackableSkill : Skill, IAttackable, IUseable
 {
-    protected Facing Facing        => Player.Controller.PlayerFacing;
-    private   float  StatDamage    => GameManager.Instance.GetLocalPlayer().Stats.AttackDamage;
+    protected Facing Facing         => Player.Controller.PlayerFacing;
+    private   float  StatDamage     => GameManager.Instance.GetLocalPlayer().Stats.AttackDamage;
     private   float  CriticalChance => GameManager.Instance.GetLocalPlayer().Stats.CriticalChance;
     private   float  CriticalDamage => GameManager.Instance.GetLocalPlayer().Stats.CriticalDamage;
-    public    float  SkillDamage   { get; set; }
+    public    float  SkillDamage    { get; set; }
 
     protected (int, bool) GetDamage()
     {
@@ -23,10 +23,13 @@ public abstract class AttackableSkill : Skill, IAttackable, IUseable
         float _damage = StatDamage              *
                         _randomDamageMultiplier *
                         SkillDamage             *
-                        (_isCritical ? CriticalDamage : 1f);
+                        (_isCritical ?
+                            CriticalDamage :
+                            1f);
 
 
         return ((int)_damage, _isCritical);
     }
 
+    public abstract void Play();
 }

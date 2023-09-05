@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Roll : Skill
+public class Roll : Skill, IUseable
 {
     private const float POWER    = 1.65f;
     private const float COOLDOWN = 2f;
@@ -15,7 +15,7 @@ public class Roll : Skill
         Cooldown  = COOLDOWN;
     }
 
-    public override void Play()
+    public void Play()
     {
         if (!CanUse()) return;
 

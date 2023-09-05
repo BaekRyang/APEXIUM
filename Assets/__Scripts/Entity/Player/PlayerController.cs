@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     public Player player;
 
-    [SerializeField] private InputValues _input;
+    [SerializeField] private InputValues input;
 
     private Rigidbody2D   _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
@@ -148,28 +148,28 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Interact"].performed       -= OnInteract;
     }
 
-    public void OnHorizontalMove(InputAction.CallbackContext p_context) => _input.horizontal = p_context.ReadValue<float>();
-    public void OnVerticalMove(InputAction.CallbackContext   p_context) => _input.vertical = p_context.ReadValue<float>();
+    public void OnHorizontalMove(InputAction.CallbackContext _context) => input.horizontal = _context.ReadValue<float>();
+    public void OnVerticalMove(InputAction.CallbackContext   _context) => input.vertical = _context.ReadValue<float>();
 
-    public async void OnJump(InputAction.CallbackContext p_context)
+    public async void OnJump(InputAction.CallbackContext _context)
     {
         await UniTask.Yield();                              //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
-        _input.jumpDown = p_context.ReadValue<float>() > 0; //유니티 업데이트 타임때 값을 업데이트 해주고
+        input.jumpDown = _context.ReadValue<float>() > 0; //유니티 업데이트 타임때 값을 업데이트 해주고
         await UniTask.Yield();                              //다음프레임에
-        _input.jumpDown = false;                            //초기화
+        input.jumpDown = false;                            //초기화
     }
 
-    public void OnSpecial(InputAction.CallbackContext   p_context) => _input.specialSkill = p_context.ReadValue<float>()   > 0;
-    public void OnPrimary(InputAction.CallbackContext   p_context) => _input.primarySkill = p_context.ReadValue<float>()   > 0;
-    public void OnSecondary(InputAction.CallbackContext p_context) => _input.secondarySkill = p_context.ReadValue<float>() > 0;
-    public void OnUtility(InputAction.CallbackContext   p_context) => _input.utilitySkill = p_context.ReadValue<float>()   > 0;
-    public void OnUltimate(InputAction.CallbackContext  p_context) => _input.ultimateSkill = p_context.ReadValue<float>()  > 0;
-    public void OnUseItem(InputAction.CallbackContext   p_context) => _input.itemSkill = p_context.ReadValue<float>()      > 0;
-    public void OnInteract(InputAction.CallbackContext  p_context) => _input.interact = p_context.ReadValue<float>()       > 0;
+    public void OnSpecial(InputAction.CallbackContext   _context) => input.specialSkill = _context.ReadValue<float>()   > 0;
+    public void OnPrimary(InputAction.CallbackContext   _context) => input.primarySkill = _context.ReadValue<float>()   > 0;
+    public void OnSecondary(InputAction.CallbackContext _context) => input.secondarySkill = _context.ReadValue<float>() > 0;
+    public void OnUtility(InputAction.CallbackContext   _context) => input.utilitySkill = _context.ReadValue<float>()   > 0;
+    public void OnUltimate(InputAction.CallbackContext  _context) => input.ultimateSkill = _context.ReadValue<float>()  > 0;
+    public void OnUseItem(InputAction.CallbackContext   _context) => input.itemSkill = _context.ReadValue<float>()      > 0;
+    public void OnInteract(InputAction.CallbackContext  _context) => input.interact = _context.ReadValue<float>()       > 0;
 
     private void CheckInteraction()
     {
-        if (!_input.interact) return;
+        if (!input.interact) return;
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
@@ -187,14 +187,14 @@ public class PlayerController : MonoBehaviour
     //바닥 착지시 실행할 Action
     private Action _landingAction;
 
-    public void AddLandingAction(Action p_action)
+    public void AddLandingAction(Action _pAction)
     {
-        _landingAction += p_action;
+        _landingAction += _pAction;
     }
 
-    private void OnCollisionEnter2D(Collision2D p_other)
+    private void OnCollisionEnter2D(Collision2D _pOther)
     {
-        if (p_other.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        if (_pOther.gameObject.layer == LayerMask.NameToLayer("Floor"))
         {
             if (jumpBuffer > 0) //바닥에 닿았는데 찰나의 차이로 점프를 미리 시도했다면 점프를 실행해준다.
             {
@@ -214,16 +214,16 @@ public class PlayerController : MonoBehaviour
     private void GetInput()
     {
 #if UNITY_EDITOR
-        _input.horizontal     = Input.GetAxisRaw("Horizontal");
-        _input.vertical       = Input.GetAxisRaw("Vertical");
-        _input.jumpDown       = Input.GetButtonDown("Jump");
-        _input.jumpUp         = Input.GetButtonUp("Jump");
-        _input.primarySkill   = Input.GetButton("PrimarySkill");
-        _input.secondarySkill = Input.GetButton("SecondarySkill");
-        _input.utilitySkill   = Input.GetButton("MovementSkill");
-        _input.ultimateSkill  = Input.GetButton("UltimateSkill");
-        _input.specialSkill   = Input.GetButton("SpecialSkill");
-        _input.itemSkill      = Input.GetButton("ItemSkill");
+        input.horizontal     = Input.GetAxisRaw("Horizontal");
+        input.vertical       = Input.GetAxisRaw("Vertical");
+        input.jumpDown       = Input.GetButtonDown("Jump");
+        input.jumpUp         = Input.GetButtonUp("Jump");
+        input.primarySkill   = Input.GetButton("PrimarySkill");
+        input.secondarySkill = Input.GetButton("SecondarySkill");
+        input.utilitySkill   = Input.GetButton("MovementSkill");
+        input.ultimateSkill  = Input.GetButton("UltimateSkill");
+        input.specialSkill   = Input.GetButton("SpecialSkill");
+        input.itemSkill      = Input.GetButton("ItemSkill");
 
 #elif UNITY_ANDROID
         _input.horizontal = VJoystick.MovementDirection;
@@ -239,8 +239,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!Controllable) return;
 
-        _rigidbody2D.velocity = new(_input.horizontal * Speed, _rigidbody2D.velocity.y);
-        player._animator.SetBool("IsWalk", _input.horizontal != 0);
+        _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
+        player._animator.SetBool("IsWalk", input.horizontal != 0);
         FlipSprite();
     }
 
@@ -249,7 +249,7 @@ public class PlayerController : MonoBehaviour
     {
         Transform _transformCache = transform;
 
-        _transformCache.localScale = _input.horizontal switch
+        _transformCache.localScale = input.horizontal switch
         {
             > 0 => new(-1, 1, 1),
             < 0 => new(1, 1, 1),
@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
 #region JumpAction
 
-    [DoNotSerialize] private readonly RaycastHit2D[] tmpVar = new RaycastHit2D[1];
+    [DoNotSerialize] private readonly RaycastHit2D[] _tmpVar = new RaycastHit2D[1];
 
     [SerializeField] private int   jumpCount;
     [SerializeField] private float jumpBuffer;     //Buffering Time
@@ -270,13 +270,13 @@ public class PlayerController : MonoBehaviour
     private void Jump(bool _forced = false)
     {
         if (!_forced) //점프키를 무시하는 강제점프가 아니라면
-            if (!_input.jumpDown)
+            if (!input.jumpDown)
                 return; //점프키 상태 확인
 
         if (!Controllable) return;
 
         //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
-        if (Physics2D.RaycastNonAlloc(transform.position, Vector2.up, tmpVar, .1f, LayerMask.GetMask("Floor")) > 0)
+        if (Physics2D.RaycastNonAlloc(transform.position, Vector2.up, _tmpVar, .1f, LayerMask.GetMask("Floor")) > 0)
         {
             Debug.Log("WallJump");
             return;
@@ -300,7 +300,7 @@ public class PlayerController : MonoBehaviour
 
         //사다리에서 아래방향 점프를 했다면 아래 방향으로 떨어뜨려준다.
         //=>내리려는 의도로 점프를 했을때 작동
-        var _jumpHeight = climbLadder && _input.vertical < 0 ?
+        var _jumpHeight = climbLadder && input.vertical < 0 ?
             -JumpHeight * .5f :
             JumpHeight;
 
@@ -362,12 +362,12 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 플레이어의 사다리 관련 액션 처리
     /// </summary>
-    private void ClimbLadder(Vector3 p_position)
+    private void ClimbLadder(Vector3 _pPosition)
     {
         if (!Controllable) return;
 
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
-        if (climbLadder && _input.vertical == 0)
+        if (climbLadder && input.vertical == 0)
         {
             _rigidbody2D.velocity  = Vector2.zero;
             player._animator.speed = 0;
@@ -376,11 +376,11 @@ public class PlayerController : MonoBehaviour
         SetLadderStatus();
 
         //상하이동이 없거나 사다리를 타고있지 않으면 리턴
-        if (_input.vertical == 0 || !onLadder) return;
+        if (input.vertical == 0 || !onLadder) return;
 
         //만약 _jumpDir이랑 내가 가고있는 방향이 같다면 사다리를 타지 않는다.
         //즉 내릴 마음으로 점프를 했다면 사다리를 타지 않는다.
-        if (climbLadder && _input.jumpDown)
+        if (climbLadder && input.jumpDown)
             _lastLadderJumpDirection = GetNowJumpDirection();
 
         if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
@@ -389,7 +389,7 @@ public class PlayerController : MonoBehaviour
         player._animator.SetBool("IsClimb", true);
 
         climbLadder           = true;
-        transform.position    = new(ladderPos.x, p_position.y); //사다리에 붙여주고
+        transform.position    = new(ladderPos.x, _pPosition.y); //사다리에 붙여주고
         _rigidbody2D.velocity = Vector2.zero;                   //가속 초기화
 
         //사다리에서 나갈때 틩기는 현상을 막기위해 velocity사용을 하지 않게 변경
@@ -398,7 +398,7 @@ public class PlayerController : MonoBehaviour
 
         if (climbLadder)
         {
-            float _deltaY = _input.vertical * Speed * Time.deltaTime;
+            float _deltaY = input.vertical * Speed * Time.deltaTime;
             transform.position += new Vector3(0, _deltaY, 0);
         }
 
@@ -410,7 +410,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private JumpDire GetNowJumpDirection()
     {
-        return _input switch
+        return input switch
         {
             { horizontal: > 0 }              => JumpDire.Right,
             { horizontal: < 0 }              => JumpDire.Left,
@@ -446,12 +446,12 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 플레이어 위치에 해당 타일이 있는지 확인한다.
     /// </summary>
-    private (bool, Vector2) HasTile(Tilemap p_tilemap)
+    private (bool, Vector2) HasTile(Tilemap _pTilemap)
     {
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
-        Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
+        Vector3 _localPosition = _pTilemap.transform.InverseTransformPoint(transform.position);
 
-        int _condition = _input.vertical > 0 ?
+        int _condition = input.vertical > 0 ?
             1 :
             0;
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
@@ -460,15 +460,15 @@ public class PlayerController : MonoBehaviour
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
 
-        Debug.DrawRay(p_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.red);
-        if (!p_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
+        Debug.DrawRay(_pTilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.red);
+        if (!_pTilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
         //따라서 타일의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
         Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
 
         //로컬 좌표를 다시 월드 좌표로 변환한다.
-        Vector2 _tileWorldPosition = p_tilemap.transform.TransformPoint(_localLadderPos);
+        Vector2 _tileWorldPosition = _pTilemap.transform.TransformPoint(_localLadderPos);
         return (true, _tileWorldPosition);
     }
 
@@ -489,48 +489,50 @@ public class PlayerController : MonoBehaviour
 
 #region SkillUse
 
-    public bool IsPressedSkill(SkillTypes skillType)
+    public bool IsPressedSkill(SkillTypes _skillType)
     {
-        switch (skillType)
+        switch (_skillType)
         {
             case SkillTypes.Primary:
-                return _input.primarySkill;
+                return input.primarySkill;
             case SkillTypes.Secondary:
-                return _input.secondarySkill;
+                return input.secondarySkill;
             case SkillTypes.Utility:
-                return _input.utilitySkill;
+                return input.utilitySkill;
             case SkillTypes.Ultimate:
-                return _input.ultimateSkill;
+                return input.ultimateSkill;
             case SkillTypes.Passive:
-                return _input.specialSkill;
+                return input.specialSkill;
             case SkillTypes.Item:
-                return _input.itemSkill;
+                return input.itemSkill;
             default:
                 return false;
         }
     }
 
+    //TODO: 임시 변수
+    private bool _hasItem = false;
     private void UseSkill()
     {
-        if (_input.itemSkill) //아이템 스킬은 언제나 사용가능
-            player.skills[SkillTypes.Item].Play();
+        if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
+            ((IUseable)player.skills[SkillTypes.Item]).Play();
 
         if (climbLadder) return;
 
         //이외는 사다리에서 사용 불가능
-
-
+        
         foreach (SkillTypes _skillTypes in Tools.GetEnumValues<SkillTypes>())
         {
             if (!IsPressedSkill(_skillTypes) || !player.skills[_skillTypes].IsReady) continue;
-            player.skills[_skillTypes].Play();
+            if(player.skills[_skillTypes] is IUseable _usableSkill)
+                _usableSkill.Play();
             break;
         }
     }
 
 #endregion
 
-    public void SetControllable(bool p_pControllable)
+    public void SetControllable(bool _pPControllable)
     {
         if (player.dead) //이미 죽었다면 다른 효과에 의한 조작을 무시한다.
         {
@@ -539,8 +541,8 @@ public class PlayerController : MonoBehaviour
         }
 
         //플레이어의 조작 가능 여부를 설정한다.
-        Controllable = p_pControllable;
-        if (!p_pControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
+        Controllable = _pPControllable;
+        if (!_pPControllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new(0, _rigidbody2D.velocity.y);
     }
 }

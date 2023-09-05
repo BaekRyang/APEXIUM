@@ -17,25 +17,25 @@ public class PlayerStats : Stats
     [SerializeField] protected float criticalChance;
     [SerializeField] protected float criticalDamage;
 
-    public PlayerStats(PlayerStats p_other)
+    public PlayerStats(PlayerStats _other)
     {
-        health           = p_other.Health;
-        maxHealth        = p_other.MaxHealth;
-        attackDamage     = p_other.AttackDamage;
-        speed            = p_other.Speed;
-        level            = p_other.Level;
-        defense          = p_other.Defense;
-        attackSpeed      = p_other.AttackSpeed;
-        exp              = p_other.exp;
-        maxExp           = p_other.maxExp;
-        maxJumpCount     = p_other.maxJumpCount;
-        jumpHeight       = p_other.jumpHeight;
-        resource         = p_other.resource;
-        maxResource      = p_other.maxResource;
-        commonResource   = p_other.commonResource;
-        advancedResource = p_other.advancedResource;
-        criticalChance   = p_other.CriticalChance;
-        criticalDamage   = p_other.CriticalDamage;
+        health           = _other.Health;
+        maxHealth        = _other.MaxHealth;
+        attackDamage     = _other.AttackDamage;
+        speed            = _other.Speed;
+        level            = _other.Level;
+        defense          = _other.Defense;
+        attackSpeed      = _other.AttackSpeed;
+        exp              = _other.exp;
+        maxExp           = _other.maxExp;
+        maxJumpCount     = _other.maxJumpCount;
+        jumpHeight       = _other.jumpHeight;
+        resource         = _other.resource;
+        maxResource      = _other.maxResource;
+        commonResource   = _other.commonResource;
+        advancedResource = _other.advancedResource;
+        criticalChance   = _other.CriticalChance;
+        criticalDamage   = _other.CriticalDamage;
     }
 
     public int Resource

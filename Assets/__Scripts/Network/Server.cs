@@ -94,16 +94,6 @@ public class Server : MonoBehaviour
             HandleUDPData();
 
     #endregion
-
-
-        if (Input.GetMouseButtonDown(2))
-        {
-            Debug.Log($"{PREFIX} Server Closed");
-            BootServer = false;
-
-            //연결된 모든 클라이언트에 종료를 보낸다.
-            Shutdown();
-        }
     }
 
     private void Shutdown()

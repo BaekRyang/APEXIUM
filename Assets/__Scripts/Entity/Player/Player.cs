@@ -29,9 +29,9 @@ public class Player : MonoBehaviour
 
     public bool dead;
 
-    private void LoadSettings(PlayerData p_playerData)
+    private void LoadSettings(PlayerData _playerData)
     {
-        _stats = new(p_playerData.stats);
+        _stats = new(_playerData.stats);
         UIElements.Instance.SetHealth(_stats.Health, _stats.MaxHealth);
 
         _playerController      = gameObject.AddComponent<PlayerController>();
@@ -39,13 +39,14 @@ public class Player : MonoBehaviour
         Controller.player      = this;
         Controller.playerStats = _stats;
 
-        _animator.runtimeAnimatorController = Animation.GetAnimatorController(p_playerData.characterName);
+        _animator.runtimeAnimatorController = Animation.GetAnimatorController(_playerData.characterName);
 
-        skills.Add(SkillTypes.Passive,   SkillFactory.MakeSkill(p_playerData.skillPassive,   this));
-        skills.Add(SkillTypes.Primary,   SkillFactory.MakeSkill(p_playerData.skillPrimary,   this));
-        skills.Add(SkillTypes.Secondary, SkillFactory.MakeSkill(p_playerData.skillSecondary, this));
-        skills.Add(SkillTypes.Utility,   SkillFactory.MakeSkill(p_playerData.skillUtility,   this));
-        skills.Add(SkillTypes.Ultimate,  SkillFactory.MakeSkill(p_playerData.skillUltimate,  this));
+        skills.Add(SkillTypes.Item,      SkillFactory.MakeSkill("ItemSkill",                this));
+        skills.Add(SkillTypes.Passive,   SkillFactory.MakeSkill(_playerData.skillPassive,   this));
+        skills.Add(SkillTypes.Primary,   SkillFactory.MakeSkill(_playerData.skillPrimary,   this));
+        skills.Add(SkillTypes.Secondary, SkillFactory.MakeSkill(_playerData.skillSecondary, this));
+        skills.Add(SkillTypes.Utility,   SkillFactory.MakeSkill(_playerData.skillUtility,   this));
+        skills.Add(SkillTypes.Ultimate,  SkillFactory.MakeSkill(_playerData.skillUltimate,  this));
 
         _statusFeedback = GetComponentInChildren<MMF_Player>();
         _floatingText   = _statusFeedback.GetFeedbackOfType<MMF_FloatingText>();
@@ -64,11 +65,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        foreach ((SkillTypes _, Skill _skill) in skills) 
+        foreach ((SkillTypes _, Skill _skill) in skills)
             _skill.Update();
     }
 
-    public void PlayStatusFeedback(string p_pText)
+    public void PlayStatusFeedback(string _text)
     {
         if (_statusFeedback.IsUnityNull())
         {
@@ -76,31 +77,31 @@ public class Player : MonoBehaviour
             return;
         }
 
-        _floatingText.Value = p_pText;
+        _floatingText.Value = _text;
         _statusFeedback.PlayFeedbacks();
     }
 
-    public void Attacked(int p_pDamage, float p_stunDuration, EnemyBase p_attacker)
+    public void Attacked(int _damage, float _stunDuration, EnemyBase _attacker)
     {
         if (_isImmune || dead) return;
 
-        PlayStatusFeedback(p_pDamage.ToString());
-        bool _stillAlive = HealthChange(-p_pDamage);
+        PlayStatusFeedback(_damage.ToString());
+        bool _stillAlive = HealthChange(-_damage);
 
         if (_stillAlive) return; //아래는 죽었을때 이벤트 처리
-        Die(p_attacker);
+        Die(_attacker);
     }
 
-    private bool HealthChange(int p_pDamage)
+    private bool HealthChange(int _damage)
     {
-        Stats.Health += p_pDamage;
+        Stats.Health += _damage;
         if (clientID == GameManager.Instance.playerID) //해당 캐릭터가 자신의 캐릭터일때만 UI 업데이트
             UIElements.Instance.SetHealth(Stats.Health, Stats.MaxHealth);
 
         return Stats.Health > 0; //체력이 0이하면 false 반환
     }
 
-    private void Die(EnemyBase p_attacker)
+    private void Die(EnemyBase _attacker)
     {
         dead = true;                       //죽었음을 표시
         Controller.SetControllable(false); //이동 불가
@@ -121,7 +122,7 @@ public class Player : MonoBehaviour
 
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
-        Vector2 _direction = new((transform.position - p_attacker.transform.position).normalized.x, 2f);
+        Vector2 _direction = new((transform.position - _attacker.transform.position).normalized.x, 2f);
 
         //해당 x방향이 +이면 SR의 x Flip을 true 아니면 false
         GetComponent<SpriteRenderer>().flipX = _direction.x > 0;
