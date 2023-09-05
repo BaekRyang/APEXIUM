@@ -11,11 +11,11 @@ public class SkillBlock : MonoBehaviour
     public static Dictionary<SkillTypes, SkillBlock> skillBlocks = new();
 
     [SerializeField] private SkillTypes skillType;
-    [SerializeField] private Skill      skill;
-    [DoNotSerialize] private                  Image      _mainImage;
-    [DoNotSerialize] private                  GameObject _cooldownObject;
-    [DoNotSerialize] private                  TMP_Text   _cooldownText;
-    [DoNotSerialize] private                  Image      _cooldownImage;
+    [SerializeField] private Skill      _skill;
+    [DoNotSerialize] private Image      _mainImage;
+    [DoNotSerialize] private GameObject _cooldownObject;
+    [DoNotSerialize] private TMP_Text   _cooldownText;
+    [DoNotSerialize] private Image      _cooldownImage;
 
     private void Awake()
     {
@@ -25,21 +25,19 @@ public class SkillBlock : MonoBehaviour
         _cooldownImage  = _cooldownObject.GetComponent<Image>();
     }
 
-    private void Start()
-    {
+    private void Start() => 
         skillBlocks[skillType] = this;
-    }
 
     private void Update()
     {
-        if (skill == null)
+        if (_skill == null)
         {
             Initialize();
             return;
         }
 
-        if (skill.Cooldown <= 0) return; //쿨타임 없으면 업데이트 안함
-        SetCoolDown(skill.Cooldown, skill.RemainingCooldown);
+        if (_skill.Cooldown <= 0) return; //쿨타임 없으면 업데이트 안함
+        SetCoolDown(_skill.Cooldown, _skill.RemainingCooldown);
     }
 
     private void Initialize()
@@ -47,26 +45,25 @@ public class SkillBlock : MonoBehaviour
         Player _localPlayer = GameManager.Instance.GetLocalPlayer();
         if (_localPlayer == null) return;
         if (_localPlayer.skills.TryGetValue(skillType, out Skill _loadedPlayerSkill))
-            skill = _loadedPlayerSkill;
-
+            _skill = _loadedPlayerSkill;
     }
 
-    public void SetMainImage(Image p_image)
+    public void SetMainImage(Image _image)
     {
-        _mainImage = p_image;
+        _mainImage = _image;
     }
 
-    public void SetCoolDown(float p_cooldown, float p_remainCooldown)
+    public void SetCoolDown(float _cooldown, float _remainCooldown)
     {
-        if (p_remainCooldown > 0)
+        if (_remainCooldown > 0)
         {
             _cooldownObject.SetActive(true);
-            _cooldownText.text = p_remainCooldown >= 1 ?
-                $"{p_remainCooldown:0.0}" //1초 이상이면 소수점 첫째자리까지
+            _cooldownText.text = _remainCooldown >= 1 ?
+                $"{_remainCooldown:0.0}" //1초 이상이면 소수점 첫째자리까지
                 :
-                $"{p_remainCooldown:0.00}"; //1초 미만이면 소수점 둘째자리까지
+                $"{_remainCooldown:0.00}"; //1초 미만이면 소수점 둘째자리까지
             _cooldownImage            = _cooldownObject.GetComponent<Image>();
-            _cooldownImage.fillAmount = p_remainCooldown / p_cooldown;
+            _cooldownImage.fillAmount = _remainCooldown / _cooldown;
         }
         else
             _cooldownObject.SetActive(false);
