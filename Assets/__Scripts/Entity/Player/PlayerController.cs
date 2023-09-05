@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -260,24 +261,32 @@ public class PlayerController : MonoBehaviour
 
 #region JumpAction
 
+    [DoNotSerialize] private readonly RaycastHit2D[] tmpVar = new RaycastHit2D[1];
+
     [SerializeField] private int   jumpCount;
     [SerializeField] private float jumpBuffer;     //Buffering Time
     [SerializeField] private float jumpGraceTimer; //Coyote Time
 
-    private void Jump(bool p_forced = false)
+    private void Jump(bool _forced = false)
     {
-        if (!p_forced) //점프키를 무시하는 강제점프가 아니라면
+        if (!_forced) //점프키를 무시하는 강제점프가 아니라면
             if (!_input.jumpDown)
                 return; //점프키 상태 확인
 
         if (!Controllable) return;
 
         //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
-        if (HasTile(floorTilemap).Item1)
-        { //TODO:PolygonCollider로 바꿨으므로 정확하게 벽 안에 있는지 판별하는 식으로 변경해야함(현재 방식은 아주 작은 타일이 있어도 점프를 막음)
-            Debug.Log("Ladder Jump in Wall");
+        if (Physics2D.RaycastNonAlloc(transform.position, Vector2.up, tmpVar, .1f, LayerMask.GetMask("Floor")) > 0)
+        {
+            Debug.Log("WallJump");
             return;
         }
+
+        // if (HasTile(floorTilemap).Item1)
+        // { //TODO:PolygonCollider로 바꿨으므로 정확하게 벽 안에 있는지 판별하는 식으로 변경해야함(현재 방식은 아주 작은 타일이 있어도 점프를 막음)
+        //     Debug.Log("Ladder Jump in Wall");
+        //     return;
+        // }
 
         //점프키가 눌러졌으므로, 점프 버퍼는 채워준다.
         jumpBuffer = JUMP_BUFFER;
@@ -442,9 +451,11 @@ public class PlayerController : MonoBehaviour
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = p_tilemap.transform.InverseTransformPoint(transform.position);
 
-        int _condition = _input.vertical > 0 ? 1 : 0;
+        int _condition = _input.vertical > 0 ?
+            1 :
+            0;
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                       Mathf.FloorToInt(_localPosition.y + (_condition)));
+                                       Mathf.FloorToInt(_localPosition.y + _condition));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
@@ -511,13 +522,10 @@ public class PlayerController : MonoBehaviour
 
         foreach (SkillTypes _skillTypes in Tools.GetEnumValues<SkillTypes>())
         {
-            if (IsPressedSkill(_skillTypes) && player.skills[_skillTypes].IsReady)
-            {      
-                player.skills[_skillTypes].Play();
-                break;
-            }
+            if (!IsPressedSkill(_skillTypes) || !player.skills[_skillTypes].IsReady) continue;
+            player.skills[_skillTypes].Play();
+            break;
         }
-
     }
 
 #endregion

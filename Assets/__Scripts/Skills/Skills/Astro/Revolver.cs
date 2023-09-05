@@ -23,7 +23,6 @@ public class Revolver : Skill
 
     public override void Update()
     {
-        Debug.Log("AAA");
         base.Update();
         if (Player.Stats.Resource == Player.Stats.MaxResource) return; //재장전이 되었으면 리턴
 
