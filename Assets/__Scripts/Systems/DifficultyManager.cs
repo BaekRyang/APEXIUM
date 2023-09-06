@@ -51,5 +51,5 @@ public class DifficultyManager : MonoBehaviour
         OnDifficultyChange?.Invoke(this, EventArgs.Empty);
     }
 
-    public event EventHandler OnDifficultyChange;
+    public static event EventHandler OnDifficultyChange;
 }

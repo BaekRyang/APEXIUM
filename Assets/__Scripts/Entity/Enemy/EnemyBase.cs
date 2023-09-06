@@ -7,7 +7,8 @@ using UnityEngine.Rendering.Universal;
 
 public class EnemyBase : MonoBehaviour
 {
-    private const float VERTICAL_OFFSET = .7f;
+    private const float VERTICAL_OFFSET    = .7f;
+    private const float CRITICAL_FONT_SIZE = 1.05f;
 
     private EnemyAI          _enemyAI;
     private MMF_Player       _damageFeedback;
@@ -33,7 +34,7 @@ public class EnemyBase : MonoBehaviour
 
         _floatingText = _damageFeedback.GetFeedbackOfType<MMF_FloatingText>();
 
-        DifficultyManager.Instance.OnDifficultyChange += LevelUp;
+        DifficultyManager.OnDifficultyChange += LevelUp;
     }
 
     private readonly Dictionary<uint, uint> _attackID = new();
@@ -43,7 +44,7 @@ public class EnemyBase : MonoBehaviour
         _floatingText.Value = p_pDamage.ConvertDamageUnit(p_isCritical, Tools.DamageUnitType.Full);
 
         //크리티컬은 빨강 아니면 하양
-        _floatingText.Intensity = p_isCritical ? 1.05f : 1;
+        _floatingText.Intensity = p_isCritical ? CRITICAL_FONT_SIZE : 1;
 
         if (!p_attackID.HasValue) //ID가 없으면 기본 위치에
             _floatingText.TargetPosition = transform.position;

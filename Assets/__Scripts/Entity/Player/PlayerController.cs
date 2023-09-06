@@ -153,10 +153,10 @@ public class PlayerController : MonoBehaviour
 
     public async void OnJump(InputAction.CallbackContext _context)
     {
-        await UniTask.Yield();                              //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
+        await UniTask.Yield();                            //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
         input.jumpDown = _context.ReadValue<float>() > 0; //유니티 업데이트 타임때 값을 업데이트 해주고
-        await UniTask.Yield();                              //다음프레임에
-        input.jumpDown = false;                            //초기화
+        await UniTask.Yield();                            //다음프레임에
+        input.jumpDown = false;                           //초기화
     }
 
     public void OnSpecial(InputAction.CallbackContext   _context) => input.specialSkill = _context.ReadValue<float>()   > 0;
@@ -489,29 +489,23 @@ public class PlayerController : MonoBehaviour
 
 #region SkillUse
 
-    public bool IsPressedSkill(SkillTypes _skillType)
+    private bool IsSkillButtonPressed(SkillTypes _skillType)
     {
-        switch (_skillType)
+        return _skillType switch
         {
-            case SkillTypes.Primary:
-                return input.primarySkill;
-            case SkillTypes.Secondary:
-                return input.secondarySkill;
-            case SkillTypes.Utility:
-                return input.utilitySkill;
-            case SkillTypes.Ultimate:
-                return input.ultimateSkill;
-            case SkillTypes.Passive:
-                return input.specialSkill;
-            case SkillTypes.Item:
-                return input.itemSkill;
-            default:
-                return false;
-        }
+            SkillTypes.Primary   => input.primarySkill,
+            SkillTypes.Secondary => input.secondarySkill,
+            SkillTypes.Utility   => input.utilitySkill,
+            SkillTypes.Ultimate  => input.ultimateSkill,
+            SkillTypes.Passive   => input.specialSkill,
+            SkillTypes.Item      => input.itemSkill,
+            _                    => false
+        };
     }
 
     //TODO: 임시 변수
     private bool _hasItem = false;
+
     private void UseSkill()
     {
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
@@ -520,11 +514,11 @@ public class PlayerController : MonoBehaviour
         if (climbLadder) return;
 
         //이외는 사다리에서 사용 불가능
-        
+
         foreach (SkillTypes _skillTypes in Tools.GetEnumValues<SkillTypes>())
         {
-            if (!IsPressedSkill(_skillTypes) || !player.skills[_skillTypes].IsReady) continue;
-            if(player.skills[_skillTypes] is IUseable _usableSkill)
+            if (!IsSkillButtonPressed(_skillTypes) || !player.skills[_skillTypes].IsReady) continue;
+            if (player.skills[_skillTypes] is IUseable _usableSkill)
                 _usableSkill.Play();
             break;
         }
