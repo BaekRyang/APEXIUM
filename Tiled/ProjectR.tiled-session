@@ -6,10 +6,10 @@
     "activeFile": "prototype.tmx",
     "automapping.whileDrawing": false,
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
-        "Rules",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
-        "."
+        "Rules",
+        ".",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -115,6 +115,10 @@
                 "y": 327.75
             }
         },
+        "Spring.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
         "Winter.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
@@ -129,11 +133,11 @@
             }
         },
         "prototype.tmx": {
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 4096,
-                "y": 1535.5
+                "x": 4288.25,
+                "y": 1607.5
             }
         }
     },
@@ -153,11 +157,13 @@
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
-        "Winter.tsx"
+        "Winter.tsx",
+        "Spring.tsx"
     ],
     "project": "ProjectR.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "Spring.tsx",
         "Winter.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
@@ -168,8 +174,7 @@
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/AutotileRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx",
-        "C:/Github/ProjectR/Assets/SuperTiled2Unity/Examples/Overhead/Maps/TestOverhead.tmx"
+        "C:/Github/ProjectR/Assets/_Tilemaps/prototype.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
