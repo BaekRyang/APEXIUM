@@ -31,8 +31,10 @@ public class Player : MonoBehaviour
 
     private void LoadSettings(PlayerData _playerData)
     {
-        _stats = new(_playerData.stats);
-        UIElements.Instance.SetHealth(_stats.Health, _stats.MaxHealth);
+        _stats = new PlayerStats(_playerData.stats)
+                 {
+                     isLocalPlayer = true
+                 };
 
         _playerController      = gameObject.AddComponent<PlayerController>();
         _animator              = GetComponent<Animator>();
@@ -95,8 +97,6 @@ public class Player : MonoBehaviour
     private bool HealthChange(int _damage)
     {
         Stats.Health += _damage;
-        if (clientID == GameManager.Instance.playerID) //해당 캐릭터가 자신의 캐릭터일때만 UI 업데이트
-            UIElements.Instance.SetHealth(Stats.Health, Stats.MaxHealth);
 
         return Stats.Health > 0; //체력이 0이하면 false 반환
     }

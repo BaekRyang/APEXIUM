@@ -12,7 +12,7 @@ public class PlayerStats : Stats
     [SerializeField] protected float jumpHeight;
     [SerializeField] protected int   resource;
     [SerializeField] protected int   maxResource;
-    [SerializeField] protected int   commonResource;
+    [SerializeField] protected int   energyCrystal;
     [SerializeField] protected int   advancedResource;
     [SerializeField] protected float criticalChance;
     [SerializeField] protected float criticalDamage;
@@ -32,7 +32,7 @@ public class PlayerStats : Stats
         jumpHeight       = _other.jumpHeight;
         resource         = _other.resource;
         maxResource      = _other.maxResource;
-        commonResource   = _other.commonResource;
+        energyCrystal    = _other.energyCrystal;
         advancedResource = _other.advancedResource;
         criticalChance   = _other.CriticalChance;
         criticalDamage   = _other.CriticalDamage;
@@ -41,17 +41,13 @@ public class PlayerStats : Stats
     public int Resource
     {
         get => resource;
-        set => UIElements.Instance.resourceBar.value = resource = value;
+        set => resource = value;
     }
 
     public int MaxResource
     {
         get => maxResource;
-        set
-        {
-            UIElements.Instance.resourceBar.maxValue = maxResource = value;
-            UIElements.Instance.resourceBar.ApplySetting();
-        }
+        set => maxResource = value;
     }
 
     public float JumpHeight
@@ -66,31 +62,21 @@ public class PlayerStats : Stats
         set => maxJumpCount = value;
     }
 
-    public int CommonResource
+    public int EnergyCrystal
     {
-        get => commonResource;
-        set
-        {
-            commonResource                        = value;
-            Resources.Instance.SetResource(value);
-        }
+        get => energyCrystal;
+        set => energyCrystal = value;
     }
 
     public int AdvancedResource
     {
         get => advancedResource;
-        set
-        {
-            advancedResource                              = value;
-            // Resources.Instance.AdvancedResourceValue.text = value.ToString();
-        }
+        set => advancedResource = value;
     }
 
     public float CriticalChance
     {
-        get => criticalChance > 1 ?
-            1 :
-            criticalChance;
+        get => criticalChance > 1 ? 1 : criticalChance;
         set => criticalChance = value;
     }
 
@@ -118,9 +104,9 @@ public class PlayerStats : Stats
         set
         {
             exp = value;
-            UIElements.Instance.SetExp(value);
             if (exp >= maxExp)
                 LevelUp();
+            else if (isLocalPlayer) UIElements.UpdateValue("EXP", exp, maxExp);
         }
     }
 
@@ -130,9 +116,7 @@ public class PlayerStats : Stats
         {
             exp    -= maxExp;
             maxExp += Convert.ToInt32(maxExp * 0.2f);
-            level++;
-            UIElements.Instance.SetMaxExp(maxExp);
-            UIElements.Instance.SetLevelIndex(level);
+            Level++;
             await UniTask.Delay(10); //TODO: 무한 루프 방지용(없애야함)
         } while (exp >= maxExp);
     }

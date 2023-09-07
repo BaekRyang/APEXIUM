@@ -6,11 +6,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Resources : MonoBehaviour
+public class EnergyCrystal : MonoBehaviour
 {
-    public static Resources Instance;
+    public static EnergyCrystal Instance;
 
-    [SerializeField] private TMP_Text _resourceValue;
+    [SerializeField] private TMP_Text _valueText;
 
     private bool IsEmphasis => _remainingEmphasisTime > 0 || _remainingReturnTime > 0;
 
@@ -19,16 +19,15 @@ public class Resources : MonoBehaviour
         Instance ??= this;
     }
 
-    UniTask _task;
-
-    public void SetResource(int p_currentResource)
+    private UniTask _task;
+    public void SetValue(int _currentValue)
     {
-        _resourceValue.text = $"{p_currentResource:0}";
+        _valueText.text = $"{_currentValue:0}";
         Debug.Log(_task.Status);
         _remainingEmphasisTime = EMPHASIS_TIME;
         _remainingReturnTime   = RETURN_TIME;
         if (_task.Status == UniTaskStatus.Pending) return;
-        _task = EmphasisResourceIndex();
+        _task = EmphasisIndexText();
     }
 
     private const float EMPHASIS_TIME = 1.2f;
@@ -40,7 +39,7 @@ public class Resources : MonoBehaviour
     [SerializeField] [Range(0, RETURN_TIME)]
     private float _remainingReturnTime;
 
-    private async UniTask EmphasisResourceIndex()
+    private async UniTask EmphasisIndexText()
     {
         Debug.Log("EmphasisResourceIndex");
         while (IsEmphasis)
@@ -49,15 +48,15 @@ public class Resources : MonoBehaviour
             {
                 _remainingEmphasisTime -= Time.deltaTime;
 
-                _resourceValue.transform.localScale = Vector3.one * 1.5f;
-                _resourceValue.color                = Color.green;
+                _valueText.transform.localScale = Vector3.one * 1.5f;
+                _valueText.color                = Color.green;
             }
             else if (_remainingReturnTime > 0)
             {
                 _remainingReturnTime -= Time.deltaTime;
 
-                _resourceValue.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one                     * 1.5f, _remainingReturnTime / RETURN_TIME);
-                _resourceValue.color                = Color.Lerp(Color.white, Color.green, _remainingReturnTime / RETURN_TIME);
+                _valueText.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one                     * 1.5f, _remainingReturnTime / RETURN_TIME);
+                _valueText.color                = Color.Lerp(Color.white, Color.green, _remainingReturnTime / RETURN_TIME);
             }
 
             await UniTask.Yield();

@@ -29,13 +29,14 @@ public class GameManager : MonoBehaviour
 
     public Player GetRandomPlayer()
     {
-        if (_players.Count <= 0)
-            return null;
-
-        return _players[Random.Range(0, _players.Count)];
+        return _players.Count switch
+        {
+            <= 0 => null,
+            _    => _players[Random.Range(0, _players.Count)]
+        };
     }
 
-    public IEnumerable<Player> GetPlayers() => _players.Values.ToArray();
+    public IEnumerable<Player> GetPlayersArray() => _players.Values.ToArray();
 
     public Player GetLocalPlayer()
     {
@@ -44,8 +45,8 @@ public class GameManager : MonoBehaviour
             null;
     }
 
-    public PlayerData GetCharacterData(string p_name) => _charactersData[p_name];
-    public EnemyData  GetEnemyData(string     p_name) => _monstersData[p_name];
+    public PlayerData GetCharacterData(string _name) => _charactersData[_name];
+    public EnemyData  GetEnemyData(string     _name) => _monstersData[_name];
 
     private void Awake()
     {
@@ -63,11 +64,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        var cinemachineCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
-        cinemachineCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = currentMap.GetBound;
+        //TODO : 메서드화 시켜서 다른데에서 초기화할때 불러야함
+        var _cinemachineCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
+        _cinemachineCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = currentMap.GetBound;
     }
 
-    public void InstantiatePlayer(int p_newPlayerID)
+    public void InstantiatePlayer(int _newPlayerID)
     {
         //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
         //RaycastNonAlloc이 성능상 더 좋아보이긴 하지만 단발적으로 사용할거라 큰 차이는 없을듯
@@ -76,18 +78,18 @@ public class GameManager : MonoBehaviour
         var _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
         _spawnPosition.y += 1.5f;
         GameObject _player = Instantiate(playerPrefab, _spawnPosition, Quaternion.identity);
-        _player.transform.name = $"Player {p_newPlayerID}";
+        _player.transform.name = $"Player {_newPlayerID}";
 
-        _player.GetComponent<Player>().clientID = p_newPlayerID;
-        _players.Add(p_newPlayerID, _player.GetComponent<Player>());
+        _player.GetComponent<Player>().clientID = _newPlayerID;
+        _players.Add(_newPlayerID, _player.GetComponent<Player>());
         
-        if(p_newPlayerID == playerID)
+        if(_newPlayerID == playerID)
             virtualCamera.Follow = _player.transform;
     }
 
-    public void RemovePlayer(int p_playerID)
+    public void RemovePlayer(int _playerID)
     {
-        Destroy(_players[p_playerID].gameObject);
-        _players.Remove(p_playerID);
+        Destroy(_players[_playerID].gameObject);
+        _players.Remove(_playerID);
     }
 }

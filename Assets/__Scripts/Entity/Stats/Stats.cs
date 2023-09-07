@@ -4,6 +4,8 @@ using UnityEngine;
 [Serializable]
 public class Stats
 {
+    [SerializeField] public bool isLocalPlayer;
+
     [SerializeField] protected int   health       = 100;
     [SerializeField] protected int   maxHealth    = 100;
     [SerializeField] protected int   attackDamage = 10;
@@ -15,9 +17,11 @@ public class Stats
     public int Health
     {
         get => health;
-
-        set => health = value >= MaxHealth ? MaxHealth : value;
-        //초과분 생기지 않도록 제한
+        set
+        {
+            health = value;
+            if (isLocalPlayer) UIElements.UpdateValue("HP", health, maxHealth);
+        }
     }
 
     public int MaxHealth
@@ -41,7 +45,12 @@ public class Stats
     public int Level
     {
         get => level;
-        set => level = value;
+        set
+        {
+            level = value;
+            Debug.Log("LVU");
+            if (isLocalPlayer) UIElements.UpdateValue("Level", level);
+        }
     }
 
     public int Defense

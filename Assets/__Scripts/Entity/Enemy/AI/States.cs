@@ -88,7 +88,7 @@ public abstract class State : IState
     /// </summary>
     protected static (Player, float) PlayerInRange(EnemyAI p_enemyAI)
     {
-        IEnumerable<Player> _players        = GameManager.Instance.GetPlayers();
+        IEnumerable<Player> _players        = GameManager.Instance.GetPlayersArray();
         Player        _targetPlayer   = null;
         float         _targetDistance = Mathf.Infinity;
 

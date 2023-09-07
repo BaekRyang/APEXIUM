@@ -88,7 +88,7 @@ public class Pickup : MonoBehaviour
             switch (type)
             {
                 case PickupType.Resource:
-                    _player.Stats.CommonResource += size;
+                    _player.Stats.EnergyCrystal += size;
                     break;
                 case PickupType.Exp:
                     _player.Stats.Exp += size;

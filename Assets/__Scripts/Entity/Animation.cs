@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class Animation : MonoBehaviour
 {
-    public         List<RuntimeAnimatorController> playerAnimations;
-    public         List<RuntimeAnimatorController> enemyAnimations;
+    [SerializeField] private List<RuntimeAnimatorController> playerAnimations;
+    [SerializeField] private List<RuntimeAnimatorController> enemyAnimations;
+
     private static List<RuntimeAnimatorController> Animations;
 
     private void Awake()
     {
-        Animations = playerAnimations;
+        Animations = new List<RuntimeAnimatorController>();
+        Animations.AddRange(playerAnimations);
         Animations.AddRange(enemyAnimations);
     }
 
@@ -28,9 +30,8 @@ public class Animation : MonoBehaviour
     {
         RuntimeAnimatorController _animationController = Animations.Find(_animation => _animation.name == p_animationName);
         if (_animationController != null) return _animationController;
-        
+
         Debug.LogError($"AnimationController {p_animationName} not found");
         return null;
-
     }
 }

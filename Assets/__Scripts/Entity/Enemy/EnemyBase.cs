@@ -22,7 +22,7 @@ public class EnemyBase : MonoBehaviour
     private void Start()
     {
         var _enemyData = GameManager.Instance.GetEnemyData("Frost");
-        stats = new(_enemyData);
+        stats = new EnemyStats(_enemyData);
 
         if (_enemyData.isBoss)
             BossHealthDisplay.Instance.SyncToBossHealthBar(this);
