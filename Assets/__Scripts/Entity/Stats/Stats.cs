@@ -20,7 +20,7 @@ public class Stats
         set
         {
             health = value;
-            if (isLocalPlayer) UIElements.UpdateValue("HP", health, maxHealth);
+            if (isLocalPlayer) UpdatableUIElements.UpdateValue("HP", health, maxHealth);
         }
     }
 
@@ -49,7 +49,7 @@ public class Stats
         {
             level = value;
             Debug.Log("LVU");
-            if (isLocalPlayer) UIElements.UpdateValue("Level", level);
+            if (isLocalPlayer) UpdatableUIElements.UpdateValue("Level", level);
         }
     }
 

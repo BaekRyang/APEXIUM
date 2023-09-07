@@ -26,14 +26,14 @@ public class UIElementUpdater : MonoBehaviour
         TryGetComponent(out _slider);
         transform.Find("Value")?.TryGetComponent(out _text);
 
-        UIElements.Assign(gameObject.name, this);
+        UpdatableUIElements.Assign(gameObject.name, this);
         Debug.Log($"Assigned {gameObject.name} to UIElements");
     }
 
-    public void UpdateValue(object _currentValue, object _maxValue)
+    public void UpdateValue(object _currentValue, object _newMaxValue)
     {
-        this._value    = _currentValue;
-        this._maxValue = _maxValue;
+        _value    = _currentValue;
+        _maxValue = _newMaxValue;
         UpdateUI();
     }
 
@@ -41,9 +41,7 @@ public class UIElementUpdater : MonoBehaviour
     {
         bool  _hasMaxValue = _maxValue != null;
         float _parsedValue = Convert.ToSingle(_value);
-        float _parsedMaxValue = _hasMaxValue ?
-            Convert.ToSingle(_maxValue) :
-            0;
+        float _parsedMaxValue = _hasMaxValue ? Convert.ToSingle(_maxValue) : 0;
 
         ValueUpdate(_parsedValue, _parsedMaxValue);
         TextUpdate(_parsedValue, _parsedMaxValue);
@@ -56,7 +54,7 @@ public class UIElementUpdater : MonoBehaviour
         StringBuilder _stringBuilder = new();
 
         _stringBuilder.Append(_current.ToString(indexFormat));
-        
+
         if (indexSeparator != "")
             _stringBuilder.Append(indexSeparator + _max.ToString(indexFormat));
 
@@ -68,7 +66,7 @@ public class UIElementUpdater : MonoBehaviour
 
     private void ValueUpdate(float _current, float _max)
     {
-        if (_maxValue == null ||_slider == null) return;
+        if (_maxValue == null || _slider == null) return;
 
         _slider.maxValue = _max;
         _slider.value    = _current;

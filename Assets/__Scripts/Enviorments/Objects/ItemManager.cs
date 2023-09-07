@@ -23,32 +23,32 @@ public class ItemManager : MonoBehaviour
 
     private void Start() => Instance ??= this;
 
-    public void InstantiatePickupObjects(PickupType p_pickupType, int p_value, Transform p_transform)
+    public void InstantiatePickupObjects(PickupType _pickupType, int _value, Transform _transform)
     {
-        if (p_value <= 0) return;
+        if (_value <= 0) return;
 
-        int _large  = (p_value)                         / (int)PickupSize.Large;
-        int _medium = (p_value % (int)PickupSize.Large) / (int)PickupSize.Medium;
-        int _small  = (p_value % (int)PickupSize.Large) % (int)PickupSize.Medium;
+        int _large  = (_value)                         / (int)PickupSize.Large;
+        int _medium = (_value % (int)PickupSize.Large) / (int)PickupSize.Medium;
+        int _small  = (_value % (int)PickupSize.Large) % (int)PickupSize.Medium;
 
 
         foreach ((PickupSize _pickupSize, int _pickupValue) in new[] { (PickupSize.Large, _large), (PickupSize.Medium, _medium), (PickupSize.Small, _small) })
-            foreach (Pickup _pickup in PickupPool.Instance.GetAvailablePickupComponents(p_pickupType, _pickupValue))
-                PickupInitialize(_pickup, _pickupSize);
+            foreach (Pickup _pickup in PickupPool.Instance.GetAvailablePickupComponents(_pickupType, _pickupValue))
+                PickupInitialize(_pickup, _pickupSize).Activate();
 
         return;
     
-        void PickupInitialize(Pickup p_pickup, PickupSize p_size)
+        Pickup PickupInitialize(Pickup _pickup, PickupSize _size)
         {
-            p_pickup.PickupValue          = (int)p_size;
-            p_pickup.transform.position   = p_transform.position + Vector3.up;
-            p_pickup.transform.localScale = Vector3.one * GetPickupSize(p_size);
-            p_pickup.gameObject.SetActive(true);
-            p_pickup.Initialize();
+            _pickup.PickupValue          = (int)_size;
+            _pickup.transform.position   = _transform.position + Vector3.up;
+            _pickup.transform.localScale = Vector3.one * GetPickupSize(_size);
+            _pickup.gameObject.SetActive(true);
+            return _pickup;
         }
     }
 
-    private float GetPickupSize(PickupSize p_pickupSize) => p_pickupSize switch
+    private static float GetPickupSize(PickupSize _pickupSize) => _pickupSize switch
     {
         PickupSize.Large  => 2f,
         PickupSize.Medium => 1.5f,

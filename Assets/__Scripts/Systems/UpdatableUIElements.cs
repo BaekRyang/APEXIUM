@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class UIElements
+public class UpdatableUIElements
 {
     private static Dictionary<string, UIElementUpdater> UIElementUpdaters = new();
 

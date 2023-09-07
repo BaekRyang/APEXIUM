@@ -26,16 +26,15 @@ public class Pickup : MonoBehaviour
         set => size = value;
     }
 
-    public void Initialize()
+    public void Activate()
     {
         if (PickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
         interactable = false;
-        InitializeMove();
+        ActivateMove();
     }
 
-    private async void InitializeMove()
+    private async void ActivateMove()
     {
-        Debug.Log("InitializeMove");
         switch (type)
         {
             case PickupType.Resource:

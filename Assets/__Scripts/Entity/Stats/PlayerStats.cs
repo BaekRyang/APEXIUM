@@ -106,7 +106,7 @@ public class PlayerStats : Stats
             exp = value;
             if (exp >= maxExp)
                 LevelUp();
-            else if (isLocalPlayer) UIElements.UpdateValue("EXP", exp, maxExp);
+            else if (isLocalPlayer) UpdatableUIElements.UpdateValue("EXP", exp, maxExp);
         }
     }
 
