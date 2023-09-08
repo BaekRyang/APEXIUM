@@ -38,7 +38,7 @@ public class Revolver : Skill
         return RELOAD_TIME_SECONDS / _player.Stats.AttackSpeed; //공격속도에 따라 재장전 시간이 달라진다.
     }
 
-    public static bool Reload()
+    public static void Reload()
     {
         Player _player = GameManager.Instance.GetLocalPlayer();
         _player.PlayStatusFeedback("RELOAD");
@@ -59,8 +59,6 @@ public class Revolver : Skill
             if (_player.Stats.Resource <= 0) //총알이 장전되지 않았다면 장전한다.
                 _player.Stats.Resource = _player.Stats.MaxResource;
         });
-
-        return false; //Play에서 false를 리턴하도록 여기서 false를 리턴
     }
 
     public static float GetNextReloadTime()
@@ -73,5 +71,11 @@ public class Revolver : Skill
         p_player.Controller.SetControllable(false);
         yield return new WaitForSeconds(p_delay);
         p_player.Controller.SetControllable(true);
+    }
+
+    public static void CachingData(Player _player, out Transform _cachedTransform, out Vector3 _position)
+    {
+        _cachedTransform = _player.Controller.attackPosTransform;
+        _position        = _cachedTransform.position;
     }
 }

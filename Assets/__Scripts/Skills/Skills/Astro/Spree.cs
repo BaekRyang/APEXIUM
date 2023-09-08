@@ -37,8 +37,7 @@ public class Spree : AttackableSkill
         {
             Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
-            Transform _cachedTransform = Player.transform;
-            Vector3   _position        = _cachedTransform.position;
+            Revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
 
             //Quaternion은 위 아래로 랜덤이어야 하므로 z축을 기준으로 회전한다.
             Vector3 _randDirection = Quaternion.Euler(0, 0, Random.Range(-BULLET_SPREAD_ANGLE, BULLET_SPREAD_ANGLE)) * (_cachedTransform.right * (int)Facing);

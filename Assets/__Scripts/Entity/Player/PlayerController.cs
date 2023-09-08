@@ -28,7 +28,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Tilemap ladderTilemap;
     [SerializeField] private Tilemap floorTilemap;
 
-    public Player player;
+    private Player  _player;
+    public Transform attackPosTransform;
 
     [SerializeField] private InputValues input;
 
@@ -66,6 +67,8 @@ public class PlayerController : MonoBehaviour
         playerInput    = GetComponent<PlayerInput>();
         ladderTilemap  = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Ladder").GetComponent<Tilemap>();
         floorTilemap   = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Tile").GetComponent<Tilemap>();
+
+        attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
         InitializePlayerInput();
     }
@@ -105,7 +108,7 @@ public class PlayerController : MonoBehaviour
             //함수화 해야함
             {
                 if (_rigidbody2D.velocity.y < 0)
-                    player._animator.SetBool("IsJump", true);
+                    _player._animator.SetBool("IsJump", true);
             }
         }
 
@@ -133,7 +136,6 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["UseItem"].performed        += OnUseItem;
         playerInput.actions["Interact"].performed       += OnInteract;
     }
-
     private void ResetPlayerInput()
     {
         playerInput.actions["HorizontalMove"].performed -= OnHorizontalMove;
@@ -148,6 +150,12 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Interact"].performed       -= OnInteract;
     }
 
+    public PlayerController Initialize(Player _initPlayer)
+    {
+        _player = _initPlayer;
+        return this;
+    }
+    
     public void OnHorizontalMove(InputAction.CallbackContext _context) => input.horizontal = _context.ReadValue<float>();
     public void OnVerticalMove(InputAction.CallbackContext   _context) => input.vertical = _context.ReadValue<float>();
 
@@ -240,7 +248,7 @@ public class PlayerController : MonoBehaviour
         if (!Controllable) return;
 
         _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
-        player._animator.SetBool("IsWalk", input.horizontal != 0);
+        _player._animator.SetBool("IsWalk", input.horizontal != 0);
         FlipSprite();
     }
 
@@ -310,15 +318,15 @@ public class PlayerController : MonoBehaviour
         //사다리를 타고있었다면 사다리 타기를 종료한다.
         if (climbLadder)
         {
-            player._animator.speed = 1;
+            _player._animator.speed = 1;
             climbLadder            = false;
-            player._animator.SetBool("IsClimb", false);
+            _player._animator.SetBool("IsClimb", false);
         }
 
         //실제 점프 및 점프관련 애니메이션 실행
         _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, _jumpHeight);
-        Animation.PlayAnimation(player._animator, "Jump");
-        player._animator.SetBool("IsJump", true);
+        Animation.PlayAnimation(_player._animator, "Jump");
+        _player._animator.SetBool("IsJump", true);
 
         if (jumpGraceTimer > 0)              //정상적으로 점프를 했다면
             jumpGraceTimer = float.MaxValue; //점프 횟수 조정을 받지 않도록 최대값을 넣어준다. (0이하가 되면 점프 횟수가 줄어듦)
@@ -337,7 +345,7 @@ public class PlayerController : MonoBehaviour
             jumpGraceTimer = JUMP_GRACE_TIME;
             jumpCount      = 0;
             _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
-            player._animator.SetBool("IsJump", false);
+            _player._animator.SetBool("IsJump", false);
         }
     }
 
@@ -370,7 +378,7 @@ public class PlayerController : MonoBehaviour
         if (climbLadder && input.vertical == 0)
         {
             _rigidbody2D.velocity  = Vector2.zero;
-            player._animator.speed = 0;
+            _player._animator.speed = 0;
         }
 
         SetLadderStatus();
@@ -386,7 +394,7 @@ public class PlayerController : MonoBehaviour
         if (_jumpDirection == _lastLadderJumpDirection) //플레이어가 내리기 위해서 점프했음을 감지하여
             return;                                     //사다리에 다시 붙지 못하도록 한다.
 
-        player._animator.SetBool("IsClimb", true);
+        _player._animator.SetBool("IsClimb", true);
 
         climbLadder           = true;
         transform.position    = new(ladderPos.x, _pPosition.y); //사다리에 붙여주고
@@ -402,7 +410,7 @@ public class PlayerController : MonoBehaviour
             transform.position += new Vector3(0, _deltaY, 0);
         }
 
-        player._animator.speed = 1;
+        _player._animator.speed = 1;
     }
 
     /// <summary>
@@ -440,7 +448,7 @@ public class PlayerController : MonoBehaviour
         climbLadder               = false;
         _rigidbody2D.gravityScale = 1;
         _boxCollider2D.isTrigger  = false;
-        player._animator.SetBool("IsClimb", false);
+        _player._animator.SetBool("IsClimb", false);
     }
 
     /// <summary>
@@ -509,7 +517,7 @@ public class PlayerController : MonoBehaviour
     private void UseSkill()
     {
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
-            ((IUseable)player.skills[SkillTypes.Item]).Play();
+            ((IUseable)_player.skills[SkillTypes.Item]).Play();
 
         if (climbLadder) return;
 
@@ -517,8 +525,8 @@ public class PlayerController : MonoBehaviour
 
         foreach (SkillTypes _skillTypes in Tools.GetEnumValues<SkillTypes>())
         {
-            if (!IsSkillButtonPressed(_skillTypes) || !player.skills[_skillTypes].IsReady) continue;
-            if (player.skills[_skillTypes] is IUseable _usableSkill)
+            if (!IsSkillButtonPressed(_skillTypes) || !_player.skills[_skillTypes].IsReady) continue;
+            if (_player.skills[_skillTypes] is IUseable _usableSkill)
                 _usableSkill.Play();
             break;
         }
@@ -528,7 +536,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetControllable(bool _pPControllable)
     {
-        if (player.dead) //이미 죽었다면 다른 효과에 의한 조작을 무시한다.
+        if (_player.dead) //이미 죽었다면 다른 효과에 의한 조작을 무시한다.
         {
             Controllable = false;
             return;

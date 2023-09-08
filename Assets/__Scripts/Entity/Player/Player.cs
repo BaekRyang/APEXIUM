@@ -36,10 +36,10 @@ public class Player : MonoBehaviour
                      isLocalPlayer = true
                  };
 
-        _playerController      = gameObject.AddComponent<PlayerController>();
-        _animator              = GetComponent<Animator>();
-        Controller.player      = this;
+        _playerController      = gameObject.AddComponent<PlayerController>().Initialize(this);
         Controller.playerStats = _stats;
+        
+        _animator              = GetComponent<Animator>();
 
         _animator.runtimeAnimatorController = Animation.GetAnimatorController(_playerData.characterName);
 

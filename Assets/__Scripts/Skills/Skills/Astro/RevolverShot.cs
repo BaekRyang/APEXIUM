@@ -30,12 +30,12 @@ public class RevolverShot : AttackableSkill
         
         Player._animator.SetTrigger("Primary");
         Player._animator.SetBool("Playing", true);
-        Transform _cachedTransform = Player.transform;
-        Vector3   _position        = _cachedTransform.position;
+        
+        Revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
 
         LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
         RaycastHit2D _hit       = Physics2D.Raycast(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);
-
+        
         Collider2D _hitCollider = _hit.collider;
 
         if (_hitCollider != null)

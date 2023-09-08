@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     [DoNotSerialize] private readonly Dictionary<int, Player>        _players        = new();
     [DoNotSerialize] private readonly Dictionary<string, PlayerData> _charactersData = new();
     [DoNotSerialize] private readonly Dictionary<string, EnemyData>  _monstersData   = new();
-    
+
     public CinemachineVirtualCamera virtualCamera;
 
     public PlayMap currentMap;
@@ -73,23 +73,35 @@ public class GameManager : MonoBehaviour
     {
         //RaycastAll로 가장 마지막에 충돌한 오브젝트의 위치를 가져옴
         //RaycastNonAlloc이 성능상 더 좋아보이긴 하지만 단발적으로 사용할거라 큰 차이는 없을듯
-        Vector2 _mapCenter = currentMap.GetMapSize() / 2;
-        
-        var _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
+
+        Vector2 _mapCenter = currentMap.GetSize / 2;
+
+        Vector2 _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
         _spawnPosition.y += 1.5f;
         GameObject _player = Instantiate(playerPrefab, _spawnPosition, Quaternion.identity);
         _player.transform.name = $"Player {_newPlayerID}";
 
         _player.GetComponent<Player>().clientID = _newPlayerID;
         _players.Add(_newPlayerID, _player.GetComponent<Player>());
-        
-        if(_newPlayerID == playerID)
+
+        if (_newPlayerID == playerID)
             virtualCamera.Follow = _player.transform;
+
+        Debug.Log("Now Players : " + _players.Count);
     }
 
     public void RemovePlayer(int _playerID)
     {
         Destroy(_players[_playerID].gameObject);
         _players.Remove(_playerID);
+        Debug.Log($"{_playerID} is Disconnected");
+
+        if (_players.Count != 0)
+        {
+            foreach ((int _key, Player _player) in _players) 
+                Debug.Log($"Remaining Player : {_key}");
+        }
+        else
+            Debug.Log("All Players are Disconnected");
     }
 }

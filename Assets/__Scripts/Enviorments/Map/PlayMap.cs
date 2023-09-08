@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -18,11 +20,18 @@ public class PlayMap : MonoBehaviour
 
     public Vector2 GetMapSize()
     {
-        Vector3 _size = GetComponentInChildren<Tilemap>().localBounds.size;
+        //모든 타일맵의 localBounds.size 중 가장 큰 값을 저장
+        Vector3 _size = Vector3.zero;
+        foreach (Tilemap _child in GetComponentsInChildren<Tilemap>())
+            _size = Vector3.Max(_size, _child.localBounds.size);
+
+        // Vector3 _linqSize = GetComponentsInChildren<Tilemap>().
+        //     Aggregate(Vector3.zero ,(_previous, _current) => Vector3.Max(_previous, _current.localBounds.size));
+        //동일한 기능을 한다.
         return _size;
     }
 
-    public Vector2 GetMapCenterPosition() => 
+    public Vector2 GetMapCenterPosition() =>
         (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
     public void Initialize()

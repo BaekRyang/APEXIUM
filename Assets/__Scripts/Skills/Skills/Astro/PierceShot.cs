@@ -23,8 +23,7 @@ public class PierceShot : AttackableSkill
         if (!ConsumeResource()) return;
         Revolver.NextReloadTime = Revolver.GetNextReloadTime();
 
-        Transform _cachedTransform = Player.transform;
-        Vector3   _position        = _cachedTransform.position;
+        Revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
 
         LayerMask      _layerMask = LayerMask.GetMask("Enemy", "Floor");
         RaycastHit2D[] _hit       = Physics2D.RaycastAll(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);

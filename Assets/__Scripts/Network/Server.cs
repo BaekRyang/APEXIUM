@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
+using PimDeWitte.UnityMainThreadDispatcher;
 using ProtoBuf;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Server : MonoBehaviour
 {
+    public static Dictionary<EndPoint, int> clients = new();
+    
     private const string PREFIX                      = "<color=red>Server</color> -";
     private const int    PACKET_ADDITIONAL_DATA_SIZE = 2;
 
@@ -25,7 +25,7 @@ public class Server : MonoBehaviour
 
     private int _clientID;
 
-    public bool BootServer = false;
+    public bool bootServer = false;
 
     private void StartServer()
     {
@@ -39,7 +39,7 @@ public class Server : MonoBehaviour
 
     private void Update()
     {
-        switch (BootServer)
+        switch (bootServer)
         {
             case true when _serverSocket == null:
                 StartServer();
@@ -138,9 +138,9 @@ public class Server : MonoBehaviour
             Debug.Log($"{PREFIX} UDP Data Received - {_remoteEP.Address}:{_remoteEP.Port} - {_packetType}  #{_playerID}: {_pureData}");
     }
 
-    private void HandleNewConnection(Socket p_socket)
+    private void HandleNewConnection(Socket _socket)
     {
-        Socket _newConnection = p_socket.Accept(); //연결 요청을 수락하고
+        Socket _newConnection = _socket.Accept(); //연결 요청을 수락하고
         _clientSocketList.Add(_newConnection);     //클라이언트 소켓 목록에 추가한다음
         _receivedDataList.Add(new ArrayList());    //수신 데이터 목록에 추가한다.
         Debug.Log($"{PREFIX} New Client Connected - {_newConnection.RemoteEndPoint}");
@@ -152,39 +152,37 @@ public class Server : MonoBehaviour
         Debug.Log($"{PREFIX} {_clientID - 1} ID is given to new client");
     }
 
-    private void SendPlacePlayer(int p_playerID)
+    private void SendPlacePlayer(Socket _receivedSocket, int _playerID)
     {
         Debug.Log($"{PREFIX} Response Received");
 
         //해당 클라이언트 플레이어 객체 생성 메세지를 뿌린다. (접속중인 모든 플레이어에게)
         foreach (var _socket in _clientSocketList)
         {
-            Debug.Log($"{PREFIX} {p_playerID} Object instantiate packet sent to {_socket.RemoteEndPoint}");
-            Send(_socket, new byte[] { (byte)(p_playerID) }, PacketType.PlacePlayer, ConnectType.TCP);
+            Debug.Log($"{PREFIX} {_playerID} Object instantiate packet sent to {_socket.RemoteEndPoint}");
+            Send(_socket, new byte[] { (byte)(_playerID) }, PacketType.PlacePlayer, ConnectType.TCP);
+            clients.Add(_receivedSocket.RemoteEndPoint, _playerID);
         }
     }
 
-    private void HandleClientData(Socket p_socket, int p_index)
+    private void HandleClientData(Socket _socket, int _index)
     {
-        if (p_socket.Available == 0)
+        if (_socket.Available == 0)
         {
-            Debug.Log($"{PREFIX} Client Disconnected - {p_socket.RemoteEndPoint}");
-            p_socket.Shutdown(SocketShutdown.Both);
-            p_socket.Close();
-            _clientSocketList.Remove(p_socket);
+            ClientDisconnect(_socket);
             return;
         }
 
-        if (_receivedDataList[p_index] is null) return; //아직 안만들어졌으면 무시
+        if (_receivedDataList[_index] is null) return; //아직 안만들어졌으면 무시
 
         byte[]    _receivedByteData = new byte[512];                                                                      //받은 데이터를 저장할 버퍼 생성
-        ArrayList _receivedData     = _receivedDataList[p_index] as ArrayList;                                            //수신 데이터 목록에서 해당 소켓의 데이터를 가져온다.
-        int       _receiveDataSize  = p_socket.Receive(_receivedByteData, 0, _receivedByteData.Length, SocketFlags.None); //데이터를 받는다. (Arg1에, Arg2부터, Arg3만큼 받는다.) 
+        ArrayList _receivedData     = _receivedDataList[_index] as ArrayList;                                            //수신 데이터 목록에서 해당 소켓의 데이터를 가져온다.
+        int       _receiveDataSize  = _socket.Receive(_receivedByteData, 0, _receivedByteData.Length, SocketFlags.None); //데이터를 받는다. (Arg1에, Arg2부터, Arg3만큼 받는다.) 
 
         //Arg3이 버퍼의 Length니까 버퍼에 담길 수 있는 만큼만 최대로 받는다.
 
-        for (int i = 0; i < _receiveDataSize; i++)
-            _receivedData.Add(_receivedByteData[i]); //받은 데이터를 _receivedData에 복사한다.
+        for (int _i = 0; _i < _receiveDataSize; _i++)
+            _receivedData.Add(_receivedByteData[_i]); //받은 데이터를 _receivedData에 복사한다.
 
         while (_receivedData.Count > 0)
         {
@@ -206,7 +204,7 @@ public class Server : MonoBehaviour
                     using (var _stream = new MemoryStream(_pureData)) //그리고 byte[]로 변환된 패킷을 _receivedClickPosition으로 Deserialize하여 저장한다.
                         _receivedClickPosition = Serializer.Deserialize<Vector3Packet>(_stream);
 
-                    Debug.Log($"{PREFIX} Packet Received [ {p_socket.RemoteEndPoint} ]: {_pureData.Length} bytes");
+                    Debug.Log($"{PREFIX} Packet Received [ {_socket.RemoteEndPoint} ]: {_pureData.Length} bytes");
                     Debug.Log($"{PREFIX} Packet Type : {_packetType}");
                     Debug.Log($"{PREFIX} Packet Contents : {_receivedClickPosition}");
                 }
@@ -214,7 +212,7 @@ public class Server : MonoBehaviour
                 if (_packetType == PacketType.CheckOK)
                 {
                     int _receivedID = _pureData[0];
-                    SendPlacePlayer(_receivedID);
+                    SendPlacePlayer(_socket, _receivedID);
                 }
 
                 foreach (var _byte in _pureData)
@@ -227,24 +225,38 @@ public class Server : MonoBehaviour
         }
     }
 
-    private async void Send(Socket p_socket, byte[] p_data, PacketType p_type, ConnectType p_connectType)
+    private async void ClientDisconnect(Socket _socket)
     {
-        switch (p_connectType)
+        Debug.Log($"{PREFIX} Client Disconnected - {_socket.RemoteEndPoint}");
+        await UnityMainThreadDispatcher.Instance().EnqueueAsync(() =>
+        {
+            GameManager.Instance.RemovePlayer(clients[_socket.RemoteEndPoint]);
+        });
+        clients.Remove(_socket.RemoteEndPoint);
+        _socket.Shutdown(SocketShutdown.Both);
+        _socket.Close();
+        _clientSocketList.Remove(_socket);
+
+    }
+
+    private async void Send(Socket _socket, byte[] _data, PacketType _type, ConnectType _connectType)
+    {
+        switch (_connectType)
         {
             case ConnectType.TCP:
             {
-                if (p_socket == null)
+                if (_socket == null)
                     return;
 
                 //데이터 합치기
-                byte[] _fullPacket = new byte[p_data.Length + PACKET_ADDITIONAL_DATA_SIZE];
-                _fullPacket[0] = (byte)p_data.Length;
-                _fullPacket[1] = (byte)p_type;
-                p_data.CopyTo(_fullPacket, PACKET_ADDITIONAL_DATA_SIZE);
+                byte[] _fullPacket = new byte[_data.Length + PACKET_ADDITIONAL_DATA_SIZE];
+                _fullPacket[0] = (byte)_data.Length;
+                _fullPacket[1] = (byte)_type;
+                _data.CopyTo(_fullPacket, PACKET_ADDITIONAL_DATA_SIZE);
 
-                await p_socket.SendAsync(_fullPacket, SocketFlags.None); //데이터를 보낸다.
+                await _socket.SendAsync(_fullPacket, SocketFlags.None); //데이터를 보낸다.
 
-                Debug.Log($"{PREFIX} Packet Sent : {p_data.Length} bytes / Type : {p_type}( {(byte)p_type} )");
+                Debug.Log($"{PREFIX} Packet Sent : {_data.Length} bytes / Type : {_type}( {(byte)_type} )");
             }
                 break;
             case ConnectType.UDP:

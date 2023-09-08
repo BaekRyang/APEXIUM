@@ -263,17 +263,17 @@ PrefabInstance:
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.019355059
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 168358034961475516, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -353,7 +353,7 @@ PrefabInstance:
     - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -447,6 +447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
+    isLocalPlayer: 0
     health: 100
     maxHealth: 0
     attackDamage: 30

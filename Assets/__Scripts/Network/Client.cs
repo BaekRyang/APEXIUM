@@ -70,14 +70,12 @@ public class Client : MonoBehaviour
 
     private void Update()
     {
-        
-        
         switch (BootClient)
         {
-            case true when ClientSocket == null:
+            case true when ClientSocket is not null:
                 StartClient();
                 break;
-            case false when ClientSocket != null && ClientSocket.Connected:
+            case false when ClientSocket is not null and { Connected: true }:
                 Shutdown();
                 break;
         }
@@ -97,37 +95,44 @@ public class Client : MonoBehaviour
         }
     }
 
-    private static void Send(byte[] p_packet, PacketType p_type, ConnectType p_connectType)
+    private static void Send(byte[] _packet, PacketType _type, ConnectType _connectType)
     {
-        if (p_connectType is ConnectType.TCP)
+        switch (_connectType)
         {
-            if (ClientSocket == null)
-                return;
+            case ConnectType.TCP:
+            {
+                if (ClientSocket == null)
+                    return;
 
-            byte[] _prefSize   = { (byte)p_packet.Length }; //버퍼의 맨 앞부분에 이 버퍼의 길이정보가 있는데 이걸 먼저 보내고
-            byte[] _packetType = { (byte)p_type };          //변수의 타입의 정보를 다음으로 보내기 위해 저장한다.
+                byte[] _prefSize   = { (byte)_packet.Length }; //버퍼의 맨 앞부분에 이 버퍼의 길이정보가 있는데 이걸 먼저 보내고
+                byte[] _packetType = { (byte)_type };          //변수의 타입의 정보를 다음으로 보내기 위해 저장한다.
 
-            //각각 순서대로 보낸다.
-            ClientSocket.Send(_prefSize);
-            ClientSocket.Send(_packetType);
-            ClientSocket.Send(p_packet);
+                //각각 순서대로 보낸다.
+                ClientSocket.Send(_prefSize);
+                ClientSocket.Send(_packetType);
+                ClientSocket.Send(_packet);
 
-            Debug.Log($"{PREFIX} Packet Sent(TCP) : {p_packet.Length} bytes");
-        }
-        else if (p_connectType is ConnectType.UDP)
-        {
-            if (UDPClient == null)
-                return;
+                Debug.Log($"{PREFIX} Packet Sent(TCP) : {_packet.Length} bytes");
+                break;
+            }
 
-            //새로운 bye[]를 만들어서 필요한 데이터를 넣는다.
-            //데이터의 순서는 [시퀀스 넘버, 패킷 타입, 패킷 데이터] 순서로 넣는다.
-            byte[] _packet = new byte[p_packet.Length + 2]; //시퀀스 넘버와 패킷 타입을 넣을 공간을 미리 만들어둔다.
-            _packet[0] = (byte)GameManager.Instance.playerID;
-            _packet[1] = (byte)p_type;
-            Array.Copy(p_packet, 0, _packet, 2, p_packet.Length); //p_packet의 데이터를 _packet에 복사한다.
 
-            UDPClient.Send(_packet, _packet.Length); //데이터를 보낸다.
-            Debug.Log($"{PREFIX} Packet Sent(UDP) : {_packet.Length} bytes");
+            case ConnectType.UDP:
+            {
+                if (UDPClient == null)
+                    return;
+
+                //새로운 byte[]를 만들어서 필요한 데이터를 넣는다.
+                //데이터의 순서는 [시퀀스 넘버, 패킷 타입, 패킷 데이터] 순서로 넣는다.
+                byte[] _udpPacket = new byte[_packet.Length + 2]; //시퀀스 넘버와 패킷 타입을 넣을 공간을 미리 만들어둔다.
+                _udpPacket[0] = (byte)GameManager.Instance.playerID;
+                _udpPacket[1] = (byte)_type;
+                Array.Copy(_packet, 0, _udpPacket, 2, _packet.Length); //p_packet의 데이터를 _packet에 복사한다.
+
+                UDPClient.Send(_udpPacket, _udpPacket.Length); //데이터를 보낸다.
+                Debug.Log($"{PREFIX} Packet Sent(UDP) : {_udpPacket.Length} bytes");
+                break;
+            }
         }
     }
 
@@ -209,15 +214,16 @@ public class Client : MonoBehaviour
         UDPClient.Close();
         UDPClient = null;
 
-        UnityMainThreadDispatcher.Instance().Enqueue(() => GameManager.Instance.RemovePlayer(GameManager.Instance.playerID));
+        // UnityMainThreadDispatcher.Instance().Enqueue(() => GameManager.Instance.RemovePlayer(GameManager.Instance.playerID));
+        //클라이언트는 어쩌피 나가는데 지워줄 필요가 없음
         BootClient = false;
     }
 
-    private void HandleReceivedData(byte[] p_receivedData)
+    private void HandleReceivedData(byte[] _receivedData)
     {
-        int        _additionalDataSize = 2;                             //헤더의 크기
-        int        _packetSize         = p_receivedData[0];             //패킷의 첫번째 정보는 패킷의 크기
-        PacketType _packetType         = (PacketType)p_receivedData[1]; //패킷의 두번째 정보는 패킷의 타입
+        int        _additionalDataSize = 2;                            //헤더의 크기
+        int        _packetSize         = _receivedData[0];             //패킷의 첫번째 정보는 패킷의 크기
+        PacketType _packetType         = (PacketType)_receivedData[1]; //패킷의 두번째 정보는 패킷의 타입
 
         Debug.Log($"{PREFIX} Packet Type : {_packetType}");
 
@@ -226,7 +232,7 @@ public class Client : MonoBehaviour
         //서버에서 보낸 초기화 메세지는 따로 처리해준다.
         if (_packetType is PacketType.GiveID)
         {
-            GameManager.Instance.playerID = p_receivedData[2];
+            GameManager.Instance.playerID = _receivedData[2];
             Debug.Log($"{PREFIX} Your Client ID : {GameManager.Instance.playerID}");
 
             //서버에게 클라이언트가 준비되었다고 알린다.
@@ -241,10 +247,10 @@ public class Client : MonoBehaviour
 
         if (_packetType is PacketType.PlacePlayer)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(p_receivedData[2]); });
+            UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(_receivedData[2]); });
 
             // GameManager.Instance.InstantiatePlayer(p_receivedData[2]);
-            Debug.Log($"{PREFIX} Player Placed : {p_receivedData[2]}");
+            Debug.Log($"{PREFIX} Player Placed : {_receivedData[2]}");
             return; //여기에 return 안하니까 BeginReceive가 먹통이 되버리는 문제가 있었음
         }
 
@@ -252,7 +258,7 @@ public class Client : MonoBehaviour
 
         byte[] _pureData = new byte[_packetSize]; //헤더를 제외한 데이터의 크기
         for (int i = _additionalDataSize; i < _pureData.Length; i++)
-            _pureData[i] = p_receivedData[i]; //헤더를 제외한 데이터를 _pureData에 넣는다.
+            _pureData[i] = _receivedData[i]; //헤더를 제외한 데이터를 _pureData에 넣는다.
 
         //받은 데이터를 처리한다.
         using (var _stream = new MemoryStream(_pureData)) //받은 데이터를 MemoryStream에 넣는다.
