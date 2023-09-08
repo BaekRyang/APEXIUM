@@ -21,11 +21,11 @@ public class DifficultyManager : MonoBehaviour
     [SerializeField] private TMP_Text index;
 
     [Space]
-    [SerializeField] private int difficulty = 1;
+    private static int Difficulty = 1;
 
     [SerializeField] private float parsedTimeToDifficulty;
 
-    public static int Difficulty => Instance.difficulty; //외부 접근용
+    public static int NowDifficulty => Difficulty; //외부 접근용
 
     //TODO: 난이도 설정은 시작시 받아와서 넣어줘야함
     [SerializeField] private GameDifficulty gameDifficulty = GameDifficulty.Easy;
@@ -41,11 +41,11 @@ public class DifficultyManager : MonoBehaviour
 
         slider.value = parsedTimeToDifficulty - (int)parsedTimeToDifficulty;
 
-        if (difficulty == (int)parsedTimeToDifficulty + 1) return;
+        if (Difficulty == (int)parsedTimeToDifficulty + 1) return;
 
         //난이도가 바뀌여야 할때 바꿔준다. (매 프레임에 text를 수정하는것은 안좋지 않을까)
-        difficulty = (int)parsedTimeToDifficulty + 1;
-        index.text = $"{difficulty}";
+        Difficulty = (int)parsedTimeToDifficulty + 1;
+        index.text = $"{Difficulty}";
 
         //이벤트 발생
         OnDifficultyChange?.Invoke(this, EventArgs.Empty);

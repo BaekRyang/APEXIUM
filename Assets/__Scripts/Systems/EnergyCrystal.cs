@@ -12,20 +12,23 @@ public class EnergyCrystal : MonoBehaviour
 
     [SerializeField] private TMP_Text _valueText;
 
-    private bool IsEmphasis => _remainingEmphasisTime > 0 || _remainingReturnTime > 0;
+    private bool IsEmphasis => remainingEmphasisTime > 0 || remainingReturnTime > 0;
 
     private void Awake()
     {
         Instance ??= this;
+
+        GetComponent<UIElementUpdater>().OnUpdateValue += (_, _) => SetValue();
     }
+    
 
     private UniTask _task;
-    public void SetValue(int _currentValue)
+
+    private void SetValue()
     {
-        _valueText.text = $"{_currentValue:0}";
-        Debug.Log(_task.Status);
-        _remainingEmphasisTime = EMPHASIS_TIME;
-        _remainingReturnTime   = RETURN_TIME;
+        Debug.Log("ACT" + _task.Status);
+        remainingEmphasisTime = EMPHASIS_TIME;
+        remainingReturnTime   = RETURN_TIME;
         if (_task.Status == UniTaskStatus.Pending) return;
         _task = EmphasisIndexText();
     }
@@ -34,32 +37,40 @@ public class EnergyCrystal : MonoBehaviour
     private const float RETURN_TIME   = .4f;
 
     [SerializeField] [Range(0, EMPHASIS_TIME)]
-    private float _remainingEmphasisTime;
+    private float remainingEmphasisTime;
 
     [SerializeField] [Range(0, RETURN_TIME)]
-    private float _remainingReturnTime;
+    private float remainingReturnTime;
 
     private async UniTask EmphasisIndexText()
     {
-        Debug.Log("EmphasisResourceIndex");
+        Debug.Log("EmphasisIndexText");
         while (IsEmphasis)
         {
-            if (_remainingEmphasisTime > 0)
+            try
             {
-                _remainingEmphasisTime -= Time.deltaTime;
+                if (remainingEmphasisTime > 0)
+                {
+                    remainingEmphasisTime -= Time.deltaTime;
 
-                _valueText.transform.localScale = Vector3.one * 1.5f;
-                _valueText.color                = Color.green;
+                    _valueText.transform.localScale = Vector3.one * 1.5f;
+                    _valueText.color                = Color.green;
+                }
+                else if (remainingReturnTime > 0)
+                {
+                    remainingReturnTime -= Time.deltaTime;
+
+                    _valueText.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one                    * 1.5f, remainingReturnTime / RETURN_TIME);
+                    _valueText.color                = Color.Lerp(Color.white, Color.green, remainingReturnTime / RETURN_TIME);
+                }
+
+                await UniTask.Yield();
             }
-            else if (_remainingReturnTime > 0)
+            catch (Exception e)
             {
-                _remainingReturnTime -= Time.deltaTime;
-
-                _valueText.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one                     * 1.5f, _remainingReturnTime / RETURN_TIME);
-                _valueText.color                = Color.Lerp(Color.white, Color.green, _remainingReturnTime / RETURN_TIME);
+                Console.WriteLine(e);
+                throw;
             }
-
-            await UniTask.Yield();
         }
     }
 }

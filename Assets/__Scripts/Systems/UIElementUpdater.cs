@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using AssetKits.ParticleImage.Editor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ public class UIElementUpdater : MonoBehaviour
 
     [SerializeField] private Slider   _slider;
     [SerializeField] private TMP_Text _text;
+    
+    public event EventHandler OnUpdateValue;
 
     private void Start()
     {
@@ -26,8 +29,7 @@ public class UIElementUpdater : MonoBehaviour
         TryGetComponent(out _slider);
         transform.Find("Value")?.TryGetComponent(out _text);
 
-        UpdatableUIElements.Assign(gameObject.name, this);
-        Debug.Log($"Assigned {gameObject.name} to UIElements");
+        this.AssignToGlobal();
     }
 
     public void UpdateValue(object _currentValue, object _newMaxValue)
@@ -35,13 +37,13 @@ public class UIElementUpdater : MonoBehaviour
         _value    = _currentValue;
         _maxValue = _newMaxValue;
         UpdateUI();
+        OnUpdateValue?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateUI()
     {
-        bool  _hasMaxValue = _maxValue != null;
-        float _parsedValue = Convert.ToSingle(_value);
-        float _parsedMaxValue = _hasMaxValue ? Convert.ToSingle(_maxValue) : 0;
+        float _parsedValue    = Convert.ToSingle(_value);
+        float _parsedMaxValue = _maxValue != null ? Convert.ToSingle(_maxValue) : 0;
 
         ValueUpdate(_parsedValue, _parsedMaxValue);
         TextUpdate(_parsedValue, _parsedMaxValue);
@@ -52,7 +54,7 @@ public class UIElementUpdater : MonoBehaviour
         if (_text == null) return;
 
         StringBuilder _stringBuilder = new();
-
+        
         _stringBuilder.Append(_current.ToString(indexFormat));
 
         if (indexSeparator != "")

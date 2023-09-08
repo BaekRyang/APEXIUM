@@ -65,7 +65,11 @@ public class PlayerStats : Stats
     public int EnergyCrystal
     {
         get => energyCrystal;
-        set => energyCrystal = value;
+        set
+        {
+            energyCrystal = value;
+            if(isLocalPlayer) UpdatableUIElements.UpdateValue("EnergyCrystal", energyCrystal);
+        }
     }
 
     public int AdvancedResource
