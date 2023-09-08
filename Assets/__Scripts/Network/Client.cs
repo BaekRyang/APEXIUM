@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Cysharp.Threading.Tasks;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using ProtoBuf;
@@ -13,20 +14,22 @@ public class Client : MonoBehaviour
 {
     private const string PREFIX = "<color=blue>Client</color> - ";
 
-    private        string    _serverIP   = "127.0.0.1";
-    private        int       _serverPort = 11211;
-    private static Socket    ClientSocket;
-    private static UdpClient UDPClient;
+    [SerializeField] private string    _serverIP   = "127.0.0.1";
+    private                  int       _serverPort = 11211;
+    private static           Socket    ClientSocket;
+    private static           UdpClient UDPClient;
 
     private readonly byte[] _receiveBuffer = new byte[1024]; //1KB
 
     public bool BootClient = false;
 
-    private void StartClient()
+    private UniTask StartClient()
     {
     #region TCP Init
 
-        ClientSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //클라이언트 소켓 준비
+        Debug.Log($"{PREFIX} Connecting to Server");
+
+        ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //클라이언트 소켓 준비
 
         //Bind는 필요없음 : 클라이언트는 자동으로 포트를 골라서 서버에 연결함
 
@@ -38,7 +41,6 @@ public class Client : MonoBehaviour
         try
         {
             ClientSocket.Connect(_serverEndPoint); //서버에 연결을 요청한다.
-            Debug.Log($"{PREFIX} Connecting to Server");
         }
         catch (SocketException e)
         {
@@ -47,7 +49,6 @@ public class Client : MonoBehaviour
             ClientSocket.Close();
             ClientSocket = null;
             BootClient   = false;
-            return;
         }
 
         BeginReceive(); //서버로부터 데이터를 받기 시작한다.
@@ -66,16 +67,19 @@ public class Client : MonoBehaviour
         //여기서는 언제나 서버와 통신을 하기 때문에 서버의 EndPoint를 기본값으로 설정해준다.
 
     #endregion
+
+        return UniTask.CompletedTask;
     }
 
     private void Update()
     {
         switch (BootClient)
         {
-            case true when ClientSocket is not null:
-                StartClient();
+            case true when ClientSocket == null:
+                Debug.Log("START-CLIENT");
+                UniTask.RunOnThreadPool(StartClient);
                 break;
-            case false when ClientSocket is not null and { Connected: true }:
+            case false when ClientSocket is { Connected: true }:
                 Shutdown();
                 break;
         }

@@ -11,7 +11,7 @@ using UnityEngine;
 public class Server : MonoBehaviour
 {
     public static Dictionary<EndPoint, int> clients = new();
-    
+
     private const string PREFIX                      = "<color=red>Server</color> -";
     private const int    PACKET_ADDITIONAL_DATA_SIZE = 2;
 
@@ -84,7 +84,10 @@ public class Server : MonoBehaviour
 
             //데이터를 보낸 소켓을 순회한다.
             foreach (Socket _socket in _copySockets)
+            {
+                Debug.Log($"{_clientSocketList.Count} - {_copySockets.Count}");
                 HandleClientData(_socket, _copySockets.IndexOf(_socket));
+            }
         }
 
     #region UDP Receive
@@ -141,8 +144,8 @@ public class Server : MonoBehaviour
     private void HandleNewConnection(Socket _socket)
     {
         Socket _newConnection = _socket.Accept(); //연결 요청을 수락하고
-        _clientSocketList.Add(_newConnection);     //클라이언트 소켓 목록에 추가한다음
-        _receivedDataList.Add(new ArrayList());    //수신 데이터 목록에 추가한다.
+        _clientSocketList.Add(_newConnection);    //클라이언트 소켓 목록에 추가한다음
+        _receivedDataList.Add(new ArrayList());   //수신 데이터 목록에 추가한다.
         Debug.Log($"{PREFIX} New Client Connected - {_newConnection.RemoteEndPoint}");
 
         //클라이언트 ID를 증가시키고, 클라이언트에게 ID를 보낸다.
@@ -156,12 +159,14 @@ public class Server : MonoBehaviour
     {
         Debug.Log($"{PREFIX} Response Received");
 
+        clients.Add(_receivedSocket.RemoteEndPoint, _playerID);
+        Debug.Log(_receivedSocket.RemoteEndPoint);
+
         //해당 클라이언트 플레이어 객체 생성 메세지를 뿌린다. (접속중인 모든 플레이어에게)
         foreach (var _socket in _clientSocketList)
         {
             Debug.Log($"{PREFIX} {_playerID} Object instantiate packet sent to {_socket.RemoteEndPoint}");
             Send(_socket, new byte[] { (byte)(_playerID) }, PacketType.PlacePlayer, ConnectType.TCP);
-            clients.Add(_receivedSocket.RemoteEndPoint, _playerID);
         }
     }
 
@@ -175,7 +180,7 @@ public class Server : MonoBehaviour
 
         if (_receivedDataList[_index] is null) return; //아직 안만들어졌으면 무시
 
-        byte[]    _receivedByteData = new byte[512];                                                                      //받은 데이터를 저장할 버퍼 생성
+        byte[]    _receivedByteData = new byte[512];                                                                     //받은 데이터를 저장할 버퍼 생성
         ArrayList _receivedData     = _receivedDataList[_index] as ArrayList;                                            //수신 데이터 목록에서 해당 소켓의 데이터를 가져온다.
         int       _receiveDataSize  = _socket.Receive(_receivedByteData, 0, _receivedByteData.Length, SocketFlags.None); //데이터를 받는다. (Arg1에, Arg2부터, Arg3만큼 받는다.) 
 
@@ -225,18 +230,20 @@ public class Server : MonoBehaviour
         }
     }
 
-    private async void ClientDisconnect(Socket _socket)
+    private void ClientDisconnect(Socket _socket)
     {
-        Debug.Log($"{PREFIX} Client Disconnected - {_socket.RemoteEndPoint}");
-        await UnityMainThreadDispatcher.Instance().EnqueueAsync(() =>
+        if (clients.TryGetValue(_socket.RemoteEndPoint, out int _playerID))
         {
-            GameManager.Instance.RemovePlayer(clients[_socket.RemoteEndPoint]);
-        });
+            Debug.Log($"{PREFIX} Client Disconnected - {_socket.RemoteEndPoint} \n {clients.Count}");
+            GameManager.Instance.RemovePlayer(_playerID);
+        }
+        else
+            Debug.Log($"{PREFIX} Cannot find client - {_socket.RemoteEndPoint}. Is it already disconnected?");
+        
+        _clientSocketList.Remove(_socket);
         clients.Remove(_socket.RemoteEndPoint);
         _socket.Shutdown(SocketShutdown.Both);
         _socket.Close();
-        _clientSocketList.Remove(_socket);
-
     }
 
     private async void Send(Socket _socket, byte[] _data, PacketType _type, ConnectType _connectType)

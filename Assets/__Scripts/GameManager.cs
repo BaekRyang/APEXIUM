@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -92,14 +93,20 @@ public class GameManager : MonoBehaviour
 
     public void RemovePlayer(int _playerID)
     {
-        Destroy(_players[_playerID].gameObject);
-        _players.Remove(_playerID);
+        UniTask.Yield();   
+        //대상 플레이어가 있으면
+        if (_players.TryGetValue(_playerID, out Player _targetPlayer))
+        {
+            Destroy(_targetPlayer.gameObject);
+            _players.Remove(_playerID);
+        }
+        
         Debug.Log($"{_playerID} is Disconnected");
-
+        
         if (_players.Count != 0)
         {
             foreach ((int _key, Player _player) in _players) 
-                Debug.Log($"Remaining Player : {_key}");
+                Debug.Log($"Remaining Player ID: {_key}");
         }
         else
             Debug.Log("All Players are Disconnected");
