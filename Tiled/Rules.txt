@@ -1,2 +1,0 @@
-Rules\autotile rules.tmx
-Rules\LadderRules.tmx

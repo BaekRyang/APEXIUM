@@ -1,16 +1,10 @@
 {
-    "Map/SizeTest": {
-        "height": 4300,
-        "width": 2
-    },
-    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
-    "automapping.whileDrawing": false,
+    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
-        "."
+        ".",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing"
     ],
-    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
             "scaleInDock": 1
@@ -47,19 +41,19 @@
             "expandedGroupLayers": [
                 12
             ],
-            "scale": 1.5,
-            "selectedLayer": 2,
+            "scale": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 343.33333333333337,
-                "y": 46.666666666666686
+                "x": 363,
+                "y": -31
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx": {
-            "scale": 4.82421875,
+            "scale": 4.82,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 126.03076923076922,
-                "y": 86.43886639676113
+                "x": 196.47302904564316,
+                "y": 168.04979253112032
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx": {
@@ -74,8 +68,8 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 172.33333333333331,
-                "y": 159
+                "x": 268.3333333333333,
+                "y": 159.66666666666666
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/TileBase.tsx": {
@@ -99,12 +93,15 @@
             "scaleInDock": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx": {
-            "scale": 0.25,
-            "selectedLayer": -1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 2420,
-                "y": 3456
+                "x": 716.6666666666666,
+                "y": 2709.333333333333
             }
+        },
+        "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx": {
+            "scaleInDock": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemaps/Winter.tsx": {
             "scaleInDock": 1
@@ -148,7 +145,7 @@
         "Winter.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 4
+            "scaleInEditor": 1
         },
         "autotile rules.tmx": {
             "scale": 2.6303124999999996,
@@ -167,41 +164,26 @@
             }
         }
     },
-    "last.externalTilesetPath": "C:/Github/ProjectR/Assets/_Tilemap",
-    "last.imagePath": "D:/OneDrive/SkyLab/Project R/Graphic/Tilemap/Spring",
-    "last.objectTemplatePath": "C:/Github/ProjectR/Tiled",
-    "map.fixedSize": false,
-    "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
-    "map.width": 40,
-    "mapScene.enableWorlds": false,
     "openFiles": [
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/LadderRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx"
     ],
     "project": "ProjectR.tiled-project",
-    "property.type": "bool",
     "recentFiles": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/LadderRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/LadderRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
+        "Winter.tsx",
         "Tilemap.tmx",
         "Spring.tsx",
-        "Winter.tsx",
         "Rules/LadderRules.tmx",
         "Rules/autotile rules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter.tmx",
-        "prototype.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateTule.tmx"
-    ],
-    "resizeMap.removeObjects": false,
-    "tileset.lastUsedFormat": "tsx",
-    "tileset.tileSize": {
-        "height": 16,
-        "width": 16
-    }
+        "prototype.tmx"
+    ]
 }

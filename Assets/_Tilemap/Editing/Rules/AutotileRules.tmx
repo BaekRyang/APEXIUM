@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="13" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="15" nextobjectid="1">
  <tileset firstgid="1" source="../TileBase.tsx"/>
  <tileset firstgid="257" source=":/automap-tiles.tsx"/>
- <tileset firstgid="262" source="../../../../Tiled/Winter.tsx"/>
+ <tileset firstgid="262" source="../../Winter.tsx"/>
  <layer id="1" name="input_prototype" width="40" height="20">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">

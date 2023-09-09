@@ -54,6 +54,8 @@ public class PlayMap : MonoBehaviour
         Transform _mapTransform = transform.Find("Map");
         if (!_mapTransform.TryGetComponent(out ShadowCaster2DCreator _))
             _mapTransform.AddComponent<ShadowCaster2DCreator>().Create();
+        
+        _mapTransform.gameObject.layer = LayerMask.NameToLayer("Floor");
 
         foreach (Transform _children in transform)
             if (_children.name.Contains("prototype", StringComparison.OrdinalIgnoreCase))
