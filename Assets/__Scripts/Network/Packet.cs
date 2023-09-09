@@ -30,23 +30,23 @@ public readonly struct Vector3Packet
     [ProtoMember(2)] private readonly float y;
     [ProtoMember(3)] private readonly float z;
 
-    public Vector3Packet(Vector3Packet p_other) //복사 생성자
+    public Vector3Packet(Vector3Packet _other) //복사 생성자
     {
-        x = p_other.x;
-        y = p_other.y;
-        z = p_other.z;
+        x = _other.x;
+        y = _other.y;
+        z = _other.z;
     }
 
-    public Vector3Packet(Vector3 p_other) //Vector3 => Vector3Packet
+    public Vector3Packet(Vector3 _other) //Vector3 => Vector3Packet
     {
-        x = p_other.x;
-        y = p_other.y;
-        z = p_other.z;
+        x = _other.x;
+        y = _other.y;
+        z = _other.z;
     }
 
-    public static implicit operator Vector3(Vector3Packet p_other) //Vector3Packet => Vector3 연산자
+    public static implicit operator Vector3(Vector3Packet _other) //Vector3Packet => Vector3 연산자
     {
-        return new(p_other.x, p_other.y, p_other.z);
+        return new Vector3(_other.x, _other.y, _other.z);
     }
 
     public override string ToString()

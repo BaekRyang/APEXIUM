@@ -149,10 +149,10 @@ public class Client : MonoBehaviour
     private          int?      _totalPacketSize; //nullable int 타입
     private readonly ArrayList _pendingDataBuffer = new();
 
-    private void ReceiveCallback(IAsyncResult p_result)
+    private void ReceiveCallback(IAsyncResult _result)
     {
         //데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
-        int _received = ClientSocket.EndReceive(p_result);
+        int _received = ClientSocket.EndReceive(_result);
 
         Debug.Log($"{PREFIX} Data Received / {_received}bytes");
 
@@ -204,14 +204,14 @@ public class Client : MonoBehaviour
         BeginReceive();
     }
 
-    private void Shutdown()
+    private async void Shutdown()
     {
         if (ClientSocket.Connected)
         {
             Debug.Log($"{PREFIX} Shutting Down");
             ClientSocket.Shutdown(SocketShutdown.Both); //서버와의 연결을 끊는다.
         }
-
+        
         ClientSocket.Close();
         ClientSocket = null;
 

@@ -83,11 +83,8 @@ public class Server : MonoBehaviour
 
 
             //데이터를 보낸 소켓을 순회한다.
-            foreach (Socket _socket in _copySockets)
-            {
-                Debug.Log($"{_clientSocketList.Count} - {_copySockets.Count}");
+            foreach (Socket _socket in _copySockets) 
                 HandleClientData(_socket, _copySockets.IndexOf(_socket));
-            }
         }
 
     #region UDP Receive
@@ -145,14 +142,13 @@ public class Server : MonoBehaviour
     {
         Socket _newConnection = _socket.Accept(); //연결 요청을 수락하고
         _clientSocketList.Add(_newConnection);    //클라이언트 소켓 목록에 추가한다음
-        _receivedDataList.Add(new ArrayList());   //수신 데이터 목록에 추가한다.
+        _receivedDataList.Add(new ArrayList());   //데이터를 저장할 버퍼를 생성한다. (같은 클라이언트는 clientSocketList와 receivedDataList의 인덱스가 같다.)
         Debug.Log($"{PREFIX} New Client Connected - {_newConnection.RemoteEndPoint}");
 
         //클라이언트 ID를 증가시키고, 클라이언트에게 ID를 보낸다.
+        Debug.Log($"{PREFIX} {_clientID - 1} ID is given to new client");
         Send(_newConnection, new byte[] { (byte)(_clientID++) }, PacketType.GiveID, ConnectType.TCP);
 
-
-        Debug.Log($"{PREFIX} {_clientID - 1} ID is given to new client");
     }
 
     private void SendPlacePlayer(Socket _receivedSocket, int _playerID)
@@ -160,7 +156,7 @@ public class Server : MonoBehaviour
         Debug.Log($"{PREFIX} Response Received");
 
         clients.Add(_receivedSocket.RemoteEndPoint, _playerID);
-        Debug.Log(_receivedSocket.RemoteEndPoint);
+        Debug.Log($"{PREFIX} {_receivedSocket.RemoteEndPoint}'s Player Instantiate Command Created");
 
         //해당 클라이언트 플레이어 객체 생성 메세지를 뿌린다. (접속중인 모든 플레이어에게)
         foreach (var _socket in _clientSocketList)
@@ -172,61 +168,95 @@ public class Server : MonoBehaviour
 
     private void HandleClientData(Socket _socket, int _index)
     {
-        if (_socket.Available == 0)
+        if (_socket.Available == 0) //읽을 수 있는 데이터의 크기가 0이라면 해당 클라이언트가 연결을 끊었다는 뜻이다.
         {
             ClientDisconnect(_socket);
             return;
         }
 
-        if (_receivedDataList[_index] is null) return; //아직 안만들어졌으면 무시
-
+        Debug.Log($"{PREFIX} {_receivedDataList.Count} => {_index}"); //가끔씩 오류 뜨는데 디버그 찍으면 안뜸 (???)
+        
+        // if (_receivedDataList[_index] is null) return;
         byte[]    _receivedByteData = new byte[512];                                                                     //받은 데이터를 저장할 버퍼 생성
-        ArrayList _receivedData     = _receivedDataList[_index] as ArrayList;                                            //수신 데이터 목록에서 해당 소켓의 데이터를 가져온다.
+        ArrayList _receivedData     = _receivedDataList[_index] as ArrayList;                                            //해당 소켓의 데이터 저장 공간을 가져온다.
         int       _receiveDataSize  = _socket.Receive(_receivedByteData, 0, _receivedByteData.Length, SocketFlags.None); //데이터를 받는다. (Arg1에, Arg2부터, Arg3만큼 받는다.) 
 
         //Arg3이 버퍼의 Length니까 버퍼에 담길 수 있는 만큼만 최대로 받는다.
+        
+        Debug.Log($"{PREFIX} TCP Packet Received [ {_socket.RemoteEndPoint} ]: {_receiveDataSize} bytes");
+
+        if (_receivedData == null) //이럴일은 없을 것 같긴한데, 해당 소켓의 데이터 저장공간이 없으면 return
+        {
+            Debug.Log($"{PREFIX} Received Data is null");
+            UpdateClientDataList();
+            return;
+        }
 
         for (int _i = 0; _i < _receiveDataSize; _i++)
             _receivedData.Add(_receivedByteData[_i]); //받은 데이터를 _receivedData에 복사한다.
 
-        while (_receivedData.Count > 0)
+        while (_receivedData.Count > 0) 
         {
             int        _packetSize = (byte)_receivedData[0];       //패킷의 첫번째 정보는 패킷의 크기이다. 이를 이용해 패킷을 분할한다.
             PacketType _packetType = (PacketType)_receivedData[1]; //패킷의 두번째 정보는 패킷의 타입이다.
 
-            if (_packetSize < _receivedData.Count) //패킷의 크기보다 _buffer의 크기가 크다면 => "완전한 패킷을 받았다면"
+            if (_packetSize >= _receivedData.Count) //받은 데이터의 크기가 패킷에 명시된 것 보다 작으면 => "완전한 패킷을 받지 못했다면" 
+                return;                             //다음에 받은 데이터와 합쳐 완전한 패킷을 만들어야 데이터를 처리할 수 있다.
+
+            byte[] _pureData = _receivedData.GetRange(PACKET_ADDITIONAL_DATA_SIZE, _packetSize).ToArray(typeof(byte)) as byte[]; //패킷의 데이터 부분만 복사 - "헤더의 끝부터 -> 데이터의 사이즈 만큼",
+            _receivedData.RemoveRange(0, _packetSize + PACKET_ADDITIONAL_DATA_SIZE);                                             //패킷을 분할했으므로 _buffer에서는 해당 패킷을 제거한다.
+
+            if (_pureData == null)
+                throw new NullReferenceException("pureData is null");
+
+            ProcessPacket(_socket, _packetType, _pureData);
+
+            foreach (var _byte in _pureData)
+                Debug.Log($"{PREFIX} Packet Contents : {_byte}");
+        }
+    }
+
+    private void UpdateClientDataList()
+    {
+        if (_clientSocketList.Count == _receivedDataList.Count)
+            return;
+        throw new Exception("Client Socket List and Received Data List are not matched");
+        //두 리스트의 크기가 다르면 처리할 메서드
+        //근데 두 리스트의 생성과 삭제는 언제나 같이 일어나므로 이럴일은 없을 것 같다.
+    }
+
+    private void ProcessPacket(Socket _socket, PacketType _packetType, byte[] _pureData)
+    {
+        switch (_packetType)
+        {
+            case PacketType.Movement:
             {
-                byte[] _pureData = _receivedData.GetRange(PACKET_ADDITIONAL_DATA_SIZE, _packetSize).ToArray(typeof(byte)) as byte[]; //패킷의 데이터 부분만 복사 - "헤더의 끝부터 -> 데이터의 사이즈 만큼",
+                Vector3Packet _receivedClickPosition;
 
-                _receivedData.RemoveRange(0, _packetSize + PACKET_ADDITIONAL_DATA_SIZE); //패킷을 분할했으므로 _buffer에서는 해당 패킷을 제거한다.
+                //MemoryStream은 IDisposable을 구현하고 있는데 이는 C#의 Garbage Collector가 자동으로 메모리를 해제하지 않는다. (파일 입출력 등에 사용됨)
+                //그래서 Dispose()를 호출하여 메모리를 해제해야 하는데, 이를 자동으로 하기 위하여 using을 사용한다. - using Range가 끝나면 알아서 Dispose()를 호출한다.
+                using (var _stream = new MemoryStream(_pureData)) //그리고 byte[]로 변환된 패킷을 _receivedClickPosition으로 Deserialize하여 저장한다.
+                    _receivedClickPosition = Serializer.Deserialize<Vector3Packet>(_stream);
 
-                if (_packetType == PacketType.Movement)
-                {
-                    Vector3Packet _receivedClickPosition;
-
-                    //MemoryStream은 IDisposable을 구현하고 있는데 이는 C#의 Garbage Collector가 자동으로 메모리를 해제하지 않는다. (파일 입출력 등에 사용됨)
-                    //그래서 Dispose()를 호출하여 메모리를 해제해야 하는데, 이를 자동으로 하기 위하여 using을 사용한다. - using Range가 끝나면 알아서 Dispose()를 호출한다.
-                    using (var _stream = new MemoryStream(_pureData)) //그리고 byte[]로 변환된 패킷을 _receivedClickPosition으로 Deserialize하여 저장한다.
-                        _receivedClickPosition = Serializer.Deserialize<Vector3Packet>(_stream);
-
-                    Debug.Log($"{PREFIX} Packet Received [ {_socket.RemoteEndPoint} ]: {_pureData.Length} bytes");
-                    Debug.Log($"{PREFIX} Packet Type : {_packetType}");
-                    Debug.Log($"{PREFIX} Packet Contents : {_receivedClickPosition}");
-                }
-
-                if (_packetType == PacketType.CheckOK)
-                {
-                    int _receivedID = _pureData[0];
-                    SendPlacePlayer(_socket, _receivedID);
-                }
-
-                foreach (var _byte in _pureData)
-                    Debug.Log($"{PREFIX} Packet Contents : {_byte}");
-            }
-            else
-            {
+                Debug.Log($"{PREFIX} Packet Received [ {_socket.RemoteEndPoint} ]: {_pureData.Length} bytes");
+                Debug.Log($"{PREFIX} Packet Type : {_packetType}");
+                Debug.Log($"{PREFIX} Packet Contents : {_receivedClickPosition}");
                 break;
             }
+            case PacketType.CheckOK:
+            {
+                int _receivedID = _pureData[0];
+                SendPlacePlayer(_socket, _receivedID);
+                break;
+            }
+            case PacketType.GiveID:
+                break;
+            case PacketType.PlacePlayer:
+                break;
+            case PacketType.RPC:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -235,12 +265,15 @@ public class Server : MonoBehaviour
         if (clients.TryGetValue(_socket.RemoteEndPoint, out int _playerID))
         {
             Debug.Log($"{PREFIX} Client Disconnected - {_socket.RemoteEndPoint} \n {clients.Count}");
+            Debug.Log($"{PREFIX} Remove Client Command Sent to GameManager");
             GameManager.Instance.RemovePlayer(_playerID);
         }
         else
             Debug.Log($"{PREFIX} Cannot find client - {_socket.RemoteEndPoint}. Is it already disconnected?");
         
+        _receivedDataList.RemoveAt(_clientSocketList.IndexOf(_socket));
         _clientSocketList.Remove(_socket);
+        
         clients.Remove(_socket.RemoteEndPoint);
         _socket.Shutdown(SocketShutdown.Both);
         _socket.Close();
@@ -261,9 +294,9 @@ public class Server : MonoBehaviour
                 _fullPacket[1] = (byte)_type;
                 _data.CopyTo(_fullPacket, PACKET_ADDITIONAL_DATA_SIZE);
 
+                Debug.Log($"{PREFIX} Packet Sent : {_data.Length} bytes / Type : {_type}( {(byte)_type} )");
                 await _socket.SendAsync(_fullPacket, SocketFlags.None); //데이터를 보낸다.
 
-                Debug.Log($"{PREFIX} Packet Sent : {_data.Length} bytes / Type : {_type}( {(byte)_type} )");
             }
                 break;
             case ConnectType.UDP:

@@ -65,8 +65,8 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         playerInput    = GetComponent<PlayerInput>();
-        ladderTilemap  = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Ladder").GetComponent<Tilemap>();
-        floorTilemap   = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").Find("Tile").GetComponent<Tilemap>();
+        ladderTilemap  = GameManager.Instance.currentMap.transform.Find("Ladder").GetComponent<Tilemap>();
+        floorTilemap   = GameManager.Instance.currentMap.transform.Find("Map").GetComponent<Tilemap>();
 
         attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
@@ -459,16 +459,15 @@ public class PlayerController : MonoBehaviour
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = _pTilemap.transform.InverseTransformPoint(transform.position);
 
-        int _condition = input.vertical > 0 ?
-            1 :
-            0;
+        int _isUpInput = input.vertical > 0 ? 1 : 0;
+        
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                       Mathf.FloorToInt(_localPosition.y + _condition));
+                                       Mathf.FloorToInt(_localPosition.y + _isUpInput));
 
         //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
         //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
 
-        Debug.DrawRay(_pTilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.red);
+        Debug.DrawRay(_pTilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.blue);
         if (!_pTilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
 
         //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.

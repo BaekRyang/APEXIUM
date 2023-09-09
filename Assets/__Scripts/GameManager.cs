@@ -60,7 +60,8 @@ public class GameManager : MonoBehaviour
         foreach (var _monster in monsters)
             _monstersData.Add(_monster.name, _monster);
 
-        currentMap = GameObject.Find("=====SceneObjects=====").transform.Find("prototype").GetComponent<PlayMap>();
+        currentMap = GameObject.Find("=====SceneObjects=====").transform.GetComponentInChildren<PlayMap>();
+
     }
 
     private void Start()
