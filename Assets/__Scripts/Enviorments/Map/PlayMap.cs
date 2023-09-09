@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -47,6 +48,16 @@ public class PlayMap : MonoBehaviour
         }
         else
             SetBoundCollider();
+
+
+        //ShadowCaster2D 생성
+        Transform _mapTransform = transform.Find("Map");
+        if (!_mapTransform.TryGetComponent(out ShadowCaster2DCreator _))
+            _mapTransform.AddComponent<ShadowCaster2DCreator>().Create();
+
+        foreach (Transform _children in transform)
+            if (_children.name.Contains("prototype", StringComparison.OrdinalIgnoreCase))
+                DestroyImmediate(_children.gameObject);
     }
 
     private void SetBoundCollider()

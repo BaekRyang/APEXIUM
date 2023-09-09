@@ -204,7 +204,7 @@ public class Client : MonoBehaviour
         BeginReceive();
     }
 
-    private async void Shutdown()
+    private void Shutdown()
     {
         if (ClientSocket.Connected)
         {

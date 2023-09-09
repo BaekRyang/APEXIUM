@@ -42,10 +42,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorRange: 0.3
+    - _ColorRange: 0.1
     - _ReplaceFuzziness: 0
     m_Colors:
-    - _EmissionColor: {r: 5.892292, g: 0, b: 5.992159, a: 1}
+    - _EmissionColor: {r: 2.9461455, g: 0, b: 2.996079, a: 1}
     - _TargetColor: {r: 0.95294124, g: 0.5372549, b: 0.9607844, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &4016906906329311046
