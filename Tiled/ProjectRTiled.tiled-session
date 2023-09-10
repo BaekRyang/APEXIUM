@@ -3,14 +3,18 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
+    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing"
+        "C:/Github/ProjectR/Assets/_Tilemap"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Assets/_Tilemap/Editing/TileBase.tsx": {
             "scaleInDock": 1
         },
@@ -58,7 +62,8 @@
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx": {
             "expandedGroupLayers": [
@@ -67,15 +72,16 @@
             "expandedObjectLayers": [
                 732
             ],
-            "scale": 2,
+            "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 5991.5,
-                "y": 2926.5
+                "x": 5502,
+                "y": 2893
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
         },
         "VentTileRule.tmx": {
             "scale": 2,
@@ -96,12 +102,17 @@
     "openFiles": [
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx"
     ],
     "project": "ProjectRTiled.tiled-project",
     "recentFiles": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRules.tmx",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRule.tmx",
         "VentTileRule.tmx"
     ]
