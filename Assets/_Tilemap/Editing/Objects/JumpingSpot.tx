@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object>
+  <properties>
+   <property name="unity:JumpingSpot" value="30"/>
+   <property name="unity:prefabReplace" value="Winter/JumpingSpot"/>
+  </properties>
+  <polygon points="1,0 0,-1 -1,-1 -1,-3 3,-3 7,-26 11,-3 15,-3 15,-1 14,-1 15,0"/>
+ </object>
+</template>

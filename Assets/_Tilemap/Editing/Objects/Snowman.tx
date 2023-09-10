@@ -2,7 +2,7 @@
 <template>
  <object>
   <properties>
-   <property name="unity:prefabReplace" value="_Prefabs/Objects/Winter/Snowman"/>
+   <property name="unity:prefabReplace" value="Winter/Snowman"/>
   </properties>
   <polygon points="0,0 -5,0 -9,-4 -9,-12 -8,-18 -8,-28 -5,-31 5,-31 8,-28 8,-18 9,-12 9,-4 5,0"/>
  </object>

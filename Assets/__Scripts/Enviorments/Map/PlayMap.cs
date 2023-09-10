@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
@@ -39,7 +40,8 @@ public class PlayMap : MonoBehaviour
     public void Initialize()
     {
         _mapSize           = GetMapSize();
-        transform.position = new Vector3(0, _mapSize.y);
+        Transform _cachedTransform = transform;
+        _cachedTransform.position = new Vector3(0, _mapSize.y);
 
 
         if (_boundCollider == null)
@@ -52,7 +54,7 @@ public class PlayMap : MonoBehaviour
 
 
         //ShadowCaster2D 생성
-        Transform _mapTransform = transform.Find("Map");
+        Transform _mapTransform = _cachedTransform.Find("Map");
         if (!_mapTransform.TryGetComponent(out ShadowCaster2DCreator _))
             _mapTransform.AddComponent<ShadowCaster2DCreator>().Create();
 
@@ -64,16 +66,26 @@ public class PlayMap : MonoBehaviour
             _compositeCollider.offsetDistance = 0;
         }
 
-        foreach (Transform _children in transform)
+        var _destroyRequiredObjects = new List<GameObject>();
+        foreach (Transform _children in _cachedTransform)
             if (_children.name.Contains("prototype", StringComparison.OrdinalIgnoreCase))
-                DestroyImmediate(_children.gameObject);
+                _destroyRequiredObjects.Add(_children.gameObject);
+        
+        foreach (GameObject _destroyRequiredObject in _destroyRequiredObjects) 
+            DestroyImmediate(_destroyRequiredObject);
+        
 
-        foreach (Transform _transform in transform.Find("Collision").transform)
+        Transform _collisions = _cachedTransform.Find("Collision").transform;
+        foreach (Transform _transform in _collisions)
         {
             _transform.gameObject.name  = "AdditionalCollision";
             _transform.gameObject.layer = LayerMask.NameToLayer("Floor");
-            var _shadowCaster2D = _transform.AddComponent<ShadowCaster2D>();
-            _shadowCaster2D.selfShadows = true;
+
+            if (!_transform.TryGetComponent(out ShadowCaster2D _))
+            {
+                ShadowCaster2D _shadowCaster2D = _transform.AddComponent<ShadowCaster2D>();
+                _shadowCaster2D.selfShadows = true;
+            }
         }
     }
 
