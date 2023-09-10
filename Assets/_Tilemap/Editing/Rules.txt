@@ -1,3 +1,4 @@
 Rules\AutotileRules.tmx
-Rules\DecorateRule.tmx
+Rules\DecorateRules.tmx
 Rules\LadderRules.tmx
+Rules\VentTileRules.tmx

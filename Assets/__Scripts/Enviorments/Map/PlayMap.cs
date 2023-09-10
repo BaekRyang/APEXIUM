@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 [Serializable]
@@ -54,12 +55,26 @@ public class PlayMap : MonoBehaviour
         Transform _mapTransform = transform.Find("Map");
         if (!_mapTransform.TryGetComponent(out ShadowCaster2DCreator _))
             _mapTransform.AddComponent<ShadowCaster2DCreator>().Create();
-        
+
         _mapTransform.gameObject.layer = LayerMask.NameToLayer("Floor");
+
+        if (_mapTransform.TryGetComponent(out CompositeCollider2D _compositeCollider))
+        {
+            _compositeCollider.geometryType   = CompositeCollider2D.GeometryType.Polygons;
+            _compositeCollider.offsetDistance = 0;
+        }
 
         foreach (Transform _children in transform)
             if (_children.name.Contains("prototype", StringComparison.OrdinalIgnoreCase))
                 DestroyImmediate(_children.gameObject);
+
+        foreach (Transform _transform in transform.Find("Collision").transform)
+        {
+            _transform.gameObject.name  = "AdditionalCollision";
+            _transform.gameObject.layer = LayerMask.NameToLayer("Floor");
+            var _shadowCaster2D = _transform.AddComponent<ShadowCaster2D>();
+            _shadowCaster2D.selfShadows = true;
+        }
     }
 
     private void SetBoundCollider()
