@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="Winter" tilewidth="16" tileheight="16" tilecount="240" columns="16">
- <image source="D:/OneDrive/SkyLab/Project R/Graphic/Tilemap/Winter/winter tilemap_fix-export.png" width="256" height="240"/>
+ <image source="winter tilemap_fix.png" width="256" height="240"/>
  <tile id="0">
   <objectgroup draworder="index" id="2">
    <object id="16" x="0" y="4">
