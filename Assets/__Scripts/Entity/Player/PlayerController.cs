@@ -235,7 +235,7 @@ public class PlayerController : MonoBehaviour
         input.itemSkill      = Input.GetButton("ItemSkill");
 
 #elif UNITY_ANDROID
-        _input.horizontal = VJoystick.MovementDirection;
+        input.horizontal = VJoystick.MovementDirection;
 
 #endif
     }

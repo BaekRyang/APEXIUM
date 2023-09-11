@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : MonoBehaviour, IEntity
 {
     private const float VERTICAL_OFFSET    = .7f;
     private const float CRITICAL_FONT_SIZE = 1.05f;

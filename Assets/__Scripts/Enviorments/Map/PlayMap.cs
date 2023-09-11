@@ -37,6 +37,7 @@ public class PlayMap : MonoBehaviour
     public Vector2 GetMapCenterPosition() =>
         (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
+    #if UNITY_EDITOR
     public void Initialize()
     {
         _mapSize           = GetMapSize();
@@ -88,6 +89,7 @@ public class PlayMap : MonoBehaviour
             }
         }
     }
+    #endif
 
     private void SetBoundCollider()
     {

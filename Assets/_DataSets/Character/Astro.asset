@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Astro
   stats:
+    isLocalPlayer: 0
     health: 100
     maxHealth: 100
     attackDamage: 10
@@ -24,10 +25,10 @@ MonoBehaviour:
     exp: 0
     maxExp: 100
     maxJumpCount: 1
-    jumpHeight: 10
+    jumpHeight: 11.2
     resource: 7
     maxResource: 7
-    commonResource: 0
+    energyCrystal: 0
     advancedResource: 0
     criticalChance: 0.05
     criticalDamage: 1.5

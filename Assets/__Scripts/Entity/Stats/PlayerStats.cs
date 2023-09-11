@@ -68,7 +68,7 @@ public class PlayerStats : Stats
         set
         {
             energyCrystal = value;
-            if(isLocalPlayer) UpdatableUIElements.UpdateValue("EnergyCrystal", energyCrystal);
+            if (isLocalPlayer) UpdatableUIElements.UpdateValue("EnergyCrystal", energyCrystal);
         }
     }
 
@@ -80,7 +80,9 @@ public class PlayerStats : Stats
 
     public float CriticalChance
     {
-        get => criticalChance > 1 ? 1 : criticalChance;
+        get => criticalChance > 1 ?
+            1 :
+            criticalChance;
         set => criticalChance = value;
     }
 
