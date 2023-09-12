@@ -33,3 +33,17 @@ public abstract class InteractableObject : MonoBehaviour
     protected abstract void InteractAction();
     //오브젝트에 상호작용했을때 실행되는 함수
 }
+
+public class ItemSpawnEvent
+{
+    public PickupType pickupType;
+    public int        amount;
+    public Vector3    position;
+
+    public ItemSpawnEvent(PickupType _pickupType, int _amount, Vector3 _position)
+    {
+        pickupType = _pickupType;
+        amount     = _amount;
+        position   = _position;
+    }
+}

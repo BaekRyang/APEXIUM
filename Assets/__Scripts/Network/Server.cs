@@ -10,6 +10,8 @@ using UnityEngine;
 
 public class Server : MonoBehaviour
 {
+    [SerializeField] [Inject] private PlayerManager _playerManager;
+    
     public static Dictionary<EndPoint, int> clients = new();
 
     private const string PREFIX                      = "<color=red>Server</color> -";
@@ -35,6 +37,8 @@ public class Server : MonoBehaviour
             Debug.Log($"{PREFIX} Initialize Server Success");
 
         SetupUDPServer();
+        
+        DIContainer.Inject(this);
     }
 
     private void Update()
@@ -266,7 +270,7 @@ public class Server : MonoBehaviour
         {
             Debug.Log($"{PREFIX} Client Disconnected - {_socket.RemoteEndPoint} \n {clients.Count}");
             Debug.Log($"{PREFIX} Remove Client Command Sent to GameManager");
-            GameManager.Instance.RemovePlayer(_playerID);
+            _playerManager.RemovePlayer(_playerID);
         }
         else
             Debug.Log($"{PREFIX} Cannot find client - {_socket.RemoteEndPoint}. Is it already disconnected?");

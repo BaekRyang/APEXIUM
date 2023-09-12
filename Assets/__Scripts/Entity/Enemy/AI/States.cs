@@ -12,33 +12,24 @@ public struct FloatPair
     public float x;
     public float y;
 
-    public FloatPair(float xValue, float yValue2)
+    public FloatPair(float _xValue, float _yValue)
     {
-        x = xValue;
-        y = yValue2;
+        x = _xValue;
+        y = _yValue;
     }
 }
 
-public struct Pair<T1, T2>
-{
-    public T1 x;
-    public T2 y;
-
-    public Pair(T1 xValue, T2 yValue)
-    {
-        x = xValue;
-        y = yValue;
-    }
-}
 
 [Serializable]
 public abstract class State : IState
 {
+    [Inject] PlayerManager _playerManager;
+    
     [SerializeField] protected EnemyAI enemyAI;
 
-    public State Initialize(EnemyAI p_enemyAI)
+    public State Initialize(EnemyAI _enemyAI)
     {
-        enemyAI = p_enemyAI;
+        enemyAI = _enemyAI;
         return this;
     }
 
@@ -52,14 +43,14 @@ public abstract class State : IState
 
     private const float CLIFF_DETECT_DISTANCE = 0.5f;
 
-    protected static bool CliffDetect(EnemyAI p_enemyAI) //절벽 감지 함수. 
+    protected static bool CliffDetect(EnemyAI _enemyAI) //절벽 감지 함수. 
     {
         int     _layerMask = 1 << LayerMask.NameToLayer("Floor");
-        Vector3 _position  = p_enemyAI.cachedTransform.position;
+        Vector3 _position  = _enemyAI.cachedTransform.position;
 
         Vector2 _checkPoint = new(
-            _position.x + p_enemyAI.targetDirection.x * p_enemyAI.bodySize.x / 2,
-            _position.y - p_enemyAI.bodySize.y                               / 2
+            _position.x + _enemyAI.targetDirection.x * _enemyAI.bodySize.x / 2,
+            _position.y - _enemyAI.bodySize.y                               / 2
         );
 
         RaycastHit2D _hit = Physics2D.Raycast(_checkPoint,
@@ -70,27 +61,27 @@ public abstract class State : IState
         return _hit.collider == null;
     }
 
-    protected static bool WallDetect(EnemyAI p_enemyAI) //벽 감지 함수. 
+    protected static bool WallDetect(EnemyAI _enemyAI) //벽 감지 함수. 
     {
         int _layerMask = 1 << LayerMask.NameToLayer("Floor");
 
-        RaycastHit2D _hit = Physics2D.Raycast(p_enemyAI.cachedTransform.position,
-                                              p_enemyAI.targetDirection,
-                                              p_enemyAI.bodySize.x,
+        RaycastHit2D _hit = Physics2D.Raycast(_enemyAI.cachedTransform.position,
+                                              _enemyAI.targetDirection,
+                                              _enemyAI.bodySize.x,
                                               _layerMask);
 
-        Debug.DrawRay(p_enemyAI.cachedTransform.position, p_enemyAI.targetDirection * p_enemyAI.bodySize.x, Color.blue);
+        Debug.DrawRay(_enemyAI.cachedTransform.position, _enemyAI.targetDirection * _enemyAI.bodySize.x, Color.blue);
         return _hit.collider != null;
     }
 
     /// <summary>
     /// Chase 범위 내에 플레이어가 있는지 확인하고 있다면 제일 가까운 플레이어 반환
     /// </summary>
-    protected static (Player, float) PlayerInRange(EnemyAI p_enemyAI)
+    protected (Player, float) PlayerInRange(EnemyAI p_enemyAI)
     {
-        IEnumerable<Player> _players        = GameManager.Instance.GetPlayersArray();
-        Player        _targetPlayer   = null;
-        float         _targetDistance = Mathf.Infinity;
+        IEnumerable<Player> _players        = _playerManager.GetPlayersArray();
+        Player              _targetPlayer   = null;
+        float               _targetDistance = Mathf.Infinity;
 
         foreach (Player _player in _players)
         {

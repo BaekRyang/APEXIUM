@@ -12,6 +12,8 @@ using Unity.VisualScripting;
 
 public class Client : MonoBehaviour
 {
+    [SerializeField] [Inject] private PlayerManager _playerManager;
+    
     private const string PREFIX = "<color=blue>Client</color> - ";
 
     [SerializeField] private string    _serverIP   = "127.0.0.1";
@@ -68,6 +70,8 @@ public class Client : MonoBehaviour
 
     #endregion
 
+        DIContainer.Inject(this);
+        
         return UniTask.CompletedTask;
     }
 
@@ -99,7 +103,7 @@ public class Client : MonoBehaviour
         }
     }
 
-    private static void Send(byte[] _packet, PacketType _type, ConnectType _connectType)
+    private void Send(byte[] _packet, PacketType _type, ConnectType _connectType)
     {
         switch (_connectType)
         {
@@ -129,7 +133,7 @@ public class Client : MonoBehaviour
                 //새로운 byte[]를 만들어서 필요한 데이터를 넣는다.
                 //데이터의 순서는 [시퀀스 넘버, 패킷 타입, 패킷 데이터] 순서로 넣는다.
                 byte[] _udpPacket = new byte[_packet.Length + 2]; //시퀀스 넘버와 패킷 타입을 넣을 공간을 미리 만들어둔다.
-                _udpPacket[0] = (byte)GameManager.Instance.playerID;
+                _udpPacket[0] = (byte)_playerManager.playerID;
                 _udpPacket[1] = (byte)_type;
                 Array.Copy(_packet, 0, _udpPacket, 2, _packet.Length); //p_packet의 데이터를 _packet에 복사한다.
 
@@ -236,11 +240,11 @@ public class Client : MonoBehaviour
         //서버에서 보낸 초기화 메세지는 따로 처리해준다.
         if (_packetType is PacketType.GiveID)
         {
-            GameManager.Instance.playerID = _receivedData[2];
-            Debug.Log($"{PREFIX} Your Client ID : {GameManager.Instance.playerID}");
+            _playerManager.playerID = _receivedData[2];
+            Debug.Log($"{PREFIX} Your Client ID : {_playerManager.playerID}");
 
             //서버에게 클라이언트가 준비되었다고 알린다.
-            Send(new byte[] { (byte)GameManager.Instance.playerID }, PacketType.CheckOK, ConnectType.TCP);
+            Send(new byte[] { (byte)_playerManager.playerID }, PacketType.CheckOK, ConnectType.TCP);
             Debug.Log($"{PREFIX} Check OK Sent");
             return;
         }
@@ -248,10 +252,20 @@ public class Client : MonoBehaviour
     #endregion
 
     #region PlacePlayer
-
         if (_packetType is PacketType.PlacePlayer)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(_receivedData[2]); });
+          //   IPlayerEnter.Enter(_receivedData);
+          try
+          {
+              EventBus.Publish(new PlayerEnterEvent(_receivedData[2]));
+          }
+          catch (Exception e)
+          {
+              Console.WriteLine(e);
+              throw;
+          }
+            
+            //UnityMainThreadDispatcher.Instance().Enqueue(() => { GameManager.Instance.InstantiatePlayer(_receivedData[2]); });
 
             // GameManager.Instance.InstantiatePlayer(p_receivedData[2]);
             Debug.Log($"{PREFIX} Player Placed : {_receivedData[2]}");
@@ -270,5 +284,15 @@ public class Client : MonoBehaviour
             Vector3Packet _receivedPacket = Serializer.Deserialize<Vector3Packet>(_stream); //받은 데이터를 역직렬화한다.
             Debug.Log($"{PREFIX} Received Data : {_receivedPacket}");
         }
+    }
+}
+
+public class PlayerEnterEvent
+{
+    public int PlayerID;
+
+    public PlayerEnterEvent(int _playerID)
+    {
+        PlayerID = _playerID;
     }
 }

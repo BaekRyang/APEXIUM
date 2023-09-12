@@ -10,6 +10,8 @@ using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IEntity
 {
+    [Inject] private PlayerManager _playerManager;
+    
     public int clientID;
 
     private PlayerController _playerController;
@@ -29,7 +31,7 @@ public class Player : MonoBehaviour, IEntity
 
     public bool dead;
 
-    private void LoadSettings(PlayerData _playerData)
+    private void Initialize(PlayerData _playerData)
     {
         _stats = new PlayerStats(_playerData.stats)
                  {
@@ -58,11 +60,19 @@ public class Player : MonoBehaviour, IEntity
 
         _collider2D.enabled = false;
         _collider2D.enabled = true;
+
+        if (_playerManager.IsLocalPlayer(clientID)) 
+            SetCameraFollow();
+    }
+
+    private void SetCameraFollow()
+    {
+        throw new NotImplementedException();
     }
 
     void Start()
     {
-        LoadSettings(GameManager.Instance.GetCharacterData("Astro"));
+        Initialize(DataManager.GetCharacterData("Astro"));
     }
 
     private void Update()

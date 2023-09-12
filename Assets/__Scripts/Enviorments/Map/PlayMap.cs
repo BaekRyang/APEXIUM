@@ -102,4 +102,6 @@ public class PlayMap : MonoBehaviour
                                       new Vector2(0,          0)
                                   });
     }
+    
+    public Tilemap GetTilemap(string _name) => transform.Find(_name).GetComponent<Tilemap>();
 }

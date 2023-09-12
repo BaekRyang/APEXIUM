@@ -65,12 +65,16 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D   = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         playerInput    = GetComponent<PlayerInput>();
-        ladderTilemap  = GameManager.Instance.currentMap.transform.Find("Ladder").GetComponent<Tilemap>();
-        floorTilemap   = GameManager.Instance.currentMap.transform.Find("Map").GetComponent<Tilemap>();
 
         attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
         InitializePlayerInput();
+    }
+    
+    private void Initialize(PlayMap _currentMap)
+    {
+        ladderTilemap = _currentMap.GetTilemap("Ladder");
+        floorTilemap  = _currentMap.GetTilemap("Map");
     }
 
     private void Update()

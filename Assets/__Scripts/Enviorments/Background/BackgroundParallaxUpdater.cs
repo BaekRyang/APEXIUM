@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BackgroundParallaxUpdater : MonoBehaviour
 {
+    [SerializeField] [Inject] private PlayerManager _playerManager;
+    
     private Dictionary<Transform, Vector2> _backgrounds;
 
     private void Awake()
@@ -11,14 +13,16 @@ public class BackgroundParallaxUpdater : MonoBehaviour
         _backgrounds = new Dictionary<Transform, Vector2>();
         foreach (Transform _child in transform)
             _backgrounds.Add(_child.transform, _child.GetComponent<SpriteRenderer>().sprite.GetResolution());
+        
+        DIContainer.Inject(this);
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.GetLocalPlayer() != null)
+        if (_playerManager.GetLocalPlayer() != null)
             UpdateParallax(
-                GameManager.Instance.currentMap.GetMapSize(),
-                GameManager.Instance.GetLocalPlayer());
+                GameManager.mapManager.GetMap(MapType.Normal).GetMapSize(),
+                _playerManager.GetLocalPlayer());
     }
 
     //이미지가 작을수록 느리게 움직이고, 크면 빠르게 움직인다.

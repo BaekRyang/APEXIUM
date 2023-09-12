@@ -21,7 +21,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     private void Start()
     {
-        var _enemyData = GameManager.Instance.GetEnemyData("Frost");
+        var _enemyData = DataManager.GetEnemyData("Frost");
         stats = new EnemyStats(_enemyData);
 
         if (_enemyData.isBoss)

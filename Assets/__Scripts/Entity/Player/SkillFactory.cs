@@ -9,6 +9,7 @@ public static class SkillFactory
     public static Skill MakeSkill(string _skillName, Player _player)
     {
         Skill _skill = (Skill)Activator.CreateInstance(Type.GetType(_skillName)!);
+        DIContainer.Inject(_skill);
         _skill.Player = _player;
         _skill.Initialize();
         return _skill;

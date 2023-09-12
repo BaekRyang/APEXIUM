@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class SkillBlock : MonoBehaviour
 {
+    [SerializeField] [Inject] private PlayerManager _playerManager;
+    
     public static Dictionary<SkillTypes, SkillBlock> skillBlocks = new();
 
     [SerializeField] private SkillTypes skillType;
@@ -23,6 +25,8 @@ public class SkillBlock : MonoBehaviour
         _cooldownObject = transform.Find("Disabled").gameObject;
         _cooldownText   = _cooldownObject.transform.GetChild(0).GetComponent<TMP_Text>();
         _cooldownImage  = _cooldownObject.GetComponent<Image>();
+        
+        DIContainer.Inject(this);
     }
 
     private void Start() => 
@@ -42,7 +46,7 @@ public class SkillBlock : MonoBehaviour
 
     private void Initialize()
     {
-        Player _localPlayer = GameManager.Instance.GetLocalPlayer();
+        Player _localPlayer = _playerManager.GetLocalPlayer();
         if (_localPlayer == null) return;
         if (_localPlayer.skills.TryGetValue(skillType, out Skill _loadedPlayerSkill))
             _skill = _loadedPlayerSkill;

@@ -12,11 +12,24 @@ public class Spree : AttackableSkill
     private const int   BULLET_SPREAD_ANGLE = 1;
     private const float SPREE_SPEED         = 2f;
 
+    private Revolver _revolver;
+    
     public override void Initialize()
     {
         SkillType   = SkillTypes.Ultimate;
         Cooldown    = COOLDOWN;
         SkillDamage = SKILL_DAMAGE;
+        
+        _revolver = GetRevolver();
+    }
+    
+    private Revolver GetRevolver()
+    {
+        if (!Player.skills.TryGetValue(SkillTypes.Passive, out Skill _passive)) return null;
+        if (_passive is Revolver _value)
+            return _value;
+
+        return null;
     }
 
     public override void Play()
@@ -35,9 +48,9 @@ public class Spree : AttackableSkill
         var _attackID = Tools.GetAttackID();
         do
         {
-            Revolver.NextReloadTime = Revolver.GetNextReloadTime();
+            _revolver.NextReloadTime = _revolver.GetNextReloadTime();
 
-            Revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
+            _revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
 
             //Quaternion은 위 아래로 랜덤이어야 하므로 z축을 기준으로 회전한다.
             Vector3 _randDirection = Quaternion.Euler(0, 0, Random.Range(-BULLET_SPREAD_ANGLE, BULLET_SPREAD_ANGLE)) * (_cachedTransform.right * (int)Facing);
@@ -60,7 +73,7 @@ public class Spree : AttackableSkill
             yield return new WaitForSeconds(RevolverShot.COOLDOWN / SPREE_SPEED / Player.Stats.AttackSpeed);
         } while (ConsumeResource());
 
-        Revolver.Reload();
+        _revolver.Reload();
         Player.Controller.SetControllable(true);
     }
 }

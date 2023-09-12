@@ -14,28 +14,33 @@ public class RevolverShot : AttackableSkill
     private const float STUN_DURATION     = 0f;
     private const float DAMAGE_MULTIPLIER = 1f;
 
+    private Revolver _revolver;
 
     public override void Initialize()
     {
         SkillType   = SkillTypes.Primary;
         Cooldown    = COOLDOWN;
         SkillDamage = DAMAGE_MULTIPLIER;
+
+        if (!Player.skills.TryGetValue(SkillTypes.Passive, out Skill _passive)) return;
+        if (_passive is Revolver _value)
+            _revolver = _value;
     }
 
     public override void Play()
     {
         if (!CanUse()) return;
         if (!ConsumeResource()) return;
-        Revolver.NextReloadTime = Revolver.GetNextReloadTime();
-        
+
+        _revolver.NextReloadTime = _revolver.GetNextReloadTime();
         Player._animator.SetTrigger("Primary");
         Player._animator.SetBool("Playing", true);
-        
-        Revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
+
+        _revolver.CachingData(Player, out Transform _cachedTransform, out Vector3 _position);
 
         LayerMask    _layerMask = LayerMask.GetMask("Enemy", "Floor");
         RaycastHit2D _hit       = Physics2D.Raycast(_position, _cachedTransform.right * (int)Facing, RANGE, _layerMask);
-        
+
         Collider2D _hitCollider = _hit.collider;
 
         if (_hitCollider != null)
@@ -57,10 +62,10 @@ public class RevolverShot : AttackableSkill
         //     Player.Controller.SetControllable(true);
         // });
 
-        Player.StartCoroutine(Revolver.DelayAndSetControllable(Player, .2f / Player.Stats.AttackSpeed));
+        Player.StartCoroutine(_revolver.DelayAndSetControllable(.2f / Player.Stats.AttackSpeed));
 
         if (Player.Stats.Resource == 0)
-            Revolver.Reload();
+            _revolver.Reload();
 
         LastUsedTime = Time.time;
     }

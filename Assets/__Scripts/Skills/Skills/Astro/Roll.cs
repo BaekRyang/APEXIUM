@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Roll : Skill, IUseable
 {
+    [Inject] private GameManager gameManager;
+    
     private const float POWER    = 1.65f;
     private const float COOLDOWN = 2f;
 
@@ -14,7 +16,7 @@ public class Roll : Skill, IUseable
         SkillType = SkillTypes.Utility;
         Cooldown  = COOLDOWN;
     }
-
+    
     public void Play()
     {
         if (!CanUse()) return;
@@ -43,8 +45,8 @@ public class Roll : Skill, IUseable
 
         Player.Stats.Resource = Player.Stats.MaxResource;
 
-        GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Secondary].RemainingCooldown = 0;
-        GameManager.Instance.GetLocalPlayer().skills[SkillTypes.Ultimate].RemainingCooldown  = 0;
+        Player.skills[SkillTypes.Secondary].RemainingCooldown = 0;
+        Player.skills[SkillTypes.Ultimate].RemainingCooldown  = 0;
 
         LastUsedTime = Time.time;
     }
