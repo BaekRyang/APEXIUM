@@ -27,9 +27,6 @@ public class Lobby : MonoBehaviour
             case "Quit":
                 QuitGame();
                 break;
-            
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 
