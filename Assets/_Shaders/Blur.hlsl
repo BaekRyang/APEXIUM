@@ -5,19 +5,27 @@ void GaussianBlur_float(UnityTexture2D Texture, float2 UV, float Blur, UnitySamp
  
     int upper = ((Blur - 1) / 2);
     int lower = -upper;
- 
-    for (int x = lower; x <= upper; ++x)
+
+    if (Blur > 0)
     {
-        for (int y = lower; y <= upper; ++y)
+        for (int x = lower; x <= upper; ++x)
         {
-            kernelSum ++;
+            for (int y = lower; y <= upper; ++y)
+            {
+                kernelSum ++;
  
-            float2 offset = float2(_MainTex_TexelSize.x * x, _MainTex_TexelSize.y * y);
-            col += Texture.Sample(Sampler, UV + offset);
+                float2 offset = float2(_MainTex_TexelSize.x * x, _MainTex_TexelSize.y * y);
+                col += Texture.Sample(Sampler, UV + offset);
+            }
         }
-    }
  
-    col /= kernelSum;
+        col /= kernelSum;
+    }
+    else
+    {
+        col = Texture.Sample(Sampler, UV);
+    }
+    
     Out_RGB = float3(col.r, col.g, col.b);
     Out_Alpha = col.a;
 }
