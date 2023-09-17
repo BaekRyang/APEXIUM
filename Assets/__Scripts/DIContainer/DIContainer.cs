@@ -66,7 +66,7 @@ public class DIContainer
 
     public static void Inject(object o)
     {
-        Debug.Log("DIContainer Inject : " + o.GetType().Name + " " + o);
+        Debug.Log("<color=cyan>DIContainer</color> : " + o.GetType().Name + " Injected");
         //오브젝트 o에서 Inject어트리뷰트가 있는 필드들에 
         //Local에 등록된 값을 넣어본다.
         //없으면 Global에 등록된 값을 넣는다.

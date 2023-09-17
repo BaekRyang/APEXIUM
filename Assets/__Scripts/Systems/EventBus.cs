@@ -31,7 +31,7 @@ public static class EventBus
             Debug.Log($"<color=blue>EventBus</color> - {_type.Name} has been <b>registered</b>");
         }
         EventTable[_type].Add(_action);
-        Debug.Log($"<color=blue>EventBus</color> - {_type.Name} has been subscribed");
+        Debug.Log($"<color=blue>EventBus</color> - {_type.Name} has been <b>subscribed</b>");
     }
     
     public static void Unsubscribe<T>(System.Action<T> _action)

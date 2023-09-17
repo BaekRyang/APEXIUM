@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Character_Astro_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: b6c31d41c681b9d419802e6cba7789f9, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 136096702464
+    m_Localized: Astro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 809085362176
+    m_Localized: Spree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 571209605120
+    m_Localized: 7-shot revolver
+    m_Metadata:
+      m_Items: []
+  - m_Id: 632895234048
+    m_Localized: Revolver Shot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 651933179904
+    m_Localized: PierceShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 662897090560
+    m_Localized: Roll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2638020009984
+    m_Localized: Astro uses a set of 7 revolvers.<br>All attack skills consume bullets
+      for attack. After expending all bullets, a <color=#92bdff><b>2s</b></color>
+      reload takes place, but if no attacks are made for <color=#92bdff><b>3s</b></color>,
+      a reload occurs automatically.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2638020009985
+    m_Localized: "\rAstro fires a bullet, dealing <color=green>damage</color> to
+      the first enemy hit."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2638020009986
+    m_Localized: Astro fires an ironclad round, dealing <color=green>damage to all
+      enemies</color> in front and <color=#76428a>stunning</color> them.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2638020009987
+    m_Localized: "\rAstro rapidly <color=#5fcde4>moves</color> forward, rolling swiftly,
+      and becomes <color=#fbf236>immune</color> for a brief period."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2638020009988
+    m_Localized: Astro fires all remaining bullets, dealing <color=green>damage</color>
+      to the first enemy hit and <color=#76428a>stunning</color> them.
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

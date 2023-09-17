@@ -9,7 +9,8 @@ public class Roll : Skill, IUseable
     [Inject] private GameManager gameManager;
     
     private const float POWER    = 1.65f;
-    private const float COOLDOWN = 2f;
+    private const float EVADE_TIME = 0.5f;
+    private const float COOLDOWN = 3f;
 
     public override void Initialize()
     {
@@ -39,7 +40,7 @@ public class Roll : Skill, IUseable
         Player._animator.SetTrigger("Roll");
         Task.Run(() =>
         {
-            Thread.Sleep(500);
+            Thread.Sleep((int)(EVADE_TIME * 1000));
             Player.Controller.SetControllable(true);
         });
 

@@ -1,0 +1,18 @@
+﻿Key,Id,Shared Comments,English(en),English(en) Comments,Korean(ko),Korean(ko) Comments
+"Character_Name",136096702464,"","Astro","","아스트로",""
+"Passive_Name",571209605120,"","7-shot revolver","","7연발 리볼버",""
+"Skill_Primary_Name",632895234048,"","Revolver Shot","","리볼버",""
+"Skill_Secondary_Name",651933179904,"","PierceShot","","관통사격",""
+"Skill_Utility_Name",662897090560,"","Roll","","구르기",""
+"Skill_Ultimate_Name",809085362176,"","Spree","","난사",""
+"Skill_Passive_Desc",2638020009984,"","Astro uses a set of 7 revolvers.<br>All attack skills consume bullets for offense. After expending all bullets, a <color=#92bdff><b>2s</b></color> reload takes place, but if no attacks are made for <color=#92bdff><b>3s</b></color>, a reload occurs automatically.","","아스트로는 7발의 리볼버를 사용하며 모든 공격 스킬은  총알을 소모하여 공격합니다.
+모든 총알을 전부 사용하면 <color=#92bdff><b>2초</b></color>간 재장전을 하는데, <color=#92bdff><b>3초</b></color> 동안 공격을 하지 않았다면 재장전 합니다.",""
+"Skill_Primary_Desc",2638020009985,"","Astro fires a bullet, dealing <color=green><b>100%</b></color> damage to the first enemy hit.<br>Cooldown: <color=#92bdff><b>0.25 seconds</b></color>.","","아스트로가 총알을 발사하여 제일 처음 적중하는 적에게 <color=green><b>100%</b></color>의 피해를 줍니다.<br>재사용 대기시간 : <color=#92bdff><b>0.25초</b></color>",""
+"Skill_Secondary_Desc",2638020009986,"","Astro fires an armor-piercing round, dealing <color=green><b>300%</b></color> damage to all enemies in front.<br>Stuns them for <color=green><b>1 second</b></color>.
+Cooldown: <color=#92bdff><b>6 seconds</b></color>.","","아스트로가 철갑탄을 발사하여 정면의 모든 적에게 <color=green><b>300%</b></color>의 피해를 주고<br> <color=green><b>1초</b></color>간 기절시킵니다.<br>재사용 대기시간 : <color=#92bdff><b>6초</b></color>",""
+"Skill_Utility_Desc",2638020009987,"","Astro rolls forward at <color=green><b>165%</b></color> movement speed, evading all attacks for a short duration.
+Cooldown: <color=#92bdff><b>3 seconds</b></color>.","","아스트로가 앞으로 굴러 이동속도의 <color=green><b>165%</b></color>로 이동하며<br>짧은 시간동안 모든 공격을 회피합니다.
+재사용 대기시간 : <color=#92bdff><b>3초</b></color>",""
+"Skill_Ultimate_Desc",2638020009988,"","Astro fires all remaining bullets, dealing <color=green><b>250%</b></color> damage per bullet to the first enemy hit.<br>Stuns them for <color=green><b>1 second</b></color>.
+Cooldown: <color=#92bdff><b>12 seconds</b></color>.","","아스트로가 남은 모든 총알을 발사하여<Br>제일 처음 적중하는 적에게 각 총알당 <color=green><b>250%</b></color>의 피해를 주고 <color=green><b>1초</b></color>간 기절시킵니다.
+재사용 대기시간 : <color=#92bdff><b>12초</b></color>",""
