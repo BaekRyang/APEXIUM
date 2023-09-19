@@ -271,7 +271,7 @@ MonoBehaviour:
         m_Calls: []
   DebugActive: 0
   FeedbacksList:
-  - rid: 8768332030977507329
+  - rid: 5915081623088660483
   KeepPlayModeChanges: 0
   PerformanceMode: 0
   ForceStopFeedbacksOnDisable: 1
@@ -279,11 +279,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8768332030977507329
+    - rid: 5915081623088660483
       type: {class: MMF_FloatingText, ns: MoreMountains.Feedbacks, asm: MoreMountains.Feedbacks.MMTools}
       data:
         Active: 1
-        UniqueID: 376806447
+        UniqueID: 129480479
         Label: Floating Text
         ChannelMode: 0
         Channel: 0
@@ -726,7 +726,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 1c3a12eb-0ed4-490f-8a37-83ac46e58aaa
-    m_ActionName: PlayerActions/Move[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+    m_ActionName: PlayerActions/HorizontalMove[/Keyboard/leftArrow,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: b6304dc7-94d2-4b90-9158-8177a78d04d1

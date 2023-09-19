@@ -9,13 +9,17 @@ public class PierceShot : AttackableSkill
 
     private Revolver _revolver;
 
-    public override void Initialize()
+    public override Skill Initialize(Player _player)
     {
+        base.Initialize(_player);
+        
         SkillType   = SkillTypes.Secondary;
         Cooldown    = COOLDOWN;
         SkillDamage = SKILL_DAMAGE;
 
         _revolver = GetRevolver();
+        
+        return this;
     }
 
     private Revolver GetRevolver()

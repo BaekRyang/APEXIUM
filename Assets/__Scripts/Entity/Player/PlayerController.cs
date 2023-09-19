@@ -24,9 +24,8 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_BUFFER     = 0.2f;
 
     [SerializeField] private PlayerInput playerInput;
-    
-    
-    [Inject] private MapManager _mapManager;
+
+    [Inject]         private MapManager _mapManager;
     [SerializeField] private Tilemap    ladderTilemap;
     [SerializeField] private Tilemap    floorTilemap;
 
@@ -70,16 +69,27 @@ public class PlayerController : MonoBehaviour
 
         attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
-        InitializePlayerInput();
 
         DIContainer.Inject(this);
         Initialize(_mapManager.GetMap(MapType.Normal));
     }
 
-    private void OnEnable() => EventBus.Subscribe<MapChangedEvent>(OnMapChanged);
+    private void OnEnable()
+    {
+        EventBus.Subscribe<MapChangedEvent>(OnMapChanged);
+        InitializePlayerInput();
+    }
 
-    private void OnDisable() => EventBus.Unsubscribe<MapChangedEvent>(OnMapChanged);
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<MapChangedEvent>(OnMapChanged);
+        RemovePlayerInput();
+    }
 
+    /// <summary>
+    /// 맵이 변경되면 해당 맵에 있는 타일맵을 가져와서 저장한다.
+    /// TODO: 그리고 해당 맵의 무작위 위치로 플레이어를 옮기도록 해야함
+    /// </summary>
     private void OnMapChanged(MapChangedEvent _obj) => Initialize(_obj.mapData.currentMap);
 
     private void Initialize(PlayMap _currentMap)
@@ -122,7 +132,7 @@ public class PlayerController : MonoBehaviour
         {
             //함수화 해야함
             {
-                if (_rigidbody2D.velocity.y < 0)
+                if (Mathf.Abs(_rigidbody2D.velocity.y) > 0.001f)
                     _player._animator.SetBool("IsJump", true);
             }
         }
@@ -152,7 +162,7 @@ public class PlayerController : MonoBehaviour
         playerInput.actions["Interact"].performed       += OnInteract;
     }
 
-    private void ResetPlayerInput()
+    private void RemovePlayerInput()
     {
         playerInput.actions["HorizontalMove"].performed -= OnHorizontalMove;
         playerInput.actions["VerticalMove"].performed   -= OnVerticalMove;
@@ -189,7 +199,22 @@ public class PlayerController : MonoBehaviour
     public void OnUtility(InputAction.CallbackContext   _context) => input.utilitySkill = _context.ReadValue<float>()   > 0;
     public void OnUltimate(InputAction.CallbackContext  _context) => input.ultimateSkill = _context.ReadValue<float>()  > 0;
     public void OnUseItem(InputAction.CallbackContext   _context) => input.itemSkill = _context.ReadValue<float>()      > 0;
-    public void OnInteract(InputAction.CallbackContext  _context) => input.interact = _context.ReadValue<float>()       > 0;
+
+    public async void OnInteract(InputAction.CallbackContext _context)
+    {
+        await UniTask.Yield();  
+        input.interact = _context.ReadValue<float>() > 0;
+        await UniTask.Yield();  
+        input.interact = false;
+    }
+
+    // public async void OnInteract(InputAction.CallbackContext  _context)
+    // {
+    //     await UniTask.Yield();
+    //     input.interact = _context.ReadValue<float>() > 0;
+    //     await UniTask.Yield();
+    //     input.interact = false;
+    // }
 
     private void CheckInteraction()
     {

@@ -2,6 +2,12 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// 게임씬 처음 접근시, 보스 처치후 다음 맵으로 넘어갈때 사용하는
+/// 게임 오브젝트를 리셋하는 클래스
+/// 리소스에서 무작위 맵 데이터를 불러와서 게임 오브젝트를 생성하고
+/// 이벤트 버스를 통해 맵 데이터를 전달해준다.
+/// </summary>
 public class EnviromentResetter : MonoBehaviour
 {
     private MapTheme? _currentTheme = null;

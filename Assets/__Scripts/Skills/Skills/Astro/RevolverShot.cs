@@ -9,15 +9,23 @@ public class RevolverShot : AttackableSkill
 
     private Revolver _revolver;
 
-    public override void Initialize()
+    public override Skill Initialize(Player _player)
     {
+        base.Initialize(_player);
+        
         SkillType   = SkillTypes.Primary;
         Cooldown    = COOLDOWN;
         SkillDamage = DAMAGE_MULTIPLIER;
 
-        if (!Player.skills.TryGetValue(SkillTypes.Passive, out Skill _passive)) return;
-        if (_passive is Revolver _value)
-            _revolver = _value;
+        if (!Player.skills.TryGetValue(SkillTypes.Passive, out Skill _passive))
+            throw new System.Exception("RevolverShot 스킬 초기화 실패 - Passive 스킬이 없습니다.");
+
+        if (_passive is not Revolver _value)
+            throw new System.Exception("RevolverShot 스킬 초기화 실패 - Passive 스킬이 Revolver가 아닙니다.");
+        
+        _revolver = _value;
+
+        return this;
     }
 
     public override void Play()

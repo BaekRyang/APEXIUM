@@ -17,9 +17,10 @@ public class PlayerManager
 
     public PlayerManager() { }
 
-    public void Initialize()
+    public PlayerManager Initialize()
     {
         _playerObjectController = new();
+        return this;
     }
 
     public void SetSpawner(PlayerObjectController _objectController)

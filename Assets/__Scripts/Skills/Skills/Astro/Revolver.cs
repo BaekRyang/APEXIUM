@@ -10,9 +10,13 @@ public class Revolver : Skill
 
     public float NextReloadTime;
 
-    public override void Initialize()
+    public override Skill Initialize(Player _player)
     {
+        base.Initialize(_player);
+        
         SkillType = SkillTypes.Passive;
+        
+        return this;
     }
 
     public override void Update()

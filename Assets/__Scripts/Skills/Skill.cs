@@ -4,7 +4,11 @@ using UnityEngine;
 [Serializable]
 public abstract class Skill
 {
-    public abstract void Initialize();
+    public virtual Skill Initialize(Player _player)
+    {
+        Player = _player;
+        return this;
+    }
 
     public    Player     Player    { get; set; }
     protected SkillTypes SkillType { get; set; }

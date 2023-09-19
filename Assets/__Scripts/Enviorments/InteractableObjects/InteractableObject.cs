@@ -1,10 +1,22 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public abstract class InteractableObject : MonoBehaviour
 {
+    private const            float    INTERACT_DELAY = 1f;
     [SerializeField] private Animator animator;
     [SerializeField] private TMP_Text text;
+    [SerializeField] private bool     destroyAfterInteract;
+
+    private void Start()
+    {
+        text = GetComponentInChildren<TMP_Text>();
+        text.enabled = false;
+        animator = GetComponent<Animator>();
+        
+        text.transform.position = new Vector2(transform.position.x, GetComponent<Collider2D>().bounds.max.y);
+    }
 
     private void OnTriggerEnter2D(Collider2D p_other)
     {
@@ -20,10 +32,12 @@ public abstract class InteractableObject : MonoBehaviour
 
     public void Interact()
     {
-        animator.Play("Interact");
-        
+        if (animator != null) 
+            animator.Play("Interact");
+
         InteractAction();
-        
+
+        if (!destroyAfterInteract) return;
         DestroyImmediate(text.gameObject);
         DestroyImmediate(this);
     }

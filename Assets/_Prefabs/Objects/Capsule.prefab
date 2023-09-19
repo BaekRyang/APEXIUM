@@ -113,14 +113,14 @@ BoxCollider2D:
     m_Bits: 4294967295
   m_ContactCaptureLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 128
   m_CallbackLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 128
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.625}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -131,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.25}
+  m_Size: {x: 0.875, y: 1.125}
   m_EdgeRadius: 0
 --- !u!95 &4219680960925770471
 Animator:
@@ -168,6 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4219680960925770471}
   text: {fileID: 8570174366137264133}
+  destroyAfterInteract: 0
   _expAmount: 0
   _resourceAmount: 0
   open: 0
@@ -203,11 +204,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6614768849868005748}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.2}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.7}
   m_SizeDelta: {x: 5, y: 1}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!23 &7823704098598591116
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -228,7 +229,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1001204518561292118, guid: 8ce7cfef51afc7a4fbe3656b7c186aed, type: 2}
+  - {fileID: 3601232139908768400, guid: 685adb376d8ba89439d3a1828d204544, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -257,7 +258,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4814117010971938254}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
   m_Name: 
@@ -272,8 +273,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\"A\" \uB97C \uB20C\uB7EC\uC11C \uC5F4\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8ce7cfef51afc7a4fbe3656b7c186aed, type: 2}
-  m_sharedMaterial: {fileID: 1001204518561292118, guid: 8ce7cfef51afc7a4fbe3656b7c186aed,
+  m_fontAsset: {fileID: 11400000, guid: 685adb376d8ba89439d3a1828d204544, type: 2}
+  m_sharedMaterial: {fileID: 3601232139908768400, guid: 685adb376d8ba89439d3a1828d204544,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class ItemSkill : Skill, IUseable
 {
-    public override void Initialize()
+    public override Skill Initialize(Player _player)
     {
         SkillType = SkillTypes.Item;
         Cooldown  = -1;
+        
+        return this;
     }
 
     public void Play()
