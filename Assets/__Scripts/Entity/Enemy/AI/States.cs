@@ -19,16 +19,16 @@ public struct FloatPair
     }
 }
 
-
 [Serializable]
 public abstract class State : IState
 {
-    [Inject] PlayerManager _playerManager;
-    
+    [SerializeField] [Inject] protected PlayerManager _playerManager;
+
     [SerializeField] protected EnemyAI enemyAI;
 
     public State Initialize(EnemyAI _enemyAI)
     {
+        DIContainer.Inject(this);
         enemyAI = _enemyAI;
         return this;
     }
@@ -50,7 +50,7 @@ public abstract class State : IState
 
         Vector2 _checkPoint = new(
             _position.x + _enemyAI.targetDirection.x * _enemyAI.bodySize.x / 2,
-            _position.y - _enemyAI.bodySize.y                               / 2
+            _position.y - _enemyAI.bodySize.y                              / 2
         );
 
         RaycastHit2D _hit = Physics2D.Raycast(_checkPoint,
@@ -77,7 +77,7 @@ public abstract class State : IState
     /// <summary>
     /// Chase 범위 내에 플레이어가 있는지 확인하고 있다면 제일 가까운 플레이어 반환
     /// </summary>
-    protected (Player, float) PlayerInRange(EnemyAI p_enemyAI)
+    protected (Player, float) PlayerInRange(EnemyAI _enemyAI)
     {
         IEnumerable<Player> _players        = _playerManager.GetPlayersArray();
         Player              _targetPlayer   = null;
@@ -85,13 +85,13 @@ public abstract class State : IState
 
         foreach (Player _player in _players)
         {
-            float _distance = Vector2.Distance(p_enemyAI.cachedTransform.position, _player.transform.position);
+            float _distance = Vector2.Distance(_enemyAI.cachedTransform.position, _player.transform.position);
             if (!(_distance < _targetDistance)) continue;
             _targetDistance = _distance;
             _targetPlayer   = _player;
         }
 
-        return _targetDistance <= p_enemyAI.enemyBase.stats.chaseDistance ?
+        return _targetDistance <= _enemyAI.enemyBase.stats.chaseDistance ?
             (_targetPlayer, _targetDistance) :
             (null, -1);
     }

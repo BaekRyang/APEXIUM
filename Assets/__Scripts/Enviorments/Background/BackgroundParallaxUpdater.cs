@@ -7,13 +7,17 @@ public class BackgroundParallaxUpdater : MonoBehaviour
     [SerializeField] [Inject] private PlayerManager _playerManager;
     
     private Dictionary<Transform, Vector2> _backgrounds;
+    [Inject] private MapManager                         _mapManager;
 
     private void Awake()
     {
         _backgrounds = new Dictionary<Transform, Vector2>();
         foreach (Transform _child in transform)
             _backgrounds.Add(_child.transform, _child.GetComponent<SpriteRenderer>().sprite.GetResolution());
-        
+    }
+
+    private void Start()
+    {
         DIContainer.Inject(this);
     }
 
@@ -21,7 +25,7 @@ public class BackgroundParallaxUpdater : MonoBehaviour
     {
         if (_playerManager.GetLocalPlayer() != null)
             UpdateParallax(
-                GameManager.mapManager.GetMap(MapType.Normal).GetMapSize(),
+                _mapManager.GetMap(MapType.Normal).GetMapSize(),
                 _playerManager.GetLocalPlayer());
     }
 
@@ -30,16 +34,16 @@ public class BackgroundParallaxUpdater : MonoBehaviour
 
     //플레이어가 맵의 가장자리로 가면
     //배경도 플레이어가 이동한 가장자리 방향으로 이동한다. (동일한 방향)
-    private void UpdateParallax(Vector2 p_totalSize, Player p_refPlayer)
+    private void UpdateParallax(Vector2 _totalSize, Player _refPlayer)
     {
         foreach ((Transform _backgroundTransform, Vector2 _spriteSize) in _backgrounds)
         {
             _backgroundTransform.position =
                 Tools.Remap(
-                    p_refPlayer.transform.position,
+                    _refPlayer.transform.position,
                     
                     new[] { Vector2.zero, _spriteSize },
-                    new[] { Vector2.zero, p_totalSize }
+                    new[] { Vector2.zero, _totalSize }
                 );
         }
     }

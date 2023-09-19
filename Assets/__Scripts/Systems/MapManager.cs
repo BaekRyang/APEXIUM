@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,26 +8,48 @@ public enum MapType
     Boss
 }
 
+public enum MapTheme
+{
+    Spring,
+    Summer,
+    Fall,
+    Winter
+}
+
 public class MapManager : MonoBehaviour
 {
-    private Dictionary<MapType, PlayMap> maps;
+    [SerializeField] private Transform sceneObjects;
+    [SerializeField] private Transform background;
+    [SerializeField] private PlayMap   currentMap;
+    [SerializeField] private BossRoom  bossRoom;
+
+    private void OnEnable()
+    {
+        EventBus.Subscribe<MapChangedEvent>(OnMapChanged);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<MapChangedEvent>(OnMapChanged);
+    }
+
+    private void OnMapChanged(MapChangedEvent _mapData)
+    {
+        currentMap = _mapData.mapData.currentMap;
+        background = _mapData.mapData.background;
+        sceneObjects = _mapData.mapData.sceneObjects;
+    }
 
     public PlayMap GetMap(MapType _mapType)
     {
-        return maps.TryGetValue(_mapType, out PlayMap _map) ?
-            _map :
-            null;
-    }
-
-    public void AssignMap(Transform _mapsTransform)
-    {
-        maps = new Dictionary<MapType, PlayMap>();
-        foreach (Transform _child in _mapsTransform)
+        switch (_mapType)
         {
-            if (TryGetComponent(out BossRoom _bossRoom))
-                maps.Add(MapType.Boss, _bossRoom);
-            else if (TryGetComponent(out PlayMap _playMap))
-                maps.Add(MapType.Normal, _playMap);
+            case MapType.Normal:
+                return currentMap;
+            case MapType.Boss:
+                return bossRoom;
+            default:
+                return null;    
         }
     }
 }

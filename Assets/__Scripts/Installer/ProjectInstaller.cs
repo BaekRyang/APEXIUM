@@ -8,11 +8,13 @@ public class ProjectInstaller :MonoBehaviour
     // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
     public void Awake()
     {
-        DIContainer.Global.Regist(new PlayerManager());
-        DIContainer.Inject(client);
+        var platerManager = new PlayerManager();
         
-        DIContainer.Global.Regist(client);
         DIContainer.Global.Regist(playerPrefab, "PlayerPrefab");
+        DIContainer.Global.Regist(platerManager);
+        platerManager.Initialize();
+        DIContainer.Global.Regist(client);
+
         
     }
     

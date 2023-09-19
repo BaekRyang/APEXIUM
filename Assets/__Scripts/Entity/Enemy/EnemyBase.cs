@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MoreMountains.Feedbacks;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class EnemyBase : MonoBehaviour, IEntity
 {

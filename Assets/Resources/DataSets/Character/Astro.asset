@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6422dc84f3c2944198ddb3dd2f42f02, type: 3}
+  m_Name: Astro
+  m_EditorClassIdentifier: 
+  characterName: Astro
+  stats:
+    isLocalPlayer: 0
+    health: 100
+    maxHealth: 100
+    attackDamage: 10
+    speed: 6
+    level: 1
+    defense: 1
+    attackSpeed: 1
+    exp: 0
+    maxExp: 100
+    maxJumpCount: 1
+    jumpHeight: 11.2
+    resource: 7
+    maxResource: 7
+    energyCrystal: 0
+    advancedResource: 0
+    criticalChance: 0.05
+    criticalDamage: 1.5
+  skillPassive: Revolver
+  skillPrimary: RevolverShot
+  skillSecondary: PierceShot
+  skillUtility: Roll
+  skillUltimate: Spree

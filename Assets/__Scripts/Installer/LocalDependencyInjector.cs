@@ -1,15 +1,20 @@
-using System;
+﻿using Cinemachine;
 using UnityEngine;
+
 
 public class LocalDependencyInjector : MonoBehaviour
 {
-    public GameManager GameManager;
-    
+    public CameraManager cameraManager;
+    public MapManager MapManager;
+
     private void Awake()
     {
-        DIContainer.Local = new DIContainer();
-        
-        DIContainer.Local.Regist(GameManager);
+        var _container = new DIContainer();
+        DIContainer.Local = _container;
 
+        _container.Regist(cameraManager);
+        _container.Regist(MapManager);
+        
+       
     }
 }

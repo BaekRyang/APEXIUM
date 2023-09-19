@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,7 +11,8 @@ using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IEntity
 {
-    [Inject] private PlayerManager _playerManager;
+    [Inject] private PlayerManager            _playerManager;
+    [Inject] private CameraManager            _cameraManager;
     
     public int clientID;
 
@@ -62,16 +64,12 @@ public class Player : MonoBehaviour, IEntity
         _collider2D.enabled = true;
 
         if (_playerManager.IsLocalPlayer(clientID)) 
-            SetCameraFollow();
-    }
-
-    private void SetCameraFollow()
-    {
-        throw new NotImplementedException();
+            _cameraManager.SetCameraFollow(transform);
     }
 
     void Start()
     {
+        DIContainer.Inject(this);
         Initialize(DataManager.GetCharacterData("Astro"));
     }
 

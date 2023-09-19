@@ -25,12 +25,13 @@ public class SkillBlock : MonoBehaviour
         _cooldownObject = transform.Find("Disabled").gameObject;
         _cooldownText   = _cooldownObject.transform.GetChild(0).GetComponent<TMP_Text>();
         _cooldownImage  = _cooldownObject.GetComponent<Image>();
-        
-        DIContainer.Inject(this);
     }
 
-    private void Start() => 
+    private void Start()
+    {
+        DIContainer.Inject(this);
         skillBlocks[skillType] = this;
+    }
 
     private void Update()
     {

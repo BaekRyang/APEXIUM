@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class Roll : Skill, IUseable
 {
-    [Inject] private GameManager gameManager;
+    [Inject] private CameraManager _cameraManager;
     
     private const float POWER    = 1.65f;
     private const float EVADE_TIME = 0.5f;
@@ -34,8 +32,8 @@ public class Roll : Skill, IUseable
         //AddForce를 사용하면 플레이어가 점프를 했을때 속도가 크게 증가하는 현상이 있어서 속도 제한
         if (Mathf.Abs(Player.Controller.Rigidbody2D.velocity.x) > Player.Stats.Speed * POWER) //플레이어의 속도가 의도보다 높다면
             Player.Controller.Rigidbody2D.velocity =  //의도한 속도 + 20% 정도로 제한
-                new(Player.Stats.Speed * POWER * (int)Player.Controller.PlayerFacing * 1.2f,
-                    Player.Controller.Rigidbody2D.velocity.y);
+                new Vector2(Player.Stats.Speed * POWER * (int)Player.Controller.PlayerFacing * 1.2f,
+                            Player.Controller.Rigidbody2D.velocity.y);
         
         Player._animator.SetTrigger("Roll");
         Task.Run(() =>

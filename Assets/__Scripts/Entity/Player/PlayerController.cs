@@ -24,9 +24,11 @@ public class PlayerController : MonoBehaviour
     private const float JUMP_BUFFER     = 0.2f;
 
     [SerializeField] private PlayerInput playerInput;
-
-    [SerializeField] private Tilemap ladderTilemap;
-    [SerializeField] private Tilemap floorTilemap;
+    
+    
+    [Inject] private MapManager _mapManager;
+    [SerializeField] private Tilemap    ladderTilemap;
+    [SerializeField] private Tilemap    floorTilemap;
 
     private Player    _player;
     public  Transform attackPosTransform;
@@ -69,8 +71,17 @@ public class PlayerController : MonoBehaviour
         attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
         InitializePlayerInput();
+
+        DIContainer.Inject(this);
+        Initialize(_mapManager.GetMap(MapType.Normal));
     }
-    
+
+    private void OnEnable() => EventBus.Subscribe<MapChangedEvent>(OnMapChanged);
+
+    private void OnDisable() => EventBus.Unsubscribe<MapChangedEvent>(OnMapChanged);
+
+    private void OnMapChanged(MapChangedEvent _obj) => Initialize(_obj.mapData.currentMap);
+
     private void Initialize(PlayMap _currentMap)
     {
         ladderTilemap = _currentMap.GetTilemap("Ladder");

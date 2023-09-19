@@ -67,8 +67,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: <sprite=1><color=#92bdff><b>0.25s</b></color>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 816eb4fa7c9c7af42af5307858e07678, type: 2}
+  m_sharedMaterial: {fileID: -3754941796264594722, guid: 816eb4fa7c9c7af42af5307858e07678,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -92,12 +93,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 28
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 14
-  m_fontSizeMax: 20
+  m_fontSizeMax: 28
   m_fontStyle: 0
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 1024
@@ -277,8 +278,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Skill Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8ce7cfef51afc7a4fbe3656b7c186aed, type: 2}
-  m_sharedMaterial: {fileID: 1001204518561292118, guid: 8ce7cfef51afc7a4fbe3656b7c186aed,
+  m_fontAsset: {fileID: 11400000, guid: 685adb376d8ba89439d3a1828d204544, type: 2}
+  m_sharedMaterial: {fileID: 3601232139908768400, guid: 685adb376d8ba89439d3a1828d204544,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -303,8 +304,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -494,8 +495,8 @@ MonoBehaviour:
     majority have suffered alteration in some form, by injected humour, or randomised
     words which don't look even slightly believable. \n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8ce7cfef51afc7a4fbe3656b7c186aed, type: 2}
-  m_sharedMaterial: {fileID: 1001204518561292118, guid: 8ce7cfef51afc7a4fbe3656b7c186aed,
+  m_fontAsset: {fileID: 11400000, guid: ae10a18babacdba4c902cfc1b69bc231, type: 2}
+  m_sharedMaterial: {fileID: -8023435664288918906, guid: ae10a18babacdba4c902cfc1b69bc231,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -520,12 +521,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.05
+  m_fontSize: 20.1
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 14
-  m_fontSizeMax: 20
+  m_fontSizeMax: 26
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512

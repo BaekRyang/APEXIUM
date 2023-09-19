@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 78537916416
-    m_Localized: Click to Start
+    m_Localized: '- CLICK TO START -'
     m_Metadata:
       m_Items: []
   references:

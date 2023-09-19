@@ -9,13 +9,18 @@ using Random = UnityEngine.Random;
 [Serializable]
 public class PlayerManager
 {
-    private PlayerObjectController _playerObjectController = new();
+    private PlayerObjectController _playerObjectController;
 
     public int playerID = -1;
 
     [DoNotSerialize] private Dictionary<int, Player> _players = new();
 
     public PlayerManager() { }
+
+    public void Initialize()
+    {
+        _playerObjectController = new();
+    }
 
     public void SetSpawner(PlayerObjectController _objectController)
     {
@@ -48,7 +53,7 @@ public class PlayerManager
 
     public void AddPlayer(int _newPlayerID, Player _player)
     {
-        _players.Add(_newPlayerID, _player.GetComponent<Player>());
+        _players.Add(_newPlayerID, _player);
 
         Debug.Log("Now Players : " + _players.Count);
     }
@@ -66,10 +71,12 @@ public class PlayerManager
 
         if (_players.Count != 0)
         {
-            foreach ((int _key, Player _player) in _players)
+            foreach ((int _key, Player _) in _players)
                 Debug.Log($"Remaining Player ID: {_key}");
         }
         else
             Debug.Log("All Players are Disconnected");
     }
+    
+    
 }

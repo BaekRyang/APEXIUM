@@ -38,17 +38,16 @@ public class EnemyAI : MonoBehaviour
             currentState.Enter(); //새로운 상태의 Enter()호출
         }
     }
-    
+
     [Space]
 
-    public readonly Dictionary<string, State> States = new();
-
+    public Dictionary<string, State> States;
     [SerializeReference] private State  currentState;
     
-    public void Initialize(EnemyBase p_enemyBase)
+    public void Initialize(EnemyBase _enemyBase)
     {
         thisCollider = GetComponent<Collider2D>();
-        enemyBase         = p_enemyBase;
+        enemyBase         = _enemyBase;
         cachedTransform    = transform;
 
         bodySize = thisCollider.bounds.size;
@@ -56,9 +55,12 @@ public class EnemyAI : MonoBehaviour
         animator                           = GetComponent<Animator>();
         animator.runtimeAnimatorController = Animation.GetAnimatorController(enemyBase.stats.enemyName);
 
-        States.Add("Wander", new SWander().Initialize(this));
-        States.Add("Chase",  new SChase().Initialize(this));
-        States.Add("Attack", new SAttack().Initialize(this));
+        States = new Dictionary<string, State>
+                 {
+                     { "Wander", new SWander().Initialize(this) },
+                     { "Chase", new SChase().Initialize(this) },
+                     { "Attack", new SAttack().Initialize(this) }
+                 };
 
         CurrentState = States["Wander"];
     }
@@ -92,13 +94,13 @@ public class EnemyAI : MonoBehaviour
     //_targetDirection은 언제나 단위벡터이지만, 혹시 모르니까 정규화 
 
     
-    public void Stun(float p_stunDuration)
+    public void Stun(float _stunDuration)
     {
         if (!enemyBase.stats.canStun) return;
         animator.SetBool("IsWalk", false);
         _stunned = true;
-        if (!(_stunTime > p_stunDuration)) //기존 스턴시간이 더 길면 무시
-            _stunTime = p_stunDuration;
+        if (!(_stunTime > _stunDuration)) //기존 스턴시간이 더 길면 무시
+            _stunTime = _stunDuration;
     }
 
     public void Daze()
