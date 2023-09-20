@@ -278,8 +278,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Skill Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 685adb376d8ba89439d3a1828d204544, type: 2}
-  m_sharedMaterial: {fileID: 3601232139908768400, guid: 685adb376d8ba89439d3a1828d204544,
+  m_fontAsset: {fileID: 11400000, guid: 9395b594384be8c458370acef08cdeb2, type: 2}
+  m_sharedMaterial: {fileID: -2418433254927402650, guid: 9395b594384be8c458370acef08cdeb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -314,7 +314,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 10
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -495,8 +495,8 @@ MonoBehaviour:
     majority have suffered alteration in some form, by injected humour, or randomised
     words which don't look even slightly believable. \n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ae10a18babacdba4c902cfc1b69bc231, type: 2}
-  m_sharedMaterial: {fileID: -8023435664288918906, guid: ae10a18babacdba4c902cfc1b69bc231,
+  m_fontAsset: {fileID: 11400000, guid: 9395b594384be8c458370acef08cdeb2, type: 2}
+  m_sharedMaterial: {fileID: -2418433254927402650, guid: 9395b594384be8c458370acef08cdeb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -521,18 +521,18 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.1
+  m_fontSize: 26.2
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 14
-  m_fontSizeMax: 26
+  m_fontSizeMax: 32
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_wordSpacing: 0
+  m_characterSpacing: 3
+  m_wordSpacing: -3
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
