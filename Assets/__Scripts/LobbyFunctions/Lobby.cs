@@ -11,6 +11,8 @@ public class Lobby : MonoBehaviour
     [SerializeField] private RectTransform            mainUI;
     [SerializeField] private RectTransform            characterSelectUI;
     [SerializeField] private RectTransform            multiplayerUI;
+    [SerializeField] private RectTransform            settingsUI;
+    [SerializeField] private RectTransform            blackScreen;
     [SerializeField] private InputSystemUIInputModule inputSystemUiInputModule;
 
     [SerializeField] private MMF_Player _currentMMF;
@@ -23,6 +25,7 @@ public class Lobby : MonoBehaviour
         entranceUI.gameObject.SetActive(true);
         mainUI.gameObject.SetActive(false);
         characterSelectUI.gameObject.SetActive(false);
+        settingsUI.gameObject.SetActive(false);
 
         // multiplayerUI.gameObject.SetActive(false);
     }
@@ -58,6 +61,7 @@ public class Lobby : MonoBehaviour
         }
     }
 
+    
     private void BackToPrevious()
     {
         LerpToScene(_currentMMF, _previousMMF);
@@ -80,12 +84,13 @@ public class Lobby : MonoBehaviour
 
     private void OpenSettings()
     {
-        throw new NotImplementedException();
+        LerpToScene(mainUI, settingsUI);
     }
 
-    private void QuitGame()
+    private async void QuitGame()
     {
-        throw new NotImplementedException();
+        await blackScreen.GetComponent<MMF_Player>().PlayFeedbacksTask(transform.position);
+        Application.Quit();
     }
 
     private void LerpToScene(RectTransform _current, RectTransform _next)
