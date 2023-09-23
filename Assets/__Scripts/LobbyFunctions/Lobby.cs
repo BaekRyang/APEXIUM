@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
 
 public class Lobby : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Lobby : MonoBehaviour
     [SerializeField] private RectTransform            characterSelectUI;
     [SerializeField] private RectTransform            multiplayerUI;
     [SerializeField] private RectTransform            settingsUI;
-    [SerializeField] private RectTransform            blackScreen;
+    [SerializeField] private RectTransform            foregroundUI;
     [SerializeField] private InputSystemUIInputModule inputSystemUiInputModule;
 
     [SerializeField] private MMF_Player _currentMMF;
@@ -22,10 +23,14 @@ public class Lobby : MonoBehaviour
     {
         EventBus.Subscribe<ButtonPressedAction>(OnButtonPressed);
 
+        //혹시 모르니까 위치 초기화용
+        characterSelectUI.GetComponentInChildren<ScrollRect>().content.position += new Vector3(1000, 0, 0);
+        
         entranceUI.gameObject.SetActive(true);
         mainUI.gameObject.SetActive(false);
         characterSelectUI.gameObject.SetActive(false);
         settingsUI.gameObject.SetActive(false);
+        foregroundUI.gameObject.SetActive(false);
 
         // multiplayerUI.gameObject.SetActive(false);
     }
@@ -89,7 +94,8 @@ public class Lobby : MonoBehaviour
 
     private async void QuitGame()
     {
-        await blackScreen.GetComponent<MMF_Player>().PlayFeedbacksTask(transform.position);
+        foregroundUI.gameObject.SetActive(true);
+        await foregroundUI.GetComponent<MMF_Player>().PlayFeedbacksTask(transform.position);
         Application.Quit();
     }
 
@@ -111,13 +117,17 @@ public class Lobby : MonoBehaviour
         Vector3 _position = transform.position;
 
         _current.Direction = MMFeedbacks.Directions.BottomToTop;
-        _current.PlayFeedbacks(_position);
+        Task _previousTask = _current.PlayFeedbacksTask(_position);
 
 
         _previous.gameObject.SetActive(true);
         _previous.Direction = MMFeedbacks.Directions.TopToBottom;
-        Task _task = _previous.PlayFeedbacksTask(_position);
-        await _task;
+        Task _nextTask = _previous.PlayFeedbacksTask(_position);
+        
+        //두 피드백이 모두 끝날때까지 기다림
+        if (_previousTask != Task.CompletedTask || _nextTask != Task.CompletedTask) 
+            await Task.WhenAll(_previousTask, _nextTask);
+
         _current.gameObject.SetActive(false);
 
         inputSystemUiInputModule.enabled = true;
