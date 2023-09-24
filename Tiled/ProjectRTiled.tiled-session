@@ -3,17 +3,34 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
+    "activeFile": "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx",
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
         "C:/Github/ProjectR/Assets/_Tilemap",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
+        "C:/Github/APEXIUM/Assets/_Tilemap"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
             "scaleInDock": 1
+        },
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/TileBase.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx": {
+            "scale": 3,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 5552.5,
+                "y": 2732
+            }
+        },
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Assets/_Tilemap/Editing/TileBase.tsx": {
             "scaleInDock": 1
@@ -101,14 +118,13 @@
     "map.fixedSize": false,
     "map.lastUsedFormat": "tmx",
     "openFiles": [
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Winter_Map.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/DecorateRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
-        "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx"
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx"
     ],
     "project": "ProjectRTiled.tiled-project",
     "recentFiles": [
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/TileBase.tsx",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules/AutotileRules.tmx",

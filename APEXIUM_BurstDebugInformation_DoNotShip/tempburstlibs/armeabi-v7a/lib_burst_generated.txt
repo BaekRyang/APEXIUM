@@ -51,6 +51,7 @@ Library: C:\Github\APEXIUM\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_
 --assembly-defines=Cinemachine;
 --assembly-defines=MoreMountains.Feedbacks.NiceVibrations;
 --assembly-defines=SingularityGroup.HotReload.Runtime;
+--assembly-defines=Tayx.Graphy;
 --assembly-defines=MoreMountains.Feedbacks.MMTools;
 --assembly-defines=Unity.Addressables;
 --assembly-defines=SingularityGroup.HotReload.RuntimeDependencies;
@@ -169,6 +170,7 @@ Library: C:\Github\APEXIUM\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_
 --assembly-defines=Cinemachine;
 --assembly-defines=MoreMountains.Feedbacks.NiceVibrations;
 --assembly-defines=SingularityGroup.HotReload.Runtime;
+--assembly-defines=Tayx.Graphy;
 --assembly-defines=MoreMountains.Feedbacks.MMTools;
 --assembly-defines=Unity.Addressables;
 --assembly-defines=SingularityGroup.HotReload.RuntimeDependencies;

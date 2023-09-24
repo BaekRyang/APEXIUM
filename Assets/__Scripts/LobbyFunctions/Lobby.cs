@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Lobby : MonoBehaviour
@@ -19,13 +20,18 @@ public class Lobby : MonoBehaviour
     [SerializeField] private MMF_Player _currentMMF;
     [SerializeField] private MMF_Player _previousMMF;
 
+    private void Awake()
+    {
+        Screen.SetResolution(Screen.width / 2, Screen.height / 2, true);
+        
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+    }
+
     private void Start()
     {
         EventBus.Subscribe<ButtonPressedAction>(OnButtonPressed);
 
-        //혹시 모르니까 위치 초기화용
-        characterSelectUI.GetComponentInChildren<ScrollRect>().content.position += new Vector3(1000, 0, 0);
-        
         entranceUI.gameObject.SetActive(true);
         mainUI.gameObject.SetActive(false);
         characterSelectUI.gameObject.SetActive(false);
@@ -37,7 +43,6 @@ public class Lobby : MonoBehaviour
 
     private void OnButtonPressed(ButtonPressedAction _obj)
     {
-        Debug.Log(_obj.buttonName);
         switch (_obj.buttonName)
         {
             case "Entrance":
@@ -63,10 +68,20 @@ public class Lobby : MonoBehaviour
             case "Back":
                 BackToPrevious();
                 break;
+            
+            case "LoadGame":
+                LoadGame();
+                break;
         }
     }
 
-    
+    private async void LoadGame()
+    {
+        foregroundUI.gameObject.SetActive(true);
+        await foregroundUI.GetComponent<MMF_Player>().PlayFeedbacksUniTask(transform.position);
+        SceneManager.LoadScene("GameScene");
+    }
+
     private void BackToPrevious()
     {
         LerpToScene(_currentMMF, _previousMMF);
@@ -79,6 +94,8 @@ public class Lobby : MonoBehaviour
 
     private void SingleCharacterSelect()
     {
+        //첫번째 요소로 이동
+        characterSelectUI.GetComponentInChildren<ScrollRect>().content.localPosition += new Vector3(1000, 0, 0);
         LerpToScene(mainUI, characterSelectUI);
     }
 
@@ -95,7 +112,7 @@ public class Lobby : MonoBehaviour
     private async void QuitGame()
     {
         foregroundUI.gameObject.SetActive(true);
-        await foregroundUI.GetComponent<MMF_Player>().PlayFeedbacksTask(transform.position);
+        await foregroundUI.GetComponent<MMF_Player>().PlayFeedbacksUniTask(transform.position);
         Application.Quit();
     }
 
@@ -117,16 +134,16 @@ public class Lobby : MonoBehaviour
         Vector3 _position = transform.position;
 
         _current.Direction = MMFeedbacks.Directions.BottomToTop;
-        Task _previousTask = _current.PlayFeedbacksTask(_position);
+        UniTask _previousTask = _current.PlayFeedbacksUniTask(_position);
 
 
         _previous.gameObject.SetActive(true);
         _previous.Direction = MMFeedbacks.Directions.TopToBottom;
-        Task _nextTask = _previous.PlayFeedbacksTask(_position);
+        UniTask _nextTask = _previous.PlayFeedbacksUniTask(_position);
         
         //두 피드백이 모두 끝날때까지 기다림
-        if (_previousTask != Task.CompletedTask || _nextTask != Task.CompletedTask) 
-            await Task.WhenAll(_previousTask, _nextTask);
+        if (_previousTask.Status != UniTaskStatus.Succeeded || _nextTask.Status != UniTaskStatus.Succeeded)
+            await UniTask.WhenAll(_previousTask, _nextTask);
 
         _current.gameObject.SetActive(false);
 

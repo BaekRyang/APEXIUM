@@ -12,6 +12,7 @@ using Unity.VisualScripting;
 
 public class Client : MonoBehaviour
 {
+    public static int ClientID;
     [SerializeField] [Inject] private PlayerManager _playerManager;
     
     private const string PREFIX = "<color=blue>Client</color> - ";

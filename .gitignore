@@ -73,9 +73,29 @@ crashlytics-build.properties
 
 /[Aa]ssets/AssetKits/
 /[Aa]ssets/CurissVRCTools/
-/[Aa]ssets/Feel/
-/[Aa]ssets/GamingGarrison/
+
+/[Aa]ssets/Feel/*
+!/[Aa]ssets/Feel/MMFeedbacks/
+/[Aa]ssets/Feel/MMFeedbacks/*
+!/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/
+/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/*
+!/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/
+/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/*
+!/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/
+/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/*
+!/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/MMFeedbacks.cs
+
+/[Aa]ssets/GamingGarrison/*
+!/[Aa]ssets/GamingGarrison/TiledTMXImporter/
+/[Aa]ssets/GamingGarrison/TiledTMXImporter/*
+!/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/
+/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/*
+!/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/
+/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/*
+!/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/CustomImporterSpawnPrefabsOnTiles.cs
+
 /[Aa]ssets/ParrelSync/
 /[Aa]ssets/RiderFlow.UserData/
 /[Aa]ssets/Ultimate Game Music Collection/
 /[Aa]ssets/UnityMainThreadDispatcher-master/
+

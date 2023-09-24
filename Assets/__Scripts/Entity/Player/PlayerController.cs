@@ -276,7 +276,6 @@ public class PlayerController : MonoBehaviour
 
 #elif UNITY_ANDROID
         input.horizontal = VJoystick.MovementDirection;
-
 #endif
     }
 

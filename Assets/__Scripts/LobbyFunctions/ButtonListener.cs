@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ButtonListener : MonoBehaviour, IPointerEnterHandler
 {
-    private void Start()
+    private void Awake()
     {
         Button _button = GetComponent<Button>();
         if (_button != null)
