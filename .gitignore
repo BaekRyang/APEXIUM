@@ -56,7 +56,6 @@ ExportedObj/
 sysinfo.txt
 
 # Builds
-*.apk
 *.aab
 *.unitypackage
 *.app
@@ -79,11 +78,13 @@ crashlytics-build.properties
 /[Aa]ssets/Feel/MMFeedbacks/*
 !/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/
 /[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/*
+!/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/MoreMountains.Feedbacks.asmdef
 !/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/
 /[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/*
 !/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/
 /[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/*
 !/[Aa]ssets/Feel/MMFeedbacks/MMFeedbacks/Core/Legacy/MMFeedbacks.cs
+
 
 /[Aa]ssets/GamingGarrison/*
 !/[Aa]ssets/GamingGarrison/TiledTMXImporter/
