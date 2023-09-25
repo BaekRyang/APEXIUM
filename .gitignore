@@ -91,6 +91,7 @@ crashlytics-build.properties
 /[Aa]ssets/GamingGarrison/TiledTMXImporter/*
 !/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/
 /[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/*
+![Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ITilemapImportOperation.cs
 !/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/
 /[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/*
 !/[Aa]ssets/GamingGarrison/TiledTMXImporter/Editor/ImportOperations/CustomImporterSpawnPrefabsOnTiles.cs
