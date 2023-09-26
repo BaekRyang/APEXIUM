@@ -41,6 +41,7 @@ public class Client : MonoBehaviour
 
     #region RequestConnection
 
+        Debug.Log($"{PREFIX} Requesting Connection to Server : {_serverAddress}:{_serverPort}");
         try
         {
             ClientSocket.Connect(_serverEndPoint); //서버에 연결을 요청한다.
@@ -156,8 +157,20 @@ public class Client : MonoBehaviour
 
     private void ReceiveCallback(IAsyncResult _result)
     {
-        //데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
-        int _received = ClientSocket.EndReceive(_result);
+        int _received = 0;
+        
+        try
+        {
+            //데이터 수신을 완료하고, 수신된 데이터의 길이를 얻는다.
+            _received = ClientSocket.EndReceive(_result);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return;
+        }
+        
+
 
         Debug.Log($"{PREFIX} Data Received / {_received}bytes");
 

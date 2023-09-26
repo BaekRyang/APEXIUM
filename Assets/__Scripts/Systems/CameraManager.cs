@@ -13,7 +13,6 @@ public class CameraManager : MonoBehaviour
 
     private void Start()
     {
-        //TODO: 왜 씬 전환으로 넘어왔을때 카메라가 없는지 모르겠음
         // virtualCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
     }
 

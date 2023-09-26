@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public static class Tools
 {
@@ -62,45 +63,45 @@ public static class Tools
         Short
     }
 
-    public static string ConvertDamageUnit(this int p_pDamage, bool p_isCritical, DamageUnitType p_type = DamageUnitType.Full)
+    public static string ConvertDamageUnit(this int _pDamage, bool _isCritical, DamageUnitType _type = DamageUnitType.Full)
     {
         string _damage = "";
-        switch (p_type)
+        switch (_type)
         {
             case DamageUnitType.Full:
                 _damage = UseKoreanUnit ?
-                    p_pDamage switch
+                    _pDamage switch
                     {
-                        >= 100000000 => $"{p_pDamage / 100000000:0}억{p_pDamage / 10000:0}만{p_pDamage % 1000:000}",
-                        >= 10000     => $"{p_pDamage / 10000:0}만{p_pDamage     % 10000:000}",
-                        _            => p_pDamage.ToString()
+                        >= 100000000 => $"{_pDamage / 100000000:0}억{_pDamage / 10000:0}만{_pDamage % 1000:000}",
+                        >= 10000     => $"{_pDamage / 10000:0}만{_pDamage     % 10000:000}",
+                        _            => _pDamage.ToString()
                     } :
-                    p_pDamage.ToString();
+                    _pDamage.ToString();
                 break;
             case DamageUnitType.Short:
                 _damage = UseKoreanUnit ?
-                    p_pDamage switch
+                    _pDamage switch
                     {
                         //백만 단위에는 M 붙이고, 천 단위에는 K 붙인다. (소수 1~2자리까지, 나머지는 표시하지 않음)
-                        >= 100000000 => $"{p_pDamage / 100000000f:0.##}억",
-                        >= 10000     => $"{p_pDamage / 10000f:0.#}만",
-                        _            => p_pDamage.ToString()
+                        >= 100000000 => $"{_pDamage / 100000000f:0.##}억",
+                        >= 10000     => $"{_pDamage / 10000f:0.#}만",
+                        _            => _pDamage.ToString()
                     } :
-                    p_pDamage switch
+                    _pDamage switch
                     {
                         //백만 단위에는 M 붙이고, 천 단위에는 K 붙인다. (소수 1~2자리까지, 나머지는 표시하지 않음)
-                        >= 1000000 => $"{p_pDamage / 1000000f:0.##}M",
-                        >= 1000    => $"{p_pDamage / 1000f:0.#}K",
-                        _          => p_pDamage.ToString()
+                        >= 1000000 => $"{_pDamage / 1000000f:0.##}M",
+                        >= 1000    => $"{_pDamage / 1000f:0.#}K",
+                        _          => _pDamage.ToString()
                     };
                 break;
         }
 
-        if (p_isCritical) _damage = "<size=12>" + _damage[0] + "</size>" + _damage.Substring(1); //맨 앞글자 강조
+        if (_isCritical) _damage = "<size=12>" + _damage[0] + "</size>" + _damage.Substring(1); //맨 앞글자 강조
 
-        string _str = (p_isCritical ?
+        string _str = (_isCritical ?
             "<color=#FF5500>" :
-            "<color=#FFDDCC>") + _damage + (p_isCritical ?
+            "<color=#FFDDCC>") + _damage + (_isCritical ?
             "!" :
             "") + "</color>";
 
@@ -115,30 +116,58 @@ public static class Tools
         {
             yield return (T)v;
         }
-        
     }
 
-    public static float Remap(float p_value, Vector2 p_origin, Vector2 p_target) => 
-        p_target.x + (p_value - p_origin.x) * (p_target.y - p_target.x) / (p_origin.y - p_origin.x);
+    public static float Remap(float _value, Vector2 _origin, Vector2 _target) =>
+        _target.x + (_value - _origin.x) * (_target.y - _target.x) / (_origin.y - _origin.x);
 
-    public static Vector2 Remap(Vector2 p_value, Vector2[] p_origin, Vector2[] p_target)
+    public static Vector2 Remap(Vector2 _value, Vector2[] _origin, Vector2[] _target)
     {
         return new Vector2(
-            Remap(p_value.x, new Vector2(p_origin[0].x, p_origin[1].x), new Vector2(p_target[0].x, p_target[1].x)),
-            Remap(p_value.y, new Vector2(p_origin[0].y, p_origin[1].y), new Vector2(p_target[0].y, p_target[1].y)));
-    } 
-    
-    public static Vector2 Remap(Vector3 p_value, Vector2[] p_origin, Vector2[] p_target)
+            Remap(_value.x, new Vector2(_origin[0].x, _origin[1].x), new Vector2(_target[0].x, _target[1].x)),
+            Remap(_value.y, new Vector2(_origin[0].y, _origin[1].y), new Vector2(_target[0].y, _target[1].y)));
+    }
+
+    public static Vector2 Remap(Vector3 _value, Vector2[] _origin, Vector2[] _target)
     {
         return new Vector2(
-            Remap(p_value.x, new Vector2(p_origin[0].x, p_origin[1].x), new Vector2(p_target[0].x, p_target[1].x)),
-            Remap(p_value.y, new Vector2(p_origin[0].y, p_origin[1].y), new Vector2(p_target[0].y, p_target[1].y)));
-    } 
-    
-    
-    public static Vector2 GetResolution(this Sprite p_sprite)
+            Remap(_value.x, new Vector2(_origin[0].x, _origin[1].x), new Vector2(_target[0].x, _target[1].x)),
+            Remap(_value.y, new Vector2(_origin[0].y, _origin[1].y), new Vector2(_target[0].y, _target[1].y)));
+    }
+
+    public static Vector2 GetResolution(this Sprite _sprite)
     {
-        Debug.Log($"{p_sprite.texture.width}, {p_sprite.texture.height}");
-        return new Vector2(p_sprite.texture.width, p_sprite.texture.height);
+        Debug.Log($"{_sprite.texture.width}, {_sprite.texture.height}");
+        return new Vector2(_sprite.texture.width, _sprite.texture.height);
+    }
+
+    public enum KeyType
+    {
+        Keyboard,
+        Mouse,
+        Gamepad
+    }
+
+    public static void RebindKeymap(this PlayerInput _input, string _actionName, KeyType _schema, string _targetKey)
+    {
+        _input.enabled = false;
+        string _targetSchema = _schema switch
+        {
+            KeyType.Keyboard => "<Keyboard>/",
+            KeyType.Mouse    => "<Mouse>/",
+            KeyType.Gamepad  => "<Gamepad>/",
+        };
+        
+        int _control = _schema switch
+        {
+            KeyType.Keyboard => 0,
+            KeyType.Gamepad  => 1,
+        };
+        
+        InputAction _action    = _input.actions.FindAction(_actionName);
+        int _bindIndex = _action.GetBindingIndexForControl(_action.controls[_control]);
+        
+        _action.ApplyBindingOverride(_bindIndex, _targetSchema + _targetKey);
+        _input.enabled = true;
     }
 }

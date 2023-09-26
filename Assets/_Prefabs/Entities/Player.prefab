@@ -711,7 +711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 87cb231e36195cd44a104c3d5acee43b,
     type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -763,8 +763,12 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e195eb48-e4a6-4b36-a43a-4ad3b9fb5baf
     m_ActionName: PlayerActions/Interact[/Keyboard/a]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4dc86e5f-6287-4e08-99f6-2f4fe38f96c0
+    m_ActionName: PlayerActions/Movement
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: PC
+  m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerActions
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}

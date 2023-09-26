@@ -150,30 +150,53 @@ public class PlayerController : MonoBehaviour
 
     private void InitializePlayerInput()
     {
-        playerInput.actions["HorizontalMove"].performed += OnHorizontalMove;
-        playerInput.actions["VerticalMove"].performed   += OnVerticalMove;
-        playerInput.actions["Jump"].performed           += OnJump;
-        playerInput.actions["Special"].performed        += OnSpecial;
-        playerInput.actions["Primary"].performed        += OnPrimary;
-        playerInput.actions["Secondary"].performed      += OnSecondary;
-        playerInput.actions["Utility"].performed        += OnUtility;
-        playerInput.actions["Ultimate"].performed       += OnUltimate;
-        playerInput.actions["UseItem"].performed        += OnUseItem;
-        playerInput.actions["Interact"].performed       += OnInteract;
+        playerInput.actions["Movement"].performed += OnMovement;
+        playerInput.actions["Movement"].started   += OnStart;
+        playerInput.actions["Movement"].canceled  += OnCancel;
+
+        playerInput.actions["Jump"].performed      += OnJump;
+        
+        // var Obj = playerInput.actions["Jump"]
+        //                      .PerformInteractiveRebinding()
+        //                      .WithControlsExcluding("Mouse")
+        //                      .WithCancelingThrough("<Keyboard>/escape")
+        //                      .OnMatchWaitForAnother(.1f)
+        //                      .Start();
+        // Debug.Log($"Jump rebinded to {Obj.action.bindings[0].effectivePath}");
+        
+        // int b = playerInput.actions["Jump"].GetBindingIndex();
+        // playerInput.actions["Jump"].ApplyBindingOverride(b, "<Keyboard>/enter");
+        // playerInput.RebindKeymap("Jump", "a");
+        // int c = playerInput.actions["Jump"].GetBindingIndex("<Gamepad>");
+        // Debug.Log(playerInput.actions["Jump"].bindings[c].effectivePath);
+        
+        // playerInput.RebindKeymap("Jump", Tools.KeyType.Gamepad, "rightShoulder");
+        
+        playerInput.actions["Special"].performed   += OnSpecial;
+        playerInput.actions["Primary"].performed   += OnPrimary;
+        playerInput.actions["Secondary"].performed += OnSecondary;
+        playerInput.actions["Utility"].performed   += OnUtility;
+        playerInput.actions["Ultimate"].performed  += OnUltimate;
+        playerInput.actions["UseItem"].performed   += OnUseItem;
+        playerInput.actions["Interact"].performed  += OnInteract;
+
+        playerInput.actions["Click"].performed += _context => Debug.Log($"Click : {_context.ReadValue<float>()} by {_context.control.device.name}");
     }
 
     private void RemovePlayerInput()
     {
-        playerInput.actions["HorizontalMove"].performed -= OnHorizontalMove;
-        playerInput.actions["VerticalMove"].performed   -= OnVerticalMove;
-        playerInput.actions["Jump"].performed           -= OnJump;
-        playerInput.actions["Special"].performed        -= OnSpecial;
-        playerInput.actions["Primary"].performed        -= OnPrimary;
-        playerInput.actions["Secondary"].performed      -= OnSecondary;
-        playerInput.actions["Utility"].performed        -= OnUtility;
-        playerInput.actions["Ultimate"].performed       -= OnUltimate;
-        playerInput.actions["UseItem"].performed        -= OnUseItem;
-        playerInput.actions["Interact"].performed       -= OnInteract;
+        playerInput.actions["Movement"].performed -= OnMovement;
+        playerInput.actions["Movement"].started   -= OnStart;
+        playerInput.actions["Movement"].canceled  -= OnCancel;
+
+        playerInput.actions["Jump"].performed      -= OnJump;
+        playerInput.actions["Special"].performed   -= OnSpecial;
+        playerInput.actions["Primary"].performed   -= OnPrimary;
+        playerInput.actions["Secondary"].performed -= OnSecondary;
+        playerInput.actions["Utility"].performed   -= OnUtility;
+        playerInput.actions["Ultimate"].performed  -= OnUltimate;
+        playerInput.actions["UseItem"].performed   -= OnUseItem;
+        playerInput.actions["Interact"].performed  -= OnInteract;
     }
 
     public PlayerController Initialize(Player _initPlayer)
@@ -182,15 +205,35 @@ public class PlayerController : MonoBehaviour
         return this;
     }
 
-    public void OnHorizontalMove(InputAction.CallbackContext _context) => input.horizontal = _context.ReadValue<float>();
-    public void OnVerticalMove(InputAction.CallbackContext   _context) => input.vertical = _context.ReadValue<float>();
+    public void OnMovement(InputAction.CallbackContext _obj)
+    {
+        input.horizontal = _obj.ReadValue<Vector2>().x > 0 ?
+            1 :
+            _obj.ReadValue<Vector2>().x < 0 ?
+                -1 :
+                0;
+        input.vertical = _obj.ReadValue<Vector2>().y > 0 ?
+            1 :
+            _obj.ReadValue<Vector2>().y < 0 ?
+                -1 :
+                0;
+        Debug.Log($"OnMovement : {_obj.ReadValue<Vector2>()}");
+    }
+
+    public void OnStart(InputAction.CallbackContext _obj) => Debug.Log($"OnStart : {_obj.ReadValue<Vector2>()}");
+
+    public void OnCancel(InputAction.CallbackContext _obj)
+    {
+        input.horizontal = input.vertical = 0;
+        Debug.Log($"OnCancel : {_obj.ReadValue<Vector2>()} by {_obj.control.device.name}");
+    }
 
     public async void OnJump(InputAction.CallbackContext _context)
     {
-        await UniTask.Yield();                            //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
-        input.jumpDown = _context.ReadValue<float>() > 0; //유니티 업데이트 타임때 값을 업데이트 해주고
-        await UniTask.Yield();                            //다음프레임에
-        input.jumpDown = false;                           //초기화
+        await UniTask.Yield();  //이 기능은 유니티 Update에서 실행되지 않으므로 UniTask.Yield()를 통해 다음 프레임까지 대기해준다.
+        input.jumpDown = true;  //유니티 업데이트 타임때 값을 업데이트 해주고
+        await UniTask.Yield();  //다음프레임에
+        input.jumpDown = false; //초기화
     }
 
     public void OnSpecial(InputAction.CallbackContext   _context) => input.specialSkill = _context.ReadValue<float>()   > 0;
@@ -202,9 +245,9 @@ public class PlayerController : MonoBehaviour
 
     public async void OnInteract(InputAction.CallbackContext _context)
     {
-        await UniTask.Yield();  
+        await UniTask.Yield();
         input.interact = _context.ReadValue<float>() > 0;
-        await UniTask.Yield();  
+        await UniTask.Yield();
         input.interact = false;
     }
 

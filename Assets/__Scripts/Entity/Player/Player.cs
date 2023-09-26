@@ -6,7 +6,9 @@ using Cinemachine;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IEntity
@@ -65,6 +67,9 @@ public class Player : MonoBehaviour, IEntity
 
         if (_playerManager.IsLocalPlayer(clientID)) 
             _cameraManager.SetCameraFollow(transform);
+        
+        if (TryGetComponent(out PlayerInput _playerInput))
+            _playerInput.uiInputModule = EventSystem.current.GetComponent<InputSystemUIInputModule>();
     }
 
     void Start()
