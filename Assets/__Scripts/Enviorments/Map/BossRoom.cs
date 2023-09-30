@@ -6,10 +6,7 @@ public class BossRoom : PlayMap
 {
     private Tilemap _bossRoomTilemap;
     
-    private new void Initialize()
-    {
-         
-    }
+    
     
     
 }

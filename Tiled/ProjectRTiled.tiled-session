@@ -3,29 +3,45 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx",
+    "activeFile": "C:/Github/APEXIUM/Assets/_Tilemap/Boss1/Boss_1.tmx",
     "expandedProjectPaths": [
-        "C:/Github/ProjectR/Assets/_Tilemap",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
         "C:/Github/APEXIUM/Assets/_Tilemap/Editing",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
+        "C:/Github/ProjectR/Assets/_Tilemap",
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
-        "C:/Github/APEXIUM/Assets/_Tilemap"
+        "C:/Github/APEXIUM/Assets/_Tilemap/Boss1",
+        "C:/Github/APEXIUM/Assets/_Tilemap",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Objects"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         ":/automap-tiles.tsx": {
             "scaleInDock": 1
         },
+        "C:/Github/APEXIUM/Assets/_Tilemap/Boss1/Boss_1.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 299.3333333333333,
+                "y": 248.66666666666663
+            }
+        },
         "C:/Github/APEXIUM/Assets/_Tilemap/Editing/TileBase.tsx": {
             "scaleInDock": 1
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx": {
-            "scale": 3,
+            "expandedObjectLayers": [
+                737
+            ],
+            "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 5552.5,
-                "y": 2732
+                "x": 5365.666666666666,
+                "y": 2774.333333333333
             }
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx": {
@@ -119,10 +135,12 @@
     "map.lastUsedFormat": "tmx",
     "openFiles": [
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx",
-        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx"
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Boss1/Boss_1.tmx"
     ],
     "project": "ProjectRTiled.tiled-project",
     "recentFiles": [
+        "C:/Github/APEXIUM/Assets/_Tilemap/Boss1/Boss_1.tmx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter.tsx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Winter_Map.tmx",
         "C:/Github/ProjectR/Assets/_Tilemap/Winter.tsx",

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Capsule : InteractableObject
 {
-    [SerializeField] private int _expAmount;
-    [SerializeField] private int _resourceAmount;
+    [SerializeField] private int expAmount;
+    [SerializeField] private int resourceAmount;
 
     public bool open;
 
@@ -14,8 +14,15 @@ public class Capsule : InteractableObject
 
     protected override void InteractAction()
     {
-        if (_expAmount > 0) EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, _expAmount, transform.position));
+        if (expAmount > 0) 
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, expAmount, transform.position));
         
-        if (_resourceAmount > 0) EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, _resourceAmount, transform.position));
+        if (resourceAmount > 0) 
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, resourceAmount, transform.position));
+    }
+
+    protected override void Initialize()
+    {
+        destroyAfterInteract = true;
     }
 }

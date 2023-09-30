@@ -49,9 +49,7 @@ public class PlayerController : MonoBehaviour
     private float JumpHeight   => playerStats.JumpHeight;
     private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
 
-    public Facing PlayerFacing => transform.localScale.x > 0 ?
-        Facing.Left :
-        Facing.Right;
+    public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
 
     public bool Controllable { get; private set; } = true;
 
@@ -76,13 +74,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        EventBus.Subscribe<MapChangedEvent>(OnMapChanged);
+        EventBus.Subscribe<PlayMapChangedEvent>(OnMapChanged);
         InitializePlayerInput();
     }
 
     private void OnDisable()
     {
-        EventBus.Unsubscribe<MapChangedEvent>(OnMapChanged);
+        EventBus.Unsubscribe<PlayMapChangedEvent>(OnMapChanged);
         RemovePlayerInput();
     }
 
@@ -90,7 +88,7 @@ public class PlayerController : MonoBehaviour
     /// 맵이 변경되면 해당 맵에 있는 타일맵을 가져와서 저장한다.
     /// TODO: 그리고 해당 맵의 무작위 위치로 플레이어를 옮기도록 해야함
     /// </summary>
-    private void OnMapChanged(MapChangedEvent _obj) => Initialize(_obj.mapData.currentMap);
+    private void OnMapChanged(PlayMapChangedEvent _eventData) => Initialize(_eventData.mapData[0].currentMap);
 
     private void Initialize(PlayMap _currentMap)
     {
@@ -114,16 +112,12 @@ public class PlayerController : MonoBehaviour
         _boxCollider2D.isTrigger = climbLadder;
 
         //사다리를 타고있으면 중력 영향을 받지않게 해준다.
-        _rigidbody2D.gravityScale = climbLadder ?
-            0 :
-            3;
+        _rigidbody2D.gravityScale = climbLadder ? 0 : 3;
 
         //공중점프 제한 및 코요테타임 구현용
         //코요테 타임은 바닥에 붙어있을때 언제나 일정 수준을 유지하므로
         //jumpGraceTimer가 0이면 공중에 떠있는 상태이므로, 최대 점프 횟수를 -1 조정해준다.
-        _jumpCountOffset = jumpGraceTimer <= 0 ?
-            -1 :
-            0;
+        _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
 
         ClimbLadder(_position);
 
@@ -151,11 +145,10 @@ public class PlayerController : MonoBehaviour
     private void InitializePlayerInput()
     {
         playerInput.actions["Movement"].performed += OnMovement;
-        playerInput.actions["Movement"].started   += OnStart;
         playerInput.actions["Movement"].canceled  += OnCancel;
 
-        playerInput.actions["Jump"].performed      += OnJump;
-        
+        playerInput.actions["Jump"].performed += OnJump;
+
         // var Obj = playerInput.actions["Jump"]
         //                      .PerformInteractiveRebinding()
         //                      .WithControlsExcluding("Mouse")
@@ -163,15 +156,15 @@ public class PlayerController : MonoBehaviour
         //                      .OnMatchWaitForAnother(.1f)
         //                      .Start();
         // Debug.Log($"Jump rebinded to {Obj.action.bindings[0].effectivePath}");
-        
+
         // int b = playerInput.actions["Jump"].GetBindingIndex();
         // playerInput.actions["Jump"].ApplyBindingOverride(b, "<Keyboard>/enter");
         // playerInput.RebindKeymap("Jump", "a");
         // int c = playerInput.actions["Jump"].GetBindingIndex("<Gamepad>");
         // Debug.Log(playerInput.actions["Jump"].bindings[c].effectivePath);
-        
+
         // playerInput.RebindKeymap("Jump", Tools.KeyType.Gamepad, "rightShoulder");
-        
+
         playerInput.actions["Special"].performed   += OnSpecial;
         playerInput.actions["Primary"].performed   += OnPrimary;
         playerInput.actions["Secondary"].performed += OnSecondary;
@@ -186,7 +179,6 @@ public class PlayerController : MonoBehaviour
     private void RemovePlayerInput()
     {
         playerInput.actions["Movement"].performed -= OnMovement;
-        playerInput.actions["Movement"].started   -= OnStart;
         playerInput.actions["Movement"].canceled  -= OnCancel;
 
         playerInput.actions["Jump"].performed      -= OnJump;
@@ -207,25 +199,21 @@ public class PlayerController : MonoBehaviour
 
     public void OnMovement(InputAction.CallbackContext _obj)
     {
-        input.horizontal = _obj.ReadValue<Vector2>().x > 0 ?
-            1 :
-            _obj.ReadValue<Vector2>().x < 0 ?
-                -1 :
-                0;
-        input.vertical = _obj.ReadValue<Vector2>().y > 0 ?
-            1 :
-            _obj.ReadValue<Vector2>().y < 0 ?
-                -1 :
-                0;
-        Debug.Log($"OnMovement : {_obj.ReadValue<Vector2>()}");
-    }
+        float _xValue = _obj.ReadValue<Vector2>().x;
+        float _yValue = _obj.ReadValue<Vector2>().y;
+        
+        input.horizontal =
+            _xValue > 0 ? 1 :
+            _xValue < 0 ? -1 : 0;
 
-    public void OnStart(InputAction.CallbackContext _obj) => Debug.Log($"OnStart : {_obj.ReadValue<Vector2>()}");
+        input.vertical =
+            _yValue > 0 ? 1 :
+            _yValue < 0 ? -1 : 0;
+    }
 
     public void OnCancel(InputAction.CallbackContext _obj)
     {
         input.horizontal = input.vertical = 0;
-        Debug.Log($"OnCancel : {_obj.ReadValue<Vector2>()} by {_obj.control.device.name}");
     }
 
     public async void OnJump(InputAction.CallbackContext _context)
@@ -385,9 +373,7 @@ public class PlayerController : MonoBehaviour
 
         //사다리에서 아래방향 점프를 했다면 아래 방향으로 떨어뜨려준다.
         //=>내리려는 의도로 점프를 했을때 작동
-        var _jumpHeight = climbLadder && input.vertical < 0 ?
-            -JumpHeight * .5f :
-            JumpHeight;
+        var _jumpHeight = climbLadder && input.vertical < 0 ? -JumpHeight * .5f : JumpHeight;
 
         jumpBuffer = 0; //점프 했으므로 버퍼 초기화
         jumpCount++;    //점프횟수 증가
@@ -546,9 +532,7 @@ public class PlayerController : MonoBehaviour
         //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
         Vector3 _localPosition = _tilemap.transform.InverseTransformPoint(_targetPosition);
 
-        int _isUpInput = input.vertical > 0 ?
-            1 :
-            0;
+        int _isUpInput = input.vertical > 0 ? 1 : 0;
 
         Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
                                        Mathf.FloorToInt(_localPosition.y + _isUpInput));

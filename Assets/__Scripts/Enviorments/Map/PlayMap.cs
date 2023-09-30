@@ -37,10 +37,10 @@ public class PlayMap : MonoBehaviour
     public Vector2 GetMapCenterPosition() =>
         (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
-    #if UNITY_EDITOR
-    public void Initialize()
+#if UNITY_EDITOR
+    public virtual void Initialize()
     {
-        _mapSize           = GetMapSize();
+        _mapSize = GetMapSize();
         Transform _cachedTransform = transform;
         _cachedTransform.position = new Vector3(0, _mapSize.y);
 
@@ -71,12 +71,17 @@ public class PlayMap : MonoBehaviour
         foreach (Transform _children in _cachedTransform)
             if (_children.name.Contains("prototype", StringComparison.OrdinalIgnoreCase))
                 _destroyRequiredObjects.Add(_children.gameObject);
-        
-        foreach (GameObject _destroyRequiredObject in _destroyRequiredObjects) 
-            DestroyImmediate(_destroyRequiredObject);
-        
 
-        Transform _collisions = _cachedTransform.Find("Collision").transform;
+        foreach (GameObject _destroyRequiredObject in _destroyRequiredObjects)
+            DestroyImmediate(_destroyRequiredObject);
+
+
+        //cacheTransform의 자식중 Collision이라는 이름을 가진 오브젝트를 찾아서 있으면 foreach
+        Transform _collisions;
+        bool      _found = _collisions = _cachedTransform.Find("Collision");
+
+        if (!_found) return;
+
         foreach (Transform _transform in _collisions)
         {
             _transform.gameObject.name  = "AdditionalCollision";
@@ -89,7 +94,7 @@ public class PlayMap : MonoBehaviour
             }
         }
     }
-    #endif
+#endif
 
     private void SetBoundCollider()
     {
@@ -102,6 +107,6 @@ public class PlayMap : MonoBehaviour
                                       new Vector2(0,          0)
                                   });
     }
-    
+
     public Tilemap GetTilemap(string _name) => transform.Find(_name).GetComponent<Tilemap>();
 }
