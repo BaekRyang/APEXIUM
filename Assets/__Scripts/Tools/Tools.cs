@@ -134,7 +134,7 @@ public static class Tools
             Remap(_value.x, new Vector2(_origin[0].x, _origin[1].x), new Vector2(_target[0].x, _target[1].x)),
             Remap(_value.y, new Vector2(_origin[0].y, _origin[1].y), new Vector2(_target[0].y, _target[1].y)));
     }
-
+    
     public static Vector2 GetResolution(this Sprite _sprite)
     {
         Debug.Log($"{_sprite.texture.width}, {_sprite.texture.height}");

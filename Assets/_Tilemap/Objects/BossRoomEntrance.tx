@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template>
- <object width="32" height="48">
+ <object>
   <properties>
    <property name="unity:prefabReplace" value="BossRoomDoor"/>
   </properties>
+  <polygon points="0,0 0,-16 0,-32 8,-48 25,-48 32,-32 32,-16 32,0"/>
  </object>
 </template>

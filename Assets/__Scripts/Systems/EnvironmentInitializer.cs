@@ -10,7 +10,8 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EnvironmentInitializer : MonoBehaviour
 {
-    private MapTheme? _currentTheme = null;
+    private                  MapTheme?  _currentTheme = null;
+    [SerializeField] private GameObject bossRoomEntrance;
 
     private const string DATA_DIRECTORY = "Datasets";
 
@@ -23,23 +24,23 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private MapData LoadMap(MapTheme _theme, MapType _mapType)
     {
-        string       _mapDirectory    = DATA_DIRECTORY + "/MapData/" + _mapType + "/" + _theme;
+        string _mapDirectory = DATA_DIRECTORY + "/MapData/" + _mapType + "/" + _theme;
         Debug.Log(_mapDirectory);
-        GameObject[] _mapData         = Resources.LoadAll<GameObject>(_mapDirectory);
+        GameObject[] _mapData = Resources.LoadAll<GameObject>(_mapDirectory);
         if (_mapData.Length == 0)
         {
             Debug.LogError("Map data not found");
             return null;
         }
-        
-        GameObject   _selectedMapData = _mapData[Random.Range(0, _mapData.Length)];
 
+        GameObject _selectedMapData = _mapData[Random.Range(0, _mapData.Length)];
         if (_selectedMapData != null)
         {
             GameObject _map = Instantiate(_selectedMapData);
+
             return _map.GetComponent<MapData>();
         }
-        
+
         Debug.LogError("Map data not found");
         return null;
     }
@@ -56,9 +57,56 @@ public class EnvironmentInitializer : MonoBehaviour
             _               => throw new Exception("Map theme is not defined")
         };
 
-        return _currentTheme is null ?
-            (null, null) : //TODO : 게임 클리어
-            (LoadMap((MapTheme)_currentTheme, MapType.Normal), LoadMap((MapTheme)_currentTheme, MapType.Boss));
+        if (_currentTheme is null)
+            return (null, null);
+
+
+        MapData _normalMap = LoadMap((MapTheme)_currentTheme, MapType.Normal);
+        PlaceObjects(_normalMap);
+        
+        
+        MapData _bossMap   = LoadMap((MapTheme)_currentTheme, MapType.Boss);
+        PlaceObjects(_bossMap);
+
+
+        return (_normalMap, _bossMap);
+    }
+
+    private void PlaceObjects(MapData _mapObject)
+    {
+        if (_mapObject.currentMap is not BossPlayMap)
+            PlaceBossRoomEntrance(_mapObject);
+    }
+
+    private void PlaceBossRoomEntrance(MapData _mapObject)
+    {
+        int     _loopCnt      = 0;
+        Vector2 _entranceSize = bossRoomEntrance.GetComponent<BoxCollider2D>().size;
+        do
+        {
+            _loopCnt++;
+            if (_loopCnt > 1000)
+            {
+                Debug.LogError("Loop count exceeded");
+                break;
+            }
+
+            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject);
+            Collider2D collider
+                = Physics2D.OverlapBox(_randomPositionInMap + new Vector2(0, _entranceSize.y / 2 + .1f),
+                                       _entranceSize,
+                                       0,
+                                       LayerMask.GetMask("Floor"));
+            if (collider != null)
+                continue;
+
+            Debug.Log("Random Position : " + _randomPositionInMap);
+            Instantiate(bossRoomEntrance,
+                        _randomPositionInMap,
+                        Quaternion.identity,
+                        _mapObject.currentMap.transform);
+            break;
+        } while (true);
     }
 }
 
