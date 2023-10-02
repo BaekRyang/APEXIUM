@@ -18,13 +18,20 @@ public class EnvironmentInitializer : MonoBehaviour
     {
         (MapData _playMap, MapData _bossMap) = EscalateMap();
 
-        EventBus.Publish(new PlayMapChangedEvent(_playMap));
+        EventBus.Publish(new PlayMapChangedEvent(_playMap, _bossMap));
     }
 
     private MapData LoadMap(MapTheme _theme, MapType _mapType)
     {
         string       _mapDirectory    = DATA_DIRECTORY + "/MapData/" + _mapType + "/" + _theme;
+        Debug.Log(_mapDirectory);
         GameObject[] _mapData         = Resources.LoadAll<GameObject>(_mapDirectory);
+        if (_mapData.Length == 0)
+        {
+            Debug.LogError("Map data not found");
+            return null;
+        }
+        
         GameObject   _selectedMapData = _mapData[Random.Range(0, _mapData.Length)];
 
         if (_selectedMapData != null)
@@ -32,7 +39,7 @@ public class EnvironmentInitializer : MonoBehaviour
             GameObject _map = Instantiate(_selectedMapData);
             return _map.GetComponent<MapData>();
         }
-
+        
         Debug.LogError("Map data not found");
         return null;
     }

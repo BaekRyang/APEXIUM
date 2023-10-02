@@ -38,7 +38,7 @@ public class PlayMap : MonoBehaviour
         (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
 #if UNITY_EDITOR
-    public virtual void Initialize()
+    public void Initialize()
     {
         _mapSize = GetMapSize();
         Transform _cachedTransform = transform;

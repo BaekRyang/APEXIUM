@@ -22,7 +22,7 @@ public enum MapTheme
 public class MapManager : MonoBehaviour
 {
     [SerializeField] private PlayMap  currentMap;
-    [SerializeField] private BossRoom bossRoom;
+    [SerializeField] private BossPlayMap bossPlayMap;
 
     private void OnEnable()
     {
@@ -36,10 +36,13 @@ public class MapManager : MonoBehaviour
 
     private void OnMapChanged(PlayMapChangedEvent _playMapData)
     {
+        Debug.Log("<color=green>Map changed</color> : " + _playMapData.mapData.Length);
         currentMap = _playMapData.mapData[0].currentMap as PlayMap;
-        
-        if (_playMapData.mapData.Length >= 1)
-            bossRoom = _playMapData.mapData[1].currentMap as BossRoom;
+
+        if (_playMapData.mapData.Length > 1)
+        {
+            bossPlayMap = (_playMapData.mapData[1].currentMap as BossPlayMap)!.ProcessBossRoom();
+        }
     }
 
     public PlayMap GetMap(MapType _mapType)
@@ -47,7 +50,7 @@ public class MapManager : MonoBehaviour
         return _mapType switch
         {
             MapType.Normal => currentMap,
-            MapType.Boss   => bossRoom,
+            MapType.Boss   => bossPlayMap,
             _              => null
         };
     }
