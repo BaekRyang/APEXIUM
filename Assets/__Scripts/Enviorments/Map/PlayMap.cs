@@ -10,16 +10,16 @@ using UnityEngine.Tilemaps;
 [Serializable]
 public class PlayMap : MonoBehaviour
 {
-    [SerializeField] private int               _level;
-    [SerializeField] private int               _mapIndex;
-    [SerializeField] private Vector2           _mapSize;
-    [SerializeField] private PolygonCollider2D _boundCollider;
+    [SerializeField] private int               level;
+    [SerializeField] private int               mapIndex;
+    [SerializeField] private Vector2           mapSize;
+    [SerializeField] private PolygonCollider2D boundCollider;
 
-    public int               GetLevel => _level;
-    public int               GetIndex => _mapIndex;
-    public string            GetName  => $"{_level}-{_mapIndex}";
-    public Vector2           GetSize  => _mapSize;
-    public PolygonCollider2D GetBound => _boundCollider;
+    public int               GetLevel => level;
+    public int               GetIndex => mapIndex;
+    public string            GetName  => $"{level}-{mapIndex}";
+    public Vector2           GetSize  => mapSize;
+    public PolygonCollider2D GetBound => boundCollider;
 
     public Vector2 GetMapSize()
     {
@@ -35,19 +35,19 @@ public class PlayMap : MonoBehaviour
     }
 
     public Vector2 GetMapCenterPosition() =>
-        (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
+        (Vector2)transform.position + new Vector2(mapSize.x / 2, -mapSize.y / 2);
 
 #if UNITY_EDITOR
     public void Initialize()
     {
-        _mapSize = GetMapSize();
+        mapSize = GetMapSize();
         Transform _cachedTransform = transform;
-        _cachedTransform.position = new Vector3(0, _mapSize.y);
+        _cachedTransform.position = new Vector3(0, mapSize.y);
 
 
-        if (_boundCollider == null)
+        if (boundCollider == null)
         {
-            _boundCollider = gameObject.AddComponent<PolygonCollider2D>();
+            boundCollider = gameObject.AddComponent<PolygonCollider2D>();
             SetBoundCollider();
         }
         else
@@ -98,12 +98,12 @@ public class PlayMap : MonoBehaviour
 
     private void SetBoundCollider()
     {
-        _boundCollider.isTrigger = true;
-        _boundCollider.SetPath(0, new[]
+        boundCollider.isTrigger = true;
+        boundCollider.SetPath(0, new[]
                                   {
-                                      new Vector2(0,          -_mapSize.y),
-                                      new Vector2(_mapSize.x, -_mapSize.y),
-                                      new Vector2(_mapSize.x, 0),
+                                      new Vector2(0,          -mapSize.y),
+                                      new Vector2(mapSize.x, -mapSize.y),
+                                      new Vector2(mapSize.x, 0),
                                       new Vector2(0,          0)
                                   });
     }

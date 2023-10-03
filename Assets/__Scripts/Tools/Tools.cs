@@ -170,4 +170,15 @@ public static class Tools
         _action.ApplyBindingOverride(_bindIndex, _targetSchema + _targetKey);
         _input.enabled = true;
     }
+    
+    const int MAX_LOOP_COUNT = 1000;
+
+    public static bool LoopLimit(ref int _loopCnt)
+    {
+        _loopCnt++;
+        if (_loopCnt <= MAX_LOOP_COUNT) return false;
+        Debug.LogError("Loop count exceeded");
+        return true;
+
+    }
 }

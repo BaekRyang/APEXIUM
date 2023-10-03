@@ -45,11 +45,14 @@ public class PlayerController : MonoBehaviour
     private JumpDire _jumpDirection;
     private JumpDire _lastLadderJumpDirection;
 
-    private float Speed        => playerStats.Speed;
-    private float JumpHeight   => playerStats.JumpHeight;
-    private int   MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
+#region Properties
 
-    public Facing PlayerFacing => transform.localScale.x > 0 ? Facing.Left : Facing.Right;
+    private float  Speed        => playerStats.Speed;
+    private float  JumpHeight   => playerStats.JumpHeight;
+    private int    MaxJumpCount => playerStats.MaxJumpCount + _jumpCountOffset;
+    public  Facing PlayerFacing => transform.localScale.x < 0 ? Facing.Left : Facing.Right;
+
+#endregion
 
     public bool Controllable { get; private set; } = true;
 
@@ -201,7 +204,7 @@ public class PlayerController : MonoBehaviour
     {
         float _xValue = _obj.ReadValue<Vector2>().x;
         float _yValue = _obj.ReadValue<Vector2>().y;
-        
+
         input.horizontal =
             _xValue > 0 ? 1 :
             _xValue < 0 ? -1 : 0;
@@ -330,8 +333,8 @@ public class PlayerController : MonoBehaviour
 
         _transformCache.localScale = input.horizontal switch
         {
-            > 0 => new(-1, 1, 1),
-            < 0 => new(1, 1, 1),
+            > 0 => new Vector3(1,  1, 1),
+            < 0 => new Vector3(-1, 1, 1),
             _   => _transformCache.localScale
         };
     }

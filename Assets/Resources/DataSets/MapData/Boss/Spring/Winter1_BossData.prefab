@@ -4420,6 +4420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneObjects: {fileID: 4949908928096630783}
   background: {fileID: 0}
+  bossRoomEntrance: {fileID: 0}
   currentMap: {fileID: 2950473167832583718}
 --- !u!1 &2313022565905602423
 GameObject:
@@ -4981,7 +4982,7 @@ MonoBehaviour:
   - {x: 0.000029300001, y: 0, z: 0}
   m_ShapePathHash: 888856509
   m_Mesh: {fileID: 0}
-  m_InstanceId: -528004
+  m_InstanceId: 62012
   m_LocalBounds:
     m_Center: {x: 17.999987, y: 18, z: 0}
     m_Extent: {x: 17.999987, y: 18, z: 0}
@@ -5043,7 +5044,7 @@ MonoBehaviour:
   - {x: 34, y: 33.99997, z: 0}
   m_ShapePathHash: 2042449976
   m_Mesh: {fileID: 0}
-  m_InstanceId: -528014
+  m_InstanceId: 61980
   m_LocalBounds:
     m_Center: {x: 18, y: 20.000015, z: 0}
     m_Extent: {x: 16, y: 13.999986, z: 0}
@@ -5058,7 +5059,7 @@ GameObject:
   - component: {fileID: 3326350293243501236}
   - component: {fileID: 1757478471777827134}
   - component: {fileID: 2950473167832583718}
-  - component: {fileID: 4149074795806607566}
+  - component: {fileID: 8148347267708443415}
   m_Layer: 0
   m_Name: WinterBoss_1
   m_TagString: Untagged
@@ -5108,13 +5109,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5af9507958af0fb40a98577a65cc594f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _level: 0
-  _mapIndex: 0
-  _mapSize: {x: 36, y: 36}
-  _boundCollider: {fileID: 4149074795806607566}
-  _bossRoomTilemap: {fileID: 0}
-  _positionOffset: {x: 0, y: 0}
---- !u!60 &4149074795806607566
+  level: 0
+  mapIndex: 0
+  mapSize: {x: 36, y: 36}
+  boundCollider: {fileID: 8148347267708443415}
+  bossRoomTilemap: {fileID: 0}
+  entrancePositionOffset: {x: 0, y: 0}
+--- !u!60 &8148347267708443415
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = System.Random;
 
 public enum MapType
 {
@@ -42,9 +41,7 @@ public class MapManager : MonoBehaviour
         currentMap = _playMapData.mapData[0].currentMap as PlayMap;
 
         if (_playMapData.mapData.Length > 1)
-        {
-            bossPlayMap = (_playMapData.mapData[1].currentMap as BossPlayMap)!.ProcessBossRoom();
-        }
+            bossPlayMap = _playMapData.mapData[1].currentMap as BossPlayMap;
     }
 
     public PlayMap GetMap(MapType _mapType)
@@ -81,48 +78,47 @@ public class MapManager : MonoBehaviour
                                    .First();
 
 
-        var _randomTopPoint = new Vector2(UnityEngine.Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
-        var _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
-        Vector2 _randomPoint = _everyContactPoints[UnityEngine.Random.Range(0, _everyContactPoints.Count)];
+        var     _randomTopPoint     = new Vector2(UnityEngine.Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
+        var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
+        Vector2 _randomPoint        = _everyContactPoints[UnityEngine.Random.Range(0, _everyContactPoints.Count)];
         return _randomPoint;
     }
 
+    private const float CELL_HEIGHT = 1;
+
     public static List<Vector2> GetEveryContactPoints(Vector2 _randomTopPoint)
     {
-        Vector2       rayStartPoint  = _randomTopPoint;
-        List<Vector2> _contactPoints = new List<Vector2>();
-        int           loopCnt        = 0;
+        Vector2 _rayStartPoint = _randomTopPoint;
+        var     _contactPoints = new List<Vector2>();
+        int     _loopCnt       = 0;
+
         while (true)
         {
-            loopCnt++;
-            if (loopCnt > 100)
-            {
-                Debug.LogError("Loop count exceeded");
+            if (Tools.LoopLimit(ref _loopCnt))
                 break;
-            }
 
-            //레이를 
-            var _randomPoints = Physics2D.Raycast(rayStartPoint, Vector2.down, 1000, LayerMask.GetMask("Floor"));
-            if (_randomPoints.collider == null)
+            RaycastHit2D _randomPoints = Physics2D.Raycast(
+                _rayStartPoint,
+                Vector2.down,
+                1000,
+                LayerMask.GetMask("Floor"));    //레이를 처음 위치에서 쏜다.
+            if (_randomPoints.collider == null) //null이면 맵 바깥(여기에서는 최하단 아래)에서 쏜 것
                 break;
 
             Debug.Log($"Picked Point = {_randomPoints.point}");
 
-            _contactPoints.Add(_randomPoints.point);
+            _contactPoints.Add(_randomPoints.point); //null이 아니면 해당 포인트를 리스트에 저장하고
 
-            float cellHeight = 1;
-            int   loopCnt2   = 0;
-            rayStartPoint = _randomPoints.point - new Vector2(0, cellHeight);
-            while (Physics2D.OverlapPoint(rayStartPoint, LayerMask.GetMask("Floor")) != null)
+            int _loopCnt2 = 0;
+            _rayStartPoint = _randomPoints.point - new Vector2(0, CELL_HEIGHT);                //해당 포인트 1타일 아래
+            while (Physics2D.OverlapPoint(_rayStartPoint, LayerMask.GetMask("Floor")) != null) //해당 위치에 타일이 있는가?
             {
-                loopCnt2++;
-                if (loopCnt2 > 100)
-                {
-                    Debug.LogError("Loop count2 exceeded");
+                if (Tools.LoopLimit(ref _loopCnt2))
                     break;
-                }
 
-                rayStartPoint -= new Vector2(0, cellHeight);
+                _rayStartPoint -= new Vector2(0, CELL_HEIGHT); //있다면 한 칸 아래로 변경 ->
+
+                //while을 통해서 또 조사하고 없다면 Ray를 쏴서 Point를 찾는다.
             }
         }
 
