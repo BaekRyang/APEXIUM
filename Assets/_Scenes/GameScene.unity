@@ -3214,7 +3214,6 @@ MonoBehaviour:
   ForegroundBar: {fileID: 8293993365077522015}
   DelayedBarDecreasing: {fileID: 2024593925}
   DelayedBarIncreasing: {fileID: 1776227267}
-  BumpTransform: {fileID: 0}
   MinimumBarFillValue: 0
   MaximumBarFillValue: 1
   SetInitialFillValueOnStart: 0
