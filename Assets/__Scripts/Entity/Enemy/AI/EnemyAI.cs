@@ -80,6 +80,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         if (_stunned || _dazed) return;
+        animator.SetBool("IsAttacked", false);
 
         CurrentState.Execute();
 
@@ -90,14 +91,16 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-    private void FlipEntity() => cachedTransform.localScale = new(-targetDirection.normalized.x, 1, 1);
+    private void FlipEntity() => cachedTransform.localScale = new Vector3(targetDirection.normalized.x, 1, 1);
     //_targetDirection은 언제나 단위벡터이지만, 혹시 모르니까 정규화 
 
     
     public void Stun(float _stunDuration)
     {
         if (!enemyBase.stats.canStun) return;
-        animator.SetBool("IsWalk", false);
+        animator.SetBool("IsWalk",    false);
+        animator.SetBool("IsAttacked", true);
+        animator.SetTrigger("Attacked");
         _stunned = true;
         if (!(_stunTime > _stunDuration)) //기존 스턴시간이 더 길면 무시
             _stunTime = _stunDuration;
@@ -106,7 +109,9 @@ public class EnemyAI : MonoBehaviour
     public void Daze()
     {
         if (!enemyBase.stats.canDazed) return;
-        animator.SetBool("IsWalk", false);
+        animator.SetBool("IsWalk",    false);
+        animator.SetBool("IsAttacked", true);
+        animator.SetTrigger("Attacked");
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
     }
