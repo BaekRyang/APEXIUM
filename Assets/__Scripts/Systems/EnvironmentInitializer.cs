@@ -1,4 +1,6 @@
 using System;
+using Cysharp.Threading.Tasks;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,7 +20,8 @@ public class EnvironmentInitializer : MonoBehaviour
     private void Start()
     {
         (MapData _playMap, MapData _bossMap) = EscalateMap();
-
+        _playMap.GetComponent<MMF_Player>().PlayFeedbacks();
+        _bossMap.GetComponent<MMF_Player>().PlayFeedbacksInReverse();
         EventBus.Publish(new PlayMapChangedEvent(_playMap, _bossMap));
     }
 
@@ -37,7 +40,7 @@ public class EnvironmentInitializer : MonoBehaviour
         if (_selectedMapData != null)
         {
             GameObject _map = Instantiate(_selectedMapData);
-
+            
             return _map.GetComponent<MapData>();
         }
 
@@ -62,25 +65,29 @@ public class EnvironmentInitializer : MonoBehaviour
 
 
         MapData _normalMap = LoadMap((MapTheme)_currentTheme, MapType.Normal);
+        _normalMap.currentMap.SetEntranceOffset();
         PlaceObjects(_normalMap);
 
 
         MapData _bossMap = LoadMap((MapTheme)_currentTheme, MapType.Boss);
+        _bossMap.currentMap.SetEntranceOffset();
         PlaceObjects(_bossMap);
 
         Transform _bossMapTransform = _bossMap.transform.root;
-        _bossMapTransform.gameObject.SetActive(false); //보스맵은 비활성화
         _bossMapTransform.position = Vector3.back;
 
+        
         if (_bossMap.currentMap is BossPlayMap _bossPlayMap)
         {
             _bossPlayMap.ProcessBossRoom();
 
-            //보스방 위치를 보스방의 문과 맵의 문을 찾아서 맞추는 작업
-            Vector3 _playMapDoorPosition = _normalMap.bossRoomEntrance.position;
-            Vector3 _bossMapDoorOffset   = _bossPlayMap.GetEntranceOffset;
+            // //보스방 위치를 보스방의 문과 맵의 문을 찾아서 맞추는 작업
+            // Vector3 _playMapDoorPosition = _normalMap.bossRoomEntrance.position;
+            // Vector3 _bossMapDoorOffset   = _bossPlayMap.GetEntranceOffset;
 
-            _bossMapTransform.position = _playMapDoorPosition - _bossMapDoorOffset;
+            
+            //보스맵은 기존 맵 왼쪽에 붙어있음
+            _bossMapTransform.position = new Vector3(-(_bossPlayMap.GetSize.x + 5), 0, 0);
         }
 
         return (_normalMap, _bossMap);
@@ -110,7 +117,7 @@ public class EnvironmentInitializer : MonoBehaviour
                 continue;
 
             Debug.Log("Random Position : " + _randomPositionInMap);
-            _mapObject.bossRoomEntrance = Instantiate(bossRoomEntrance,
+            _mapObject.currentMap.bossRoomEntrance = Instantiate(bossRoomEntrance,
                                                       _randomPositionInMap,
                                                       Quaternion.identity,
                                                       _mapObject.currentMap.transform).transform;

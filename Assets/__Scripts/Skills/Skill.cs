@@ -60,7 +60,7 @@ public abstract class Skill
     protected bool CanUse()
     {
         if (!IsReady) return false;                        //쿨타임 체크
-        if (!Player.Controller.Controllable) return false; //사용 가능한 상태인지 체크
+        // if (!Player.Controller.Controllable) return false; //사용 가능한 상태인지 체크
 
         return true;
     }

@@ -129,7 +129,7 @@ AnimatorStateTransition:
   m_HasFixedDuration: 0
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 0
+  m_CanTransitionToSelf: 1
 --- !u!1109 &-2976380652317000948
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -353,7 +353,7 @@ AnimatorState:
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassGolem_Attacked
   m_Speed: 1
-  m_CycleOffset: 0
+  m_CycleOffset: 1
   m_Transitions:
   - {fileID: -1946050787264552098}
   m_StateMachineBehaviours: []

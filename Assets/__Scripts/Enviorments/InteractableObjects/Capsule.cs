@@ -12,7 +12,7 @@ public class Capsule : InteractableObject
         if (open) Interact();
     }
 
-    protected override void InteractAction()
+    protected override void InteractAction(Player _player)
     {
         if (expAmount > 0) 
             EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, expAmount, transform.position));

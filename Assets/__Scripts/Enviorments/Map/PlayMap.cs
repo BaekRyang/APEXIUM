@@ -10,16 +10,18 @@ using UnityEngine.Tilemaps;
 [Serializable]
 public class PlayMap : MonoBehaviour
 {
-    [SerializeField] private int               level;
-    [SerializeField] private int               mapIndex;
-    [SerializeField] private Vector2           mapSize;
-    [SerializeField] private PolygonCollider2D boundCollider;
-
-    public int               GetLevel => level;
-    public int               GetIndex => mapIndex;
-    public string            GetName  => $"{level}-{mapIndex}";
-    public Vector2           GetSize  => mapSize;
-    public PolygonCollider2D GetBound => boundCollider;
+    [SerializeField] private   int               level;
+    [SerializeField] private   int               mapIndex;
+    [SerializeField] private   Vector2           mapSize;
+    [SerializeField] private   PolygonCollider2D boundCollider;
+    [SerializeField] public    Transform         bossRoomEntrance;
+    [SerializeField] protected Vector2           entrancePositionOffset;
+    public                     Vector2           GetEntranceOffset => entrancePositionOffset;
+    public                     int               GetLevel          => level;
+    public                     int               GetIndex          => mapIndex;
+    public                     string            GetName           => $"{level}-{mapIndex}";
+    public                     Vector2           GetSize           => mapSize;
+    public                     PolygonCollider2D GetBound          => boundCollider;
 
     public Vector2 GetMapSize()
     {
@@ -100,13 +102,25 @@ public class PlayMap : MonoBehaviour
     {
         boundCollider.isTrigger = true;
         boundCollider.SetPath(0, new[]
-                                  {
-                                      new Vector2(0,          -mapSize.y),
-                                      new Vector2(mapSize.x, -mapSize.y),
-                                      new Vector2(mapSize.x, 0),
-                                      new Vector2(0,          0)
-                                  });
+                                 {
+                                     new Vector2(0,         -mapSize.y),
+                                     new Vector2(mapSize.x, -mapSize.y),
+                                     new Vector2(mapSize.x, 0),
+                                     new Vector2(0,         0)
+                                 });
     }
 
     public Tilemap GetTilemap(string _name) => transform.Find(_name).GetComponent<Tilemap>();
+    
+    public void SetEntranceOffset()
+    {
+        BossRoomEntrance _bossRoomEntrance = GetComponentInChildren<BossRoomEntrance>();
+
+        if (_bossRoomEntrance == null) return;
+        bossRoomEntrance = _bossRoomEntrance.transform;
+        entrancePositionOffset = (Vector2)bossRoomEntrance.position //문의 위치(월드좌표)
+                               - (Vector2)transform.position        //맵의 위치(월드좌표)
+                               + new Vector2(0, GetSize.y);         //해당 오프셋은 맵의 피벗인 왼쪽 위 기준이므로
+        //왼쪽 아래 기준으로 바꿔줘야함 (맵의 높이만큼 더해줌)
+    }
 }

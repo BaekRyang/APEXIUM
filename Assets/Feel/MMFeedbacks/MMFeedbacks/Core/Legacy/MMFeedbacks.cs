@@ -470,9 +470,9 @@ namespace MoreMountains.Feedbacks
 			ResetFeedbacks();
 			this.enabled = true;
 			TimesPlayed++;
-			IsPlaying = true;
-			_startTime = GetTime();
-			_lastStartAt = _startTime;
+			IsPlaying      = true;
+			_startTime     = GetTime();
+			_lastStartAt   = _startTime;
 			_totalDuration = TotalDuration;
 			CheckForPauses();
             

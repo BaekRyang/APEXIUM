@@ -18,8 +18,12 @@ namespace MoreMountains.Feedbacks
         [SerializeField] public  MMTweenType _tweenOpacity = new(new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.3f, 1.5f), new Keyframe(1, 0)));
 
         private UniTask _animateTask;
-
         public override string RequiredTargetText => _targetObject != null ? _targetObject.name : "";
+        public override float FeedbackDuration
+        {
+            get => _duration;
+            set => _duration = value;
+        }
 
         // use this override to specify the duration of your feedback (don't hesitate to look at other feedbacks for reference)
         // 피드백의 지속시간을 지정하기 위한 오버라이드(참고를 위해 다른 피드백을 보는 것을 권장)

@@ -32,12 +32,12 @@ public abstract class InteractableObject : MonoBehaviour
             text.enabled = false;
     }
 
-    public void Interact()
+    public void Interact(Player _player = null)
     {
         if (animator != null)
             animator.Play("Interact");
 
-        InteractAction();
+        InteractAction(_player);
 
         if (destroyAfterInteract)
             DestroyAction();
@@ -49,7 +49,7 @@ public abstract class InteractableObject : MonoBehaviour
         DestroyImmediate(this);
     }
 
-    protected abstract void InteractAction();
+    protected abstract void InteractAction(Player _player);
     //오브젝트에 상호작용했을때 실행되는 함수
 
     protected abstract void Initialize();

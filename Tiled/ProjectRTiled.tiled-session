@@ -112,11 +112,11 @@
             "scaleInEditor": 1
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1/WinterBoss_1.tmx": {
-            "scale": 11,
-            "selectedLayer": 1,
+            "scale": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 121.95454545454545,
-                "y": 451.90909090909093
+                "x": 357.5,
+                "y": 394
             }
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Winter_1/TileBase.tsx": {
@@ -126,8 +126,8 @@
             "scale": 0.131103515625,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 4084.558659217877,
-                "y": 1525.5121042830538
+                "x": 9515.381750465549,
+                "y": 3783.2700186219736
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Assets/_Tilemap/Editing/TileBase.tsx": {
