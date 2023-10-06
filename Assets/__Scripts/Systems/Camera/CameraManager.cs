@@ -33,8 +33,20 @@ public class CameraManager : MonoBehaviour
 
     public void SetCameraBoundBox(PlayMap _map)
     {
-        mainVirtualCamera.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D =
-            _map.GetBound;
+        CinemachineConfiner2D _cinemachineConfiner2D = mainVirtualCamera.GetComponent<CinemachineConfiner2D>();
+        _cinemachineConfiner2D.m_BoundingShape2D = _map.GetBound;
+        InvalidateCache(_cinemachineConfiner2D);
+    }
+
+    public void InvalidateCache(CinemachineConfiner2D _confiner2D = null)
+    {
+        if (_confiner2D != null)
+        {
+            _confiner2D.InvalidateCache();
+            return;
+        }
+        CinemachineConfiner2D _cinemachineConfiner2D = mainVirtualCamera.GetComponent<CinemachineConfiner2D>();
+        _cinemachineConfiner2D.InvalidateCache();
     }
 
     public void SetCameraFollow(Transform _target)

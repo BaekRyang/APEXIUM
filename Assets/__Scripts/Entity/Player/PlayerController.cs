@@ -136,6 +136,8 @@ public class PlayerController : MonoBehaviour
 
         _jumpDirection = GetNowJumpDirection();
 
+        if (!Controllable) return;
+        
         CheckInteraction();
 
         UseSkill();
@@ -256,7 +258,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckInteraction()
     {
-        if (!input.interact || !Controllable) return;
+        if (!input.interact) return;
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
@@ -323,8 +325,6 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        if (!Controllable) return;
-
         _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
         _player._animator.SetBool("IsWalk", input.horizontal != 0);
         FlipSprite();
@@ -358,9 +358,7 @@ public class PlayerController : MonoBehaviour
         if (!_forced) //점프키를 무시하는 강제점프가 아니라면
             if (!input.jumpDown)
                 return; //점프키 상태 확인
-
-        if (!Controllable) return;
-
+        
         //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
         if (Physics2D.RaycastNonAlloc(transform.position, Vector2.up, _tmpVar, .1f, LayerMask.GetMask("Floor")) > 0)
         {
@@ -446,8 +444,6 @@ public class PlayerController : MonoBehaviour
 
     private void ClimbLadder(Vector3 _pPosition)
     {
-        if (!Controllable) return;
-
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
         if (climbLadder && input.vertical == 0)
         {
@@ -598,7 +594,7 @@ public class PlayerController : MonoBehaviour
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
             ((IUseable)_player.skills[SkillTypes.Item]).Play();
 
-        if (climbLadder || Controllable) return;
+        if (climbLadder) return;
 
         //이외는 사다리에서 사용 불가능
 
