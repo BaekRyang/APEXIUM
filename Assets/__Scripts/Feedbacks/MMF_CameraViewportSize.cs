@@ -1,9 +1,6 @@
-using Cinemachine;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using MoreMountains.Tools;
-using Unity.VisualScripting;
-using UnityEngine.UI;
+using UnityEngine;
 
 namespace MoreMountains.Feedbacks
 {
@@ -14,12 +11,13 @@ namespace MoreMountains.Feedbacks
         [MMFInspectorGroup("Tween", true, 79)]
         [Inject] [SerializeField]
         private CameraManager _camManager;
+
         private Camera[] _cameras;
 
         [SerializeField] private float       _duration       = 1f;
         [SerializeField] private bool        _targetCamIndex = false;
-        [SerializeField] private float       _from           = 1f;
-        [SerializeField] private float       _to             = 0f;
+        [SerializeField] private float       _origin         = 10f;
+        [SerializeField] private float       _range          = 2f;
         [SerializeField] private MMTweenType _tweenOpacity   = new(new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.3f, 1.5f), new Keyframe(1, 0)));
 
         private UniTask _animateTask;
@@ -50,13 +48,13 @@ namespace MoreMountains.Feedbacks
             switch (Owner.Direction)
             {
                 case MMFeedbacks.Directions.TopToBottom:
-                    _from = this._from;
-                    _to   = this._to;
+                    _from = _origin;
+                    _to   = _origin - _range;
                     break;
                 case MMFeedbacks.Directions.BottomToTop:
                 default:
-                    _from = this._to;
-                    _to   = this._from;
+                    _from = _origin + _range;
+                    _to   = _origin;
                     break;
             }
 

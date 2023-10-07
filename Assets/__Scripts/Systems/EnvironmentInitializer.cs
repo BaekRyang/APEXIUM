@@ -114,8 +114,27 @@ public class EnvironmentInitializer : MonoBehaviour
                                        0,
                                        LayerMask.GetMask("Floor"));
             if (_capturedCollider != null)
+            {
+                Debug.Log("Overlap");
                 continue;
+            }
 
+            //문의 양끝점 아래가 바닥에 닿아있는지 확인
+            RaycastHit2D a = Physics2D.Raycast(_randomPositionInMap + Vector2.left * (_entranceSize.x / 2),
+                                               Vector2.down,
+                                               .1f,
+                                               LayerMask.GetMask("Floor"));
+            RaycastHit2D b = Physics2D.Raycast(_randomPositionInMap + Vector2.right * (_entranceSize.x / 2),
+                                               Vector2.down,
+                                               .1f,
+                                               LayerMask.GetMask("Floor"));
+            
+            if (a.collider == null || b.collider == null)
+            {
+                Debug.Log("Not on the floor");
+                continue;
+            }
+            
             Debug.Log("Random Position : " + _randomPositionInMap);
             _mapObject.currentMap.bossRoomEntrance = Instantiate(bossRoomEntrance,
                                                       _randomPositionInMap,

@@ -5,18 +5,19 @@
     },
     "activeFile": "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1/WinterBoss_1.tmx",
     "expandedProjectPaths": [
-        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Rules",
-        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
-        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Objects",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter",
-        "C:/Github/APEXIUM/Assets/_Tilemap/Editing",
-        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
-        "C:/Github/APEXIUM/Assets/_Tilemap",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Rules",
+        "C:/Github/ProjectR/Assets/_Tilemap",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1",
         "C:/Github/APEXIUM/Assets/_Tilemap/Boss1",
-        "C:/Github/APEXIUM/Assets/_Tilemap/Objects",
-        "C:/Github/ProjectR/Assets/_Tilemap"
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing",
+        "C:/Github/APEXIUM/Assets/_Tilemap",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Rules",
+        "C:/Github/ProjectR/Assets/_Tilemap/Editing/Objects",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Winter_1",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Editing/Objects",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Objects"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -112,11 +113,11 @@
             "scaleInEditor": 1
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1/WinterBoss_1.tmx": {
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 0.5,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 357.5,
-                "y": 394
+                "x": -634,
+                "y": 18
             }
         },
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Winter_1/TileBase.tsx": {
@@ -126,8 +127,8 @@
             "scale": 0.131103515625,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 9515.381750465549,
-                "y": 3783.2700186219736
+                "x": 4096,
+                "y": 1540.7672253258845
             }
         },
         "C:/Github/ProjectR/Assets/_Tilemap/Editing/Assets/_Tilemap/Editing/TileBase.tsx": {
@@ -227,10 +228,10 @@
     ],
     "project": "ProjectRTiled.tiled-project",
     "recentFiles": [
-        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1/WinterBoss_1.tmx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Winter.tsx",
         "C:/Github/APEXIUM/Assets/_Tilemap/TileBase.tsx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Winter_1/Winter_Map.tmx",
+        "C:/Github/APEXIUM/Assets/_Tilemap/Winter/WinterBoss_1/WinterBoss_1.tmx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Rules/VentTileRules.tmx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Rules/DecorateRules.tmx",
         "C:/Github/APEXIUM/Assets/_Tilemap/Winter/Rules/AutotileRules.tmx",

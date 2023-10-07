@@ -8,7 +8,8 @@ public class LocalInstaller : MonoBehaviour
     public MapManager    mapManager;
     public Image         blackBoard;
     public RawImage[]    transitionTexture;
-
+    public Image         shieldBlackBoard;
+    
     private void Awake()
     {
         var _container = new DIContainer();
@@ -18,5 +19,6 @@ public class LocalInstaller : MonoBehaviour
         _container.Regist(mapManager);
         _container.Regist(blackBoard, "BlackBoard");
         _container.Regist(transitionTexture);
+        _container.Regist(shieldBlackBoard, "ShieldBlackBoard");
     }
 }

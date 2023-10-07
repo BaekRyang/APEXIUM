@@ -78,9 +78,11 @@ public class MapManager : MonoBehaviour
                                    .First();
 
 
-        var     _randomTopPoint     = new Vector2(UnityEngine.Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
+        var     _randomTopPoint     = new Vector2(UnityEngine.Random.Range(_rightTopPoint.x - 5, _leftTopPoint.x + 5), _rightTopPoint.y - 5 + _yOffset);
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
         Vector2 _randomPoint        = _everyContactPoints[UnityEngine.Random.Range(0, _everyContactPoints.Count)];
+        
+        Debug.DrawLine(_randomTopPoint, _randomPoint, Color.red, 10f);
         return _randomPoint;
     }
 

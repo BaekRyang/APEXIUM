@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
 #endregion
 
-    public bool Controllable { get; private set; } = true;
+    private bool Controllable { get; set; } = true;
 
     public enum Facing
     {
@@ -121,7 +121,11 @@ public class PlayerController : MonoBehaviour
         //코요테 타임은 바닥에 붙어있을때 언제나 일정 수준을 유지하므로
         //jumpGraceTimer가 0이면 공중에 떠있는 상태이므로, 최대 점프 횟수를 -1 조정해준다.
         _jumpCountOffset = jumpGraceTimer <= 0 ? -1 : 0;
-        
+
+        ClimbLadder(_position);
+
+        Jump();
+
         {
             //함수화 해야함
             {
@@ -136,19 +140,17 @@ public class PlayerController : MonoBehaviour
 
         _jumpDirection = GetNowJumpDirection();
 
-        if (!Controllable) return;
-        
         CheckInteraction();
 
         UseSkill();
+    }
 
-        Jump();
-        ClimbLadder(_position);
-        {
-            if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
-                return;
-            Move();
-        }
+    private void FixedUpdate()
+    {
+        if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
+            return;
+
+        Move();
     }
 
     private void InitializePlayerInput()
@@ -233,12 +235,17 @@ public class PlayerController : MonoBehaviour
         input.jumpDown = false; //초기화
     }
 
-    public void OnSpecial(InputAction.CallbackContext   _context) => input.specialSkill = _context.ReadValue<float>()   > 0;
-    public void OnPrimary(InputAction.CallbackContext   _context) => input.primarySkill = _context.ReadValue<float>()   > 0;
+    public void OnSpecial(InputAction.CallbackContext _context) => input.specialSkill = _context.ReadValue<float>() > 0;
+
+    public void OnPrimary(InputAction.CallbackContext _context) => input.primarySkill = _context.ReadValue<float>() > 0;
+
     public void OnSecondary(InputAction.CallbackContext _context) => input.secondarySkill = _context.ReadValue<float>() > 0;
-    public void OnUtility(InputAction.CallbackContext   _context) => input.utilitySkill = _context.ReadValue<float>()   > 0;
-    public void OnUltimate(InputAction.CallbackContext  _context) => input.ultimateSkill = _context.ReadValue<float>()  > 0;
-    public void OnUseItem(InputAction.CallbackContext   _context) => input.itemSkill = _context.ReadValue<float>()      > 0;
+
+    public void OnUtility(InputAction.CallbackContext _context) => input.utilitySkill = _context.ReadValue<float>() > 0;
+
+    public void OnUltimate(InputAction.CallbackContext _context) => input.ultimateSkill = _context.ReadValue<float>() > 0;
+
+    public void OnUseItem(InputAction.CallbackContext _context) => input.itemSkill = _context.ReadValue<float>() > 0;
 
     public async void OnInteract(InputAction.CallbackContext _context)
     {
@@ -249,28 +256,26 @@ public class PlayerController : MonoBehaviour
     }
 
     // public async void OnInteract(InputAction.CallbackContext  _context)
+
     // {
+
     //     await UniTask.Yield();
+
     //     input.interact = _context.ReadValue<float>() > 0;
+
     //     await UniTask.Yield();
+
     //     input.interact = false;
+
     // }
 
     private void CheckInteraction()
     {
-        if (!input.interact) return;
+        if (!input.interact || !Controllable) return;
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
                 _interactableObject.Interact(_player);
-    }
-
-    private void FixedUpdate()
-    {
-        // if (climbLadder) //사다리에 타고있으면 좌우 이동 막기
-        //     return;
-        //
-        // Move();
     }
 
     //바닥 착지시 실행할 Action
@@ -325,6 +330,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        if (!Controllable) return;
+
         _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
         _player._animator.SetBool("IsWalk", input.horizontal != 0);
         FlipSprite();
@@ -358,7 +365,9 @@ public class PlayerController : MonoBehaviour
         if (!_forced) //점프키를 무시하는 강제점프가 아니라면
             if (!input.jumpDown)
                 return; //점프키 상태 확인
-        
+
+        if (!Controllable) return;
+
         //사다리를 타고 있을때 벽 안에서 점프를 하지 못하게 막는다.
         if (Physics2D.RaycastNonAlloc(transform.position, Vector2.up, _tmpVar, .1f, LayerMask.GetMask("Floor")) > 0)
         {
@@ -444,6 +453,8 @@ public class PlayerController : MonoBehaviour
 
     private void ClimbLadder(Vector3 _pPosition)
     {
+        if (!Controllable) return;
+
         //사다리를 타고있으면서, 상하 이동을 하지 않을때 velocity를 0으로
         if (climbLadder && input.vertical == 0)
         {
@@ -588,13 +599,12 @@ public class PlayerController : MonoBehaviour
 
     //TODO: 임시 변수
     private bool _hasItem = false;
-
     private void UseSkill()
     {
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
             ((IUseable)_player.skills[SkillTypes.Item]).Play();
 
-        if (climbLadder) return;
+        if (climbLadder || !Controllable) return;
 
         //이외는 사다리에서 사용 불가능
 
@@ -620,14 +630,20 @@ public class PlayerController : MonoBehaviour
         //플레이어의 조작 가능 여부를 설정한다.
         Controllable = _controllable;
 
-        if (!_controllable && _allStop)
-        {
+        if (_controllable) return;
+        
+        if (_allStop)
+        { //_allStop 플래그가 있으면 현재 이동/가속을 전부 없앤다.
             _rigidbody2D.velocity = Vector2.zero;
             input.horizontal      = input.vertical = 0;
             _player._animator.SetBool("IsWalk", false);
-            Debug.Log("ALLSTOP");
+            return;
         }
-        else if (!_controllable && _rigidbody2D.velocity.y == 0) //공중이 아니라면 x속도도 0으로 만들어준다.
-            _rigidbody2D.velocity = new(0, _rigidbody2D.velocity.y);
+
+        if (_rigidbody2D.velocity.y == 0)
+        { //공중이 아니라면 x속도도 0으로 만들어준다.
+            _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
+            return;
+        } 
     }
 }
