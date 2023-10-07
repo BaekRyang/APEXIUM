@@ -24,6 +24,9 @@ public class BossRoomEntrance : InteractableObject
 
     protected override async void InteractAction(Player _player)
     {
+        _player.transform.position = transform.position;
+        //플레이어 위치를 문 위치로 이동
+        
         Debug.Log("BossRoomEntrance InteractAction");
         Debug.Log($"_rootMapType : {_rootMapType}");
         _shieldBlackBoard.gameObject.SetActive(true);
@@ -31,6 +34,7 @@ public class BossRoomEntrance : InteractableObject
         Transform _normalTransform = _mapManager.GetMap(MapType.Normal).transform.root;
         Transform _bossTransform   = _mapManager.GetMap(MapType.Boss).transform.root;
 
+        MMF_Player _thisMMF = GetComponent<MMF_Player>();
         MMF_Player _normalMMF = _normalTransform.GetComponent<MMF_Player>();
         MMF_Player _bossMMF   = _bossTransform.GetComponent<MMF_Player>();
 
@@ -63,17 +67,21 @@ public class BossRoomEntrance : InteractableObject
             _rawImage.gameObject.SetActive(true);
             _camera.gameObject.SetActive(true);
         }
+        _player.transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition;
 
+        InstantiatePlayerWalkingObject();
+        
         _cameraManager.SetCameraBoundBox(_mapManager.GetMap(_targetMapType));
 
+        _thisMMF.PlayFeedbacks();
+        
         switch (_rootMapType)
         {
             case MapType.Normal:
             {
                 _bossMMF.Direction = MMFeedbacks.Directions.TopToBottom;
                 _bossMMF.PlayFeedbacks();
-                await UniTask.Delay(TimeSpan.FromSeconds(.2f));
-                _player.transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition;
+                await UniTask.Delay(TimeSpan.FromSeconds(.5f));
 
                 _normalMMF.Direction = MMFeedbacks.Directions.BottomToTop;
                 UniTask _task = _normalMMF.PlayFeedbacksUniTask(transform.position);
@@ -85,8 +93,7 @@ public class BossRoomEntrance : InteractableObject
             {
                 _normalMMF.Direction = MMFeedbacks.Directions.TopToBottom;
                 _normalMMF.PlayFeedbacks();
-                await UniTask.Delay(TimeSpan.FromSeconds(.2f));
-                _player.transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition;
+                await UniTask.Delay(TimeSpan.FromSeconds(.5f));
 
                 _bossMMF.Direction = MMFeedbacks.Directions.BottomToTop;
                 UniTask _task = _bossMMF.PlayFeedbacksUniTask(transform.position);
@@ -109,5 +116,10 @@ public class BossRoomEntrance : InteractableObject
         }
         _shieldBlackBoard.gameObject.SetActive(false);
 
+    }
+
+    private void InstantiatePlayerWalkingObject()
+    {
+        
     }
 }

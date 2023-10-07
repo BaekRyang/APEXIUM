@@ -1,5 +1,6 @@
 ﻿using Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class LocalInstaller : MonoBehaviour
@@ -9,6 +10,7 @@ public class LocalInstaller : MonoBehaviour
     public Image         blackBoard;
     public RawImage[]    transitionTexture;
     public Image         shieldBlackBoard;
+    public VolumeProfile volumeProfile;
     
     private void Awake()
     {
@@ -20,5 +22,6 @@ public class LocalInstaller : MonoBehaviour
         _container.Regist(blackBoard, "BlackBoard");
         _container.Regist(transitionTexture);
         _container.Regist(shieldBlackBoard, "ShieldBlackBoard");
+        _container.Regist(volumeProfile);
     }
 }

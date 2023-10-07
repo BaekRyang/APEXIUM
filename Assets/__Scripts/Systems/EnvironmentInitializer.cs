@@ -108,6 +108,13 @@ public class EnvironmentInitializer : MonoBehaviour
             if (Tools.LoopLimit(ref _loopCnt)) break;
 
             Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject);
+
+            if (_randomPositionInMap.y < 10)
+            {
+                Debug.Log("Too low");
+                continue;
+            }
+            
             Collider2D _capturedCollider
                 = Physics2D.OverlapBox(_randomPositionInMap + new Vector2(0, _entranceSize.y / 2 + .1f),
                                        _entranceSize,

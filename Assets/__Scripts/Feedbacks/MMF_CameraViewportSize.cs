@@ -58,15 +58,18 @@ namespace MoreMountains.Feedbacks
                     break;
             }
 
-            float _elapsedTime = 0f;
+            float   _elapsedTime = 0f;
+            int     _index       = _targetCamIndex ? 1 : 0;
+            Vector3 _originPos   = _cameras[_index].transform.position;
             while (_elapsedTime < _duration)
             {
                 _elapsedTime += Time.deltaTime;
                 float _t       = _elapsedTime / _duration;
                 float _current = _tweenOpacity.Evaluate(_t);
 
-                int _index = _targetCamIndex ? 1 : 0;
                 _cameras[_index].orthographicSize = Mathf.Lerp(_from, _to, _current);
+                if (Owner.Direction == MMFeedbacks.Directions.TopToBottom)
+                    _cameras[_index].transform.position = _originPos + Vector3.up * Mathf.Lerp(0, 1.5f, _current);
 
                 await UniTask.Yield();
             }
