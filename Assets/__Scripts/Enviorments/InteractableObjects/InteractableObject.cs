@@ -59,13 +59,13 @@ public abstract class InteractableObject : MonoBehaviour
 public class ItemSpawnEvent
 {
     public readonly PickupType pickupType;
-    public readonly int        amount;
+    public readonly int        value;
     public readonly Vector3    position;
 
-    public ItemSpawnEvent(PickupType _pickupType, int _amount, Vector3 _position)
+    public ItemSpawnEvent(PickupType _pickupType, int _value, Vector3 _position)
     {
         pickupType = _pickupType;
-        amount     = _amount;
+        value     = _value;
         position   = _position;
     }
 }

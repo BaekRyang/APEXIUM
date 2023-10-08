@@ -108,16 +108,11 @@ public static class Tools
         return _str;
     }
 
-    public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
-
-    public static IEnumerable<T> GetEnumValues2<T>()
+    public static IEnumerable<T> GetEnumValues<T>()
     {
-        foreach (var v in Enum.GetValues(typeof(T)))
-        {
-            yield return (T)v;
-        }
+        return Enum.GetValues(typeof(T)).Cast<T>();
     }
-
+    
     public static float Remap(float _value, Vector2 _origin, Vector2 _target) =>
         _target.x + (_value - _origin.x) * (_target.y - _target.x) / (_origin.y - _origin.x);
 

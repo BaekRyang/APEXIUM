@@ -33,6 +33,8 @@ public class Player : MonoBehaviour, IEntity
 
     public PlayerStats Stats => _stats;
 
+    [SerializeField] public List<Item> items = new();
+
     public bool dead;
 
     private void Initialize(PlayerData _playerData)

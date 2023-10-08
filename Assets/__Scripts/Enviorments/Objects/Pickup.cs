@@ -6,37 +6,39 @@ using Random = UnityEngine.Random;
 
 public class Pickup : MonoBehaviour
 {
-    [SerializeField] private PickupType type;
-    [SerializeField] private int        size;
+    [SerializeField] private PickupType pickupType;
+    [SerializeField] private int        value;
     [SerializeField] private bool       interactable = false;
     public                   Vector2    _targetPosition;
     public                   Vector2    _randomDirection;
 
     public Rigidbody2D _rigidbody2D;
 
-    public PickupType PickupType
-    {
-        get => type;
-        set => type = value;
-    }
-
     public int PickupValue
     {
-        get => size;
-        set => size = value;
+        get => value;
+        set => this.value = value;
     }
 
-    public void Activate()
+    public async void Activate()
     {
-        if (PickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
+        if (pickupType == PickupType.Resource)
+            _rigidbody2D.gravityScale = 2;
+
         interactable = false;
-        ActivateMove();
+        
+        await ActivateMove();
+        
+        interactable = true;
     }
 
-    private async void ActivateMove()
+    private async UniTask ActivateMove()
     {
-        switch (type)
+        switch (pickupType)
         {
+            case PickupType.Item:
+                _rigidbody2D.AddForce(new Vector2(0, 1) * 2f, ForceMode2D.Impulse);
+                break;
             case PickupType.Resource:
                 //위쪽 방향으로 랜덤한 힘을 가함
                 _rigidbody2D.AddForce(new Vector2(Random.Range(-.7f, .7f), Random.Range(1f, 2f)) * 7.5f, ForceMode2D.Impulse);
@@ -50,12 +52,9 @@ public class Pickup : MonoBehaviour
 
             case PickupType.Health:
                 break;
-
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        interactable = true;
     }
 
     private async UniTask SpreadObject()
@@ -76,24 +75,27 @@ public class Pickup : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D p_other)
+    private void OnTriggerEnter2D(Collider2D _other)
     {
         if (!interactable) return;
 
-        if (p_other.CompareTag("Player"))
+        if (_other.CompareTag("Player"))
         {
-            if (!p_other.TryGetComponent(out Player _player)) return;
+            if (!_other.TryGetComponent(out Player _player)) return;
 
-            switch (type)
+            switch (pickupType)
             {
+                case PickupType.Item:
+                    _player.items.Add(Item.ToItem(value));
+                    break;
                 case PickupType.Resource:
-                    _player.Stats.EnergyCrystal += size;
+                    _player.Stats.EnergyCrystal += value;
                     break;
                 case PickupType.Exp:
-                    _player.Stats.Exp += size;
+                    _player.Stats.Exp += value;
                     break;
                 case PickupType.Health:
-                    _player.Stats.Health += size;
+                    _player.Stats.Health += value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -102,27 +104,27 @@ public class Pickup : MonoBehaviour
             interactable = false;
             gameObject.SetActive(false);
         }
-        else if (p_other.CompareTag("PlayerPickRadius") &&
-                 PickupType == PickupType.Resource)
+        else if (_other.CompareTag("PlayerPickRadius") &&
+                 pickupType == PickupType.Resource)
             _rigidbody2D.gravityScale = 0;
     }
 
-    private void OnTriggerStay2D(Collider2D p_other)
+    private void OnTriggerStay2D(Collider2D _other)
     {
-        if (!interactable) return;
-        if (!p_other.CompareTag("PlayerPickRadius")) return;
+        if (!interactable || pickupType == PickupType.Item) return;
+        if (!_other.CompareTag("PlayerPickRadius")) return;
 
         //닿아있으면 플레이어 방향으로 끌려간다.
         // transform.Translate((p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f);
-        transform.position += (p_other.transform.position - transform.position).normalized * Time.deltaTime * 5f;
+        transform.position += (_other.transform.position - transform.position).normalized * Time.deltaTime * 5f;
     }
 
-    private void OnTriggerExit2D(Collider2D p_other)
+    private void OnTriggerExit2D(Collider2D _other)
     {
         if (!interactable) return;
 
-        if (!p_other.CompareTag("PlayerPickRadius")) return;
-        if (PickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
+        if (!_other.CompareTag("PlayerPickRadius")) return;
+        if (pickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
     }
 
     //TODO: 임시로 만들었음(옮기거나 삭제)
