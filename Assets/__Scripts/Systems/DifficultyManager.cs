@@ -33,7 +33,7 @@ public class DifficultyManager : MonoBehaviour
     private int DifficultyInInt => (int)gameDifficulty;
 
     private void Awake() => Instance ??= this;
-
+    
     private void Update()
     {
         parsedTimeToDifficulty = (int)(PlayTimer.playTime / DifficultyInInt)             //정수 부분

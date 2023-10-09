@@ -25,6 +25,11 @@ public class EnvironmentInitializer : MonoBehaviour
         EventBus.Publish(new PlayMapChangedEvent(_playMap, _bossMap));
     }
 
+    //기본 배치 개수
+    private const int MAX_CHEST_COUNT   = 20;
+    private const int MAX_CAPSULE_COUNT = 10;
+    private const int MAX_ALTER_COUNT   = 10;
+
     private (MapData, MapData) EscalateMap()
     {
         _currentTheme = _currentTheme switch
@@ -45,14 +50,13 @@ public class EnvironmentInitializer : MonoBehaviour
         _normalMap.currentMap.SetEntranceOffset();
         PlaceBossRoomEntrance(_normalMap);
         PlaceInteractableObjects(_normalMap);
-        
+
 
         MapData _bossMap = LoadMap((MapTheme)_currentTheme, MapType.Boss);
         _bossMap.currentMap.SetEntranceOffset();
         _bossMap.transform.root.position = //기존 맵 왼쪽에 붙여준다. (너무 가까우면 카메라 트랜지션에 보일 수있으므로 약간 떨어뜨림)
             new Vector3(-(_bossMap.currentMap.GetSize.x + 5), 0, 0);
-        
-        
+
 
         return (_normalMap, _bossMap);
     }
@@ -72,7 +76,7 @@ public class EnvironmentInitializer : MonoBehaviour
         if (_selectedMapData != null)
         {
             GameObject _map = Instantiate(_selectedMapData);
-            
+
             return _map.GetComponent<MapData>();
         }
 
@@ -95,7 +99,7 @@ public class EnvironmentInitializer : MonoBehaviour
                 Debug.Log("Too low");
                 continue;
             }
-            
+
             Collider2D _capturedCollider
                 = Physics2D.OverlapBox(_randomPositionInMap + new Vector2(0, _entranceSize.y / 2 + .1f),
                                        _entranceSize,
@@ -116,25 +120,106 @@ public class EnvironmentInitializer : MonoBehaviour
                                                Vector2.down,
                                                .1f,
                                                LayerMask.GetMask("Floor"));
-            
+
             if (a.collider == null || b.collider == null)
             {
                 Debug.Log("Not on the floor");
                 continue;
             }
-            
+
             Debug.Log("Random Position : " + _randomPositionInMap);
             _mapObject.currentMap.bossRoomEntrance = Instantiate(bossRoomEntrance,
-                                                      _randomPositionInMap,
-                                                      Quaternion.identity,
-                                                      _mapObject.sceneObjects).transform;
+                                                                 _randomPositionInMap,
+                                                                 Quaternion.identity,
+                                                                 _mapObject.sceneObjects).transform;
             break;
         } while (true);
     }
 
+    private GameObject PlaceObject(MapData _mapObject, GameObject _gameObject)
+    {
+        GameObject _instantiatedObject;
+        int        _loopCnt    = 0;
+        Vector2    _objectSize = _gameObject.GetComponent<BoxCollider2D>().size;
+        do
+        {
+            if (Tools.LoopLimit(ref _loopCnt)) break;
+
+            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject);
+
+            if (_randomPositionInMap.y < 10)
+            {
+                Debug.Log("Too low");
+                continue;
+            }
+
+            Collider2D _capturedCollider
+                = Physics2D.OverlapBox(_randomPositionInMap + new Vector2(0, _objectSize.y / 2 + .1f),
+                                       _objectSize,
+                                       0,
+                                       LayerMask.GetMask("Floor"));
+            if (_capturedCollider != null)
+            {
+                Debug.Log("Overlap");
+                continue;
+            }
+
+            //오브젝트의 양 끝점 아래가 바닥에 닿아있는지 확인
+            RaycastHit2D _left = Physics2D.Raycast(_randomPositionInMap + Vector2.left * (_objectSize.x / 2),
+                                                   Vector2.down,
+                                                   .1f,
+                                                   LayerMask.GetMask("Floor"));
+            RaycastHit2D _right = Physics2D.Raycast(_randomPositionInMap + Vector2.right * (_objectSize.x / 2),
+                                                    Vector2.down,
+                                                    .1f,
+                                                    LayerMask.GetMask("Floor"));
+
+            if (_left.collider == null || _right.collider == null)
+            {
+                Debug.Log("Not on the floor");
+                continue;
+            }
+
+            Debug.Log("Random Position : " + _randomPositionInMap);
+            _instantiatedObject = Instantiate(_gameObject,
+                                              _randomPositionInMap,
+                                              Quaternion.identity,
+                                              _mapObject.sceneObjects);
+            return _instantiatedObject;
+        } while (true);
+
+        return null;
+    }
+
     private void PlaceInteractableObjects(MapData _normalMap)
     {
-       
+        PlaceAlters(_normalMap);
+        PlaceChests(_normalMap);
+        PlaceCapsules(_normalMap);
+    }
+
+    private void PlaceAlters(MapData _normalMap)
+    {
+    }
+
+    private void PlaceChests(MapData _normalMap)
+    {
+        ObjectPrefabs _prefabs = _normalMap.objectPrefabs;
+
+        for (int _i = 0; _i < MAX_CHEST_COUNT; _i++)
+        {
+            ChestType  _chest    = _normalMap.GetRandomChest();
+            GameObject _chestObj = _normalMap.GetRandomChestGameObject(_chest);
+
+            PlaceObject(_normalMap, _chestObj).GetComponent<ItemBox>().chestType = _chest;
+        }
+    }
+
+    private void PlaceCapsules(MapData _normalMap)
+    {
+        GameObject _capsule = _normalMap.objectPrefabs.capsule;
+        for (int _i = 0; _i < MAX_CAPSULE_COUNT; _i++)
+            PlaceObject(_normalMap, _capsule);
     }
 }
 

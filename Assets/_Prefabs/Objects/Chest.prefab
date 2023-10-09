@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6614768849868005748}
   - component: {fileID: 3658128477031229773}
   - component: {fileID: 6364309550976738222}
-  - component: {fileID: 4219680960925770471}
   - component: {fileID: 1401718130119595140}
+  - component: {fileID: 5273461172848042731}
   m_Layer: 11
   m_Name: Chest
   m_TagString: Untagged
@@ -56,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: d2fccc27f299f8b42a813ddad953fc29, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124,36 +124,15 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.95, y: 1.5}
+    oldSize: {x: 1.75, y: 1.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.95, y: 1.5}
+  m_Size: {x: 1.75, y: 1.5}
   m_EdgeRadius: 0
---- !u!95 &4219680960925770471
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 79804937680875116}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4a6c4142ba975204183dbc1a4209f7bc, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1401718130119595140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,11 +145,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710dc8588f01c8e4cb872f83a30f933f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 4219680960925770471}
+  animator: {fileID: 0}
   text: {fileID: 8570174366137264133}
+  sprites: []
+  itemID: -1
   expAmount: 0
   resourceAmount: 0
   open: 0
+--- !u!114 &5273461172848042731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 79804937680875116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e1a16a1fd91fc4ca8acb8dd3e32906, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  play: 0
+  _sprites:
+  - {fileID: -1051469555, guid: 93ac7704800a5de45b560abae5c8f981, type: 3}
+  - {fileID: -1757148010, guid: 93ac7704800a5de45b560abae5c8f981, type: 3}
+  - {fileID: 1617926527, guid: 93ac7704800a5de45b560abae5c8f981, type: 3}
+  - {fileID: -802518092, guid: 93ac7704800a5de45b560abae5c8f981, type: 3}
+  - {fileID: 1044880766, guid: 93ac7704800a5de45b560abae5c8f981, type: 3}
+  _frameRate: 0
 --- !u!1 &4814117010971938254
 GameObject:
   m_ObjectHideFlags: 0

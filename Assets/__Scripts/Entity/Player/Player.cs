@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,9 +14,9 @@ using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IEntity
 {
-    [Inject] private PlayerManager            _playerManager;
-    [Inject] private CameraManager            _cameraManager;
-    
+    [Inject] private PlayerManager _playerManager;
+    [Inject] private CameraManager _cameraManager;
+
     public int clientID;
 
     private PlayerController _playerController;
@@ -46,8 +47,8 @@ public class Player : MonoBehaviour, IEntity
 
         _playerController      = gameObject.AddComponent<PlayerController>().Initialize(this);
         Controller.playerStats = _stats;
-        
-        _animator              = GetComponent<Animator>();
+
+        _animator = GetComponent<Animator>();
 
         _animator.runtimeAnimatorController = Animation.GetAnimatorController(_playerData.characterName);
 
@@ -67,9 +68,9 @@ public class Player : MonoBehaviour, IEntity
         _collider2D.enabled = false;
         _collider2D.enabled = true;
 
-        if (_playerManager.IsLocalPlayer(clientID)) 
+        if (_playerManager.IsLocalPlayer(clientID))
             _cameraManager.SetCameraFollow(transform);
-        
+
         if (TryGetComponent(out PlayerInput _playerInput))
             _playerInput.uiInputModule = EventSystem.current.GetComponent<InputSystemUIInputModule>();
     }
@@ -120,9 +121,6 @@ public class Player : MonoBehaviour, IEntity
     {
         dead = true;                       //죽었음을 표시
         Controller.SetControllable(false); //이동 불가
-        _animator.SetTrigger("Dead");      //꼭 필요한지는 모르겠음 (체크 필요)
-        _animator.enabled = false;         //애니메이션을 수동으로 조작하기 위해서 비활성화'
-
 
         Collider2D _collider2D = GetComponent<Collider2D>();
 
@@ -132,41 +130,42 @@ public class Player : MonoBehaviour, IEntity
         _collider2D.enabled = false;
         _collider2D.enabled = true;
 
-
         Controller.Rigidbody2D.velocity = Vector2.zero; //속도 초기화
 
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
         Vector2 _direction = new((transform.position - _attacker.transform.position).normalized.x, 2f);
 
-        //해당 x방향이 +이면 SR의 x Flip을 true 아니면 false
-        GetComponent<SpriteRenderer>().flipX = _direction.x > 0;
-
         Controller.Rigidbody2D.AddForce(_direction * 7f, ForceMode2D.Impulse);
-        StartCoroutine(DeadAction());
+        DeadAction();
     }
 
-    private IEnumerator DeadAction()
+    private async void DeadAction()
     {
+        Debug.Log("DEAD");
         AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
-
         //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
 
-        if (_deadClip == null) yield break; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
+        if (_deadClip == null) return; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
+        
+        _animator.SetBool("IsDead", true);
 
         while (true)
         {
-            if (Controller.Rigidbody2D.velocity.sqrMagnitude != 0) //아직 날아가는 중 이라면
-                _deadClip.SampleAnimation(gameObject, 0);          //1번 스프라이트
-            else
+            if (Controller.Rigidbody2D.velocity.sqrMagnitude == 0)
             {
-                _deadClip.SampleAnimation(gameObject, 0.025f); //바닥에 떨어졌다면 2번 스프라이트
-                yield return new WaitForSeconds(1f);
-                _deadClip.SampleAnimation(gameObject, 0.05f); //1초뒤 마지막 스프라이트 (죽은 상태)
-                yield break;
+                Debug.Log("Land");
+                _animator.speed = 1;
+                break;
             }
 
-            yield return null;
+            await UniTask.Yield();
         }
+    }
+
+    private void StopAnimation()
+    {
+        Debug.Log("STOP");
+        _animator.speed = 0;
     }
 }

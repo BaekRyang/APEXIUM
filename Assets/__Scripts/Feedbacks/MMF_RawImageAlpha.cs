@@ -37,7 +37,7 @@ namespace MoreMountains.Feedbacks
 
         // use this override to specify the duration of your feedback (don't hesitate to look at other feedbacks for reference)
         // 피드백의 지속시간을 지정하기 위한 오버라이드(참고를 위해 다른 피드백을 보는 것을 권장)
-        protected override async void CustomPlayFeedback(Vector3 _position, float _feedbacksIntensity = 1.0f)
+        protected override void CustomPlayFeedback(Vector3 _position, float _feedbacksIntensity = 1.0f)
         {
             if (!Active) return;
 

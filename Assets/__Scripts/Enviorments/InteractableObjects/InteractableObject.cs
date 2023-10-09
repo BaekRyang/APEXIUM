@@ -5,8 +5,10 @@ using UnityEngine;
 public abstract class InteractableObject : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private TMP_Text text;
+    [SerializeField] protected TMP_Text text;
 
+    [SerializeField] private Sprite[] sprites;
+    
     protected bool destroyAfterInteract;
 
     private void Start()
@@ -34,13 +36,17 @@ public abstract class InteractableObject : MonoBehaviour
 
     public void Interact(Player _player = null)
     {
-        if (animator != null)
-            animator.Play("Interact");
+        GetComponent<SpriteAnimation>()?.Play();
 
         InteractAction(_player);
 
         if (destroyAfterInteract)
             DestroyAction();
+    }
+
+    private void AnimateSprites()
+    {
+        throw new NotImplementedException();
     }
 
     private void DestroyAction()
