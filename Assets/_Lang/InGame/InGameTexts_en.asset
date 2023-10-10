@@ -16,16 +16,22 @@ MonoBehaviour:
     m_Code: en
   m_SharedData: {fileID: 11400000, guid: 3e2d5f3ddf0b2904d89161e71a043213, type: 2}
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 6026158463761252378
   m_TableData:
   - m_Id: 11983052800
-    m_Localized: 'Cost To Open : '
+    m_Localized: 'Cost To Open : {itemBox.requiredResourceAmount}$'
     m_Metadata:
-      m_Items: []
+      m_Items:
+      - rid: 6026158463761252378
   - m_Id: 2987652997120
     m_Localized: BossName
     m_Metadata:
       m_Items: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 6026158463761252378
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 00e03eca02000000

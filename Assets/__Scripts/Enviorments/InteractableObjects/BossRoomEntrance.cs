@@ -22,6 +22,11 @@ public class BossRoomEntrance : InteractableObject
         _mapManager.GetMap(_rootMapType).transform.root.gameObject.GetComponent<MMF_Player>().Initialization();
     }
 
+    protected override bool InteractPredicate(Player _player)
+    {
+        return true;
+    }
+
     protected override async void InteractAction(Player _player)
     {
         _player.transform.position = transform.position;

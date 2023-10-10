@@ -138,7 +138,6 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private GameObject PlaceObject(MapData _mapObject, GameObject _gameObject)
     {
-        GameObject _instantiatedObject;
         int        _loopCnt    = 0;
         Vector2    _objectSize = _gameObject.GetComponent<BoxCollider2D>().size;
         do
@@ -181,11 +180,11 @@ public class EnvironmentInitializer : MonoBehaviour
             }
 
             Debug.Log("Random Position : " + _randomPositionInMap);
-            _instantiatedObject = Instantiate(_gameObject,
-                                              _randomPositionInMap,
-                                              Quaternion.identity,
-                                              _mapObject.sceneObjects);
-            return _instantiatedObject;
+            
+            return Instantiate(_gameObject,
+                               _randomPositionInMap,
+                               Quaternion.identity,
+                               _mapObject.sceneObjects);
         } while (true);
 
         return null;

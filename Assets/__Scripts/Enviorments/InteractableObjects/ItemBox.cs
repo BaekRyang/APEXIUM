@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.Localization.PropertyVariants;
 
 public class ItemBox : InteractableObject
 {
-    [SerializeField] private int itemID = -1;
     [SerializeField] private int expAmount;
     [SerializeField] private int resourceAmount;
 
-    [SerializeField] private int requiredResourceAmount = -1;
+    [SerializeField] public int requiredResourceAmount = -1;
+
+    public bool IsItemChest => requiredResourceAmount > 0;
 
     [SerializeField] public ChestType chestType;
 
-    public bool open;
+    public   bool open;
 
     private void LateUpdate()
     {
@@ -18,10 +20,19 @@ public class ItemBox : InteractableObject
         if (open) Interact();
     }
 
+    protected override bool InteractPredicate(Player _player)
+    {
+        return requiredResourceAmount <= 0 ||
+               _player.ConsumeResource(requiredResourceAmount);
+    }
+
     protected override void InteractAction(Player _player)
     {
-        if (itemID != -1)
-            EventBus.Publish(new ItemSpawnEvent(PickupType.Item, itemID, transform.position));
+        if (IsItemChest)
+        {
+            int _itemID = GetRandomItem(chestType);
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Item, _itemID, transform.position));
+        }
 
         if (expAmount > 0)
             EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, expAmount, transform.position));
@@ -30,15 +41,15 @@ public class ItemBox : InteractableObject
             EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, resourceAmount, transform.position));
     }
 
+    private int GetRandomItem(ChestType _chestType)
+    {
+        return 0;
+    }
+
     protected override void Initialize()
     {
         destroyAfterInteract = true;
 
-        requiredResourceAmount = GameManager.GetChestCost(chestType);
-
-        if (requiredResourceAmount > 0)
-        {
-            text.text = GameManager.GetCostString(requiredResourceAmount);
-        }
+        requiredResourceAmount = GameManager.GetRandomChestCost(chestType);
     }
 }

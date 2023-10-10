@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 
@@ -70,22 +71,28 @@ public class EnemyBase : MonoBehaviour, IEntity
         if (stats.canKnockback)
             Knockback(p_pAttacker, 200);
 
-        if (stats.Health <= 0)
-        {
-            _enemyAI.animator.SetTrigger("Die");
-            Destroy(this);
-            Destroy(_enemyAI);
-            GetComponent<Rigidbody2D>().simulated = false;
-            GetComponent<Collider2D>().enabled    = false;
-            
-            if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
-                BossHealthDisplay.Instance.UnSyncToBossHealthBar(this);
-        }
+        if (stats.Health <= 0) 
+            Dead();
     }
 
-    private void GetDamage(int p_pDamage)
+    private async void Dead()
     {
-        stats.Health -= p_pDamage;
+        _enemyAI.animator.SetBool("IsDead", true);
+        Destroy(_enemyAI);
+        GetComponent<Rigidbody2D>().simulated = false;
+        GetComponent<Collider2D>().enabled    = false;
+
+        if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
+            BossHealthDisplay.Instance.UnSyncToBossHealthBar(this);
+        
+        //현재 재생중인 애니메이션이 종료될때 까지 대기
+        await new WaitUntil(() => _enemyAI.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
+        Destroy(this);
+    }
+
+    private void GetDamage(int _damage)
+    {
+        stats.Health -= _damage;
 
         //TODO: BossHealthBarDisplay에 어떤식으로 연결시켜서 값을 동기화 시킬까
         OnEnemyHpChange?.Invoke(this, EventArgs.Empty);

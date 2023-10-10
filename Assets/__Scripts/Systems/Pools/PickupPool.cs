@@ -40,7 +40,7 @@ public class PickupPool : MonoBehaviour
         int _availablePickupCount = GetAvailablePickupCount(_pickupType);
 
         if (_pickupType           == PickupType.Item && //아이템은 _value를 ID로 사용한다.
-            _availablePickupCount >= 1)                 //그러니까 한개만 필요함
+            _availablePickupCount < 1)                 //그러니까 한개만 필요함
             InstantiatePickupObject(_pickupType);
         else if (_availablePickupCount < _value)
         {
@@ -62,7 +62,7 @@ public class PickupPool : MonoBehaviour
         int _availablePickupCount = GetAvailablePickupCount(_pickupType);
 
         if (_pickupType           == PickupType.Item && //아이템은 _value를 ID로 사용한다.
-            _availablePickupCount >= 1)                 //그러니까 한개만 필요함
+            _availablePickupCount < 1)                 //그러니까 한개만 필요함
             InstantiatePickupObject(_pickupType, _value);
         else if (_availablePickupCount < _value)
         {
@@ -109,6 +109,7 @@ public class PickupPool : MonoBehaviour
 
     private static void InitializePickupObject(PickupType _pickupType, GameObject _pickup, Pickup _pickupComponent, SpriteRenderer _pickupSpriteRenderer)
     {
+        _pickupComponent.pickupType = _pickupType;
         switch (_pickupType)
         {
             case PickupType.Item:

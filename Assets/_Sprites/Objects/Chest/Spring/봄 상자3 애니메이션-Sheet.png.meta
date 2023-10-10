@@ -128,7 +128,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 36
+        width: 38
         height: 32
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -147,9 +147,9 @@ TextureImporter:
       name: "\uBD04 \uC0C1\uC7903 \uC560\uB2C8\uBA54\uC774\uC158-Sheet_1"
       rect:
         serializedVersion: 2
-        x: 36
+        x: 38
         y: 0
-        width: 36
+        width: 38
         height: 32
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -168,9 +168,9 @@ TextureImporter:
       name: "\uBD04 \uC0C1\uC7903 \uC560\uB2C8\uBA54\uC774\uC158-Sheet_2"
       rect:
         serializedVersion: 2
-        x: 72
+        x: 76
         y: 0
-        width: 36
+        width: 38
         height: 32
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -189,9 +189,9 @@ TextureImporter:
       name: "\uBD04 \uC0C1\uC7903 \uC560\uB2C8\uBA54\uC774\uC158-Sheet_3"
       rect:
         serializedVersion: 2
-        x: 108
+        x: 114
         y: 0
-        width: 36
+        width: 38
         height: 32
       alignment: 7
       pivot: {x: 0.5, y: 0}
@@ -210,9 +210,9 @@ TextureImporter:
       name: "\uBD04 \uC0C1\uC7903 \uC560\uB2C8\uBA54\uC774\uC158-Sheet_4"
       rect:
         serializedVersion: 2
-        x: 144
+        x: 152
         y: 0
-        width: 36
+        width: 38
         height: 32
       alignment: 7
       pivot: {x: 0.5, y: 0}

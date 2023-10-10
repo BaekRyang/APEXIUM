@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Pickup : MonoBehaviour
 {
-    [SerializeField] private PickupType pickupType;
+    [SerializeField] public  PickupType pickupType;
     [SerializeField] private int        value;
     [SerializeField] private bool       interactable = false;
     public                   Vector2    _targetPosition;
