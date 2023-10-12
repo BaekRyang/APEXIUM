@@ -1,7 +1,17 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class Item
 {
+    public enum ItemRarity
+    {
+        Common,
+        Uncommon,
+        Rare,
+        Epic
+    }
+    
     public int id;
     public static Item ToItem(int _id)
     {

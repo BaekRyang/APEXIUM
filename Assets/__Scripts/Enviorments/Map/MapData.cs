@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MapData : MonoBehaviour
 {
-    public Transform                sceneObjects;
-    public Transform                background;
-    public PlayMap                  currentMap;
-    public ObjectPrefabs            objectPrefabs;
+    public Transform                   sceneObjects;
+    public Transform                   background;
+    public PlayMap                     currentMap;
+    public ObjectPrefabs               objectPrefabs;
     public List<SpawnRatio<ChestType>> spawnRatio;
+    public List<EnemyData>             spawnableEnemies;
 
     public ChestType GetRandomChest()
     {
@@ -64,7 +66,7 @@ public static class SpawnRatioExt
         foreach (SpawnRatio<T> _ratio in _list)
             _totalRatio += _ratio.ratio;
 
-        float _randomRatio = UnityEngine.Random.Range(0, _totalRatio);
+        float _randomRatio = Random.Range(0, _totalRatio);
 
         foreach (SpawnRatio<T> _ratio in _list)
         {

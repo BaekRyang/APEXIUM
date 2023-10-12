@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -8,9 +9,9 @@ public class Pickup : MonoBehaviour
 {
     [SerializeField] public  PickupType pickupType;
     [SerializeField] private int        value;
-    [SerializeField] private bool       interactable = false;
-    public                   Vector2    _targetPosition;
-    public                   Vector2    _randomDirection;
+    [SerializeField] private bool       interactable;
+    public                   Vector2    targetPosition;
+    public                   Vector2    randomDirection;
 
     public Rigidbody2D _rigidbody2D;
 
@@ -37,8 +38,9 @@ public class Pickup : MonoBehaviour
         switch (pickupType)
         {
             case PickupType.Item:
-                _rigidbody2D.AddForce(new Vector2(0, 1) * 2f, ForceMode2D.Impulse);
+                await FloatingMove();
                 break;
+            
             case PickupType.Resource:
                 //위쪽 방향으로 랜덤한 힘을 가함
                 _rigidbody2D.AddForce(new Vector2(Random.Range(-.7f, .7f), Random.Range(1f, 2f)) * 7.5f, ForceMode2D.Impulse);
@@ -57,19 +59,36 @@ public class Pickup : MonoBehaviour
         }
     }
 
+    private const float FLOATING_DISTANCE = 1;
+    private const float FLOATING_DURATION = .5f;
+    private async UniTask FloatingMove()
+    {
+        Vector2 _originPosition = transform.position;
+        targetPosition = _originPosition + new Vector2(0, FLOATING_DISTANCE);
+
+        float _elapsedTime = 0;
+        
+        while (_elapsedTime < FLOATING_DURATION)
+        {
+            transform.position = Vector2.Lerp(_originPosition, targetPosition, EaseOut(_elapsedTime / FLOATING_DURATION));
+            _elapsedTime       += Time.deltaTime;
+            await UniTask.Yield();
+        }
+    }
+
     private async UniTask SpreadObject()
     {
         //3의 범위 안의 랜덤한 방향을 구한다.
-        _randomDirection = new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
+        randomDirection = new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
         Vector2 _originPosition = transform.position;
-        _targetPosition = _originPosition + _randomDirection;
+        targetPosition = _originPosition + randomDirection;
 
         //해당 방향으로 0.2초동안 이동한다.
         float _elapsedTime = 0;
         float _duration    = 1f; //TODO: duration은 다른곳에 옮기는것이 좋을듯
         while (_elapsedTime < _duration)
         {
-            transform.position =  Vector2.Lerp(_originPosition, _targetPosition, EaseOut(_elapsedTime / _duration));
+            transform.position =  Vector2.Lerp(_originPosition, targetPosition, EaseOut(_elapsedTime / _duration));
             _elapsedTime       += Time.deltaTime;
             await UniTask.Yield();
         }
@@ -128,23 +147,23 @@ public class Pickup : MonoBehaviour
     }
 
     //TODO: 임시로 만들었음(옮기거나 삭제)
-    public static float Linear(float t) //선형보간
+    public static float Linear(float _t) //선형보간
     {
-        return t;
+        return _t;
     }
 
-    public static float EaseOut(float t)
+    public static float EaseOut(float _t)
     {
-        return Mathf.Sin(Mathf.Pow(t, 0.5f) * Mathf.PI / 2);
+        return Mathf.Sin(Mathf.Pow(_t, 0.5f) * Mathf.PI / 2);
     }
 
-    public static float EaseIn(float t)
+    public static float EaseIn(float _t)
     {
-        return 1 - Mathf.Cos((t * Mathf.PI) / 2);
+        return 1 - Mathf.Cos((_t * Mathf.PI) / 2);
     }
 
-    public static float EaseInOut(float t)
+    public static float EaseInOut(float _t)
     {
-        return -0.5f * (Mathf.Cos(Mathf.PI * t) - 1);
+        return -0.5f * (Mathf.Cos(Mathf.PI * _t) - 1);
     }
 }

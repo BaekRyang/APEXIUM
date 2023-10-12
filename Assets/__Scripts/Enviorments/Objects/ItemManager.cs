@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum PickupType
@@ -17,9 +18,14 @@ public enum PickupSize
 
 public class ItemManager : MonoBehaviour
 {
-    private void Awake()
+    private void OnEnable()
     {
         EventBus.Subscribe<ItemSpawnEvent>(InstantiateItemHandler);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<ItemSpawnEvent>(InstantiateItemHandler);
     }
 
     private void InstantiateItemHandler(ItemSpawnEvent _event)

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Localization.PropertyVariants;
 
 public class ItemBox : InteractableObject
 {
@@ -12,7 +11,7 @@ public class ItemBox : InteractableObject
 
     [SerializeField] public ChestType chestType;
 
-    public   bool open;
+    public bool open;
 
     private void LateUpdate()
     {
@@ -43,13 +42,19 @@ public class ItemBox : InteractableObject
 
     private int GetRandomItem(ChestType _chestType)
     {
-        return 0;
+        Debug.Log($"<color=red>GetRandomItem</color> : {GameManager.GetRarityFromChestType(_chestType)}");
+        return Random.Range(0, 100);
     }
 
     protected override void Initialize()
     {
         destroyAfterInteract = true;
-
+        
         requiredResourceAmount = GameManager.GetRandomChestCost(chestType);
+
+        if (IsItemChest) return;
+        
+        expAmount      = GameManager.GetRandomCapsuleReward(PickupType.Exp);
+        resourceAmount = GameManager.GetRandomCapsuleReward(PickupType.Resource);
     }
 }

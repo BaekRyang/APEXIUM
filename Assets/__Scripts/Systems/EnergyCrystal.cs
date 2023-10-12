@@ -1,23 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EnergyCrystal : MonoBehaviour
 {
-    public static EnergyCrystal Instance;
-
     [SerializeField] private TMP_Text _valueText;
 
     private bool IsEmphasis => remainingEmphasisTime > 0 || remainingReturnTime > 0;
 
     private void Awake()
     {
-        Instance ??= this;
-
         GetComponent<UIElementUpdater>().OnUpdateValue += (_, _) => SetValue();
     }
     
@@ -66,9 +59,9 @@ public class EnergyCrystal : MonoBehaviour
 
                 await UniTask.Yield();
             }
-            catch (Exception e)
+            catch (Exception _e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(_e);
                 throw;
             }
         }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using Random = UnityEngine.Random;
 
 public static class GameManager
 {
@@ -12,7 +14,7 @@ public static class GameManager
     private const float REWARD_CAPSULE_EXP      = 10;
 
     private const float REWARD_MULTIPLIER_LEVEL = 1.5f;
-    private const float REWARD_RANDOM_RANGE     = 0.1f;
+    private const float REWARD_RANDOM_RANGE     = 0.3f;
 
     public static int GetRandomCapsuleReward(PickupType _pickupType)
     {
@@ -56,16 +58,38 @@ public static class GameManager
 
     private const float COST_MULTIPLIER_LEVEL = 1.5f;
 
-    private const float COST_RANDOM_RANGE = 0.05f;
+    private const float COST_RANDOM_RANGE = 0.2f;
 
 #endregion
 
 #region ChestItemRatio
 
-    public static Vector4 RATIO_CHEST_SMALL     = new(0.60f, 0.30f, 0.10f, 0.00f);
-    public static Vector4 RATIO_CHEST_MEDIUM    = new(0.20f, 0.53f, 0.19f, 0.08f);
-    public static Vector4 RATIO_CHEST_LARGE     = new(0.10f, 0.45f, 0.30f, 0.15f);
-    public static Vector4 RATIO_CHEST_LEGENDARY = new(0.00f, 0.30f, 0.36f, 0.29f);
+    public static Vector4 RATIO_CHEST_SMALL     = new(0.65f, 0.30f, 0.05f, 0.00f);
+    public static Vector4 RATIO_CHEST_MEDIUM    = new(0.30f, 0.47f, 0.20f, 0.03f);
+    public static Vector4 RATIO_CHEST_LARGE     = new(0.10f, 0.30f, 0.50f, 0.10f);
+    public static Vector4 RATIO_CHEST_LEGENDARY = new(0.00f, 0.10f, 0.20f, 0.70f);
+
+    public static Item.ItemRarity GetRarityFromChestType(ChestType _chestType)
+    {
+        float   _randomRatio = Random.Range(0, 1f);
+        Vector4 _targetRatio = _chestType switch
+        {
+            ChestType.Small     => RATIO_CHEST_SMALL,
+            ChestType.Medium    => RATIO_CHEST_MEDIUM,
+            ChestType.Large     => RATIO_CHEST_LARGE,
+            ChestType.Legendary => RATIO_CHEST_LEGENDARY
+        };
+        
+        
+        if (_randomRatio < _targetRatio.x)
+            return Item.ItemRarity.Common;
+        if (_randomRatio < _targetRatio.x + _targetRatio.y)
+            return Item.ItemRarity.Uncommon;
+        if (_randomRatio < _targetRatio.x + _targetRatio.y + _targetRatio.z)
+            return Item.ItemRarity.Rare;
+        return Item.ItemRarity.Epic;
+
+    }
     
 #endregion
 }

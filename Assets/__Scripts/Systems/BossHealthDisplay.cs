@@ -18,32 +18,32 @@ public class BossHealthDisplay : MonoBehaviour
         bar.UpdateBar(Math.Max(0, _syncedEnemyBase.stats.Health), 0, _syncedEnemyBase.stats.MaxHealth);
     }
 
-    public void SyncToBossHealthBar(EnemyBase p_enemyBase, int p_priority = 0)
+    public void SyncToBossHealthBar(EnemyBase _enemyBase, int _priority = 0)
     {
-        if (_priority > p_priority) return;
+        if (this._priority > _priority) return;
 
-        _syncedEnemyBase = p_enemyBase;
+        _syncedEnemyBase = _enemyBase;
 
-        bar.TextValueMultiplier = p_enemyBase.stats.MaxHealth;
-        _priority               = p_priority;
+        bar.TextValueMultiplier = _enemyBase.stats.MaxHealth;
+        this._priority          = _priority;
 
         _syncedEnemyBase.OnEnemyHpChange += OnHealthChange;
 
         bar.SetBar01(1) ;
     }
 
-    public void UnSyncToBossHealthBar(EnemyBase p_enemyBase)
+    public void UnSyncToBossHealthBar(EnemyBase _enemyBase)
     {
-        if (_syncedEnemyBase != p_enemyBase) return;
+        if (_syncedEnemyBase != _enemyBase) return;
 
         _syncedEnemyBase.OnEnemyHpChange -= OnHealthChange;
         _syncedEnemyBase                 =  null;
         _priority                        =  -1;
     }
 
-    private void OnHealthChange(object p_sender, EventArgs p_args)
+    private void OnHealthChange(object _sender, EventArgs _args)
     {
-        if (_syncedEnemyBase != (EnemyBase)p_sender) return;
+        if (_syncedEnemyBase != (EnemyBase)_sender) return;
         UpdateHealth();
     }
 }

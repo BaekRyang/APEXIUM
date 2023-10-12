@@ -11,6 +11,7 @@ public class LocalInstaller : MonoBehaviour
     public RawImage[]    transitionTexture;
     public Image         shieldBlackBoard;
     public VolumeProfile volumeProfile;
+    public ObjectPoolManager objectPoolManager;
     
     private void Awake()
     {
@@ -23,5 +24,6 @@ public class LocalInstaller : MonoBehaviour
         _container.Regist(transitionTexture);
         _container.Regist(shieldBlackBoard, "ShieldBlackBoard");
         _container.Regist(volumeProfile);
+        _container.Regist(objectPoolManager);
     }
 }

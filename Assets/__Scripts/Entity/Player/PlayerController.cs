@@ -404,7 +404,6 @@ public class PlayerController : MonoBehaviour
 
         //실제 점프 및 점프관련 애니메이션 실행
         _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, _jumpHeight);
-        Animation.PlayAnimation(_player._animator, "Jump");
         _player._animator.SetBool("IsJump", true);
 
         if (jumpGraceTimer > 0)              //정상적으로 점프를 했다면

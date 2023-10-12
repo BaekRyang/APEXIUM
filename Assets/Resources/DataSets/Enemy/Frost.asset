@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Frost
   stats:
+    isLocalPlayer: 0
     health: 200
     maxHealth: 200
     attackDamage: 10
@@ -31,3 +32,5 @@ MonoBehaviour:
     attackRange: 5
     stopWhenAttack: 1
   isBoss: 0
+  sprite: {fileID: 1971348537, guid: d4a72dcf95cb9724286d96fc607cc8e3, type: 3}
+  animatorController: {fileID: 9100000, guid: bb89c67884654db4aa885e157dd7beb5, type: 2}

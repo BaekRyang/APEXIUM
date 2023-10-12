@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -19,5 +20,9 @@ public class PlayerData : ScriptableObject
     public string skillSecondary;
     public string skillUtility;
     public string skillUltimate; 
+    
+    [Space] [Header("Sprites")]
+    public Sprite sprite;
+    public AnimatorController animatorController;
 }
     

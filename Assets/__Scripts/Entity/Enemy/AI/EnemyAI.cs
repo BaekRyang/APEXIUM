@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    private const float DAZED_DURATION        = 0.35f;
+    private const float DAZED_DURATION = 0.35f;
 
     public EnemyBase enemyBase;
 
@@ -40,20 +40,22 @@ public class EnemyAI : MonoBehaviour
     }
 
     [Space]
-
     public Dictionary<string, State> States;
-    [SerializeReference] private State  currentState;
-    
+
+    [SerializeReference] private State currentState;
+    private static readonly      int   IsAttacked = Animator.StringToHash("IsAttacked");
+    private static readonly      int   IsWalk     = Animator.StringToHash("IsWalk");
+    private static readonly      int   Attacked   = Animator.StringToHash("Attacked");
+
     public void Initialize(EnemyBase _enemyBase)
     {
-        thisCollider = GetComponent<Collider2D>();
-        enemyBase         = _enemyBase;
-        cachedTransform    = transform;
+        thisCollider    = GetComponent<Collider2D>();
+        enemyBase       = _enemyBase;
+        cachedTransform = transform;
 
         bodySize = thisCollider.bounds.size;
 
-        animator                           = GetComponent<Animator>();
-        animator.runtimeAnimatorController = Animation.GetAnimatorController(enemyBase.stats.enemyName);
+        animator = enemyBase.animator;
 
         States = new Dictionary<string, State>
                  {
@@ -80,27 +82,26 @@ public class EnemyAI : MonoBehaviour
         }
 
         if (_stunned || _dazed) return;
-        animator.SetBool("IsAttacked", false);
+        animator.SetBool(IsAttacked, false);
 
         CurrentState.Execute();
 
         //지금 animation의 state가 Attack이면 return;
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
-        
-        FlipEntity();
 
+        FlipEntity();
     }
 
     private void FlipEntity() => cachedTransform.localScale = new Vector3(targetDirection.normalized.x, 1, 1);
+
     //_targetDirection은 언제나 단위벡터이지만, 혹시 모르니까 정규화 
 
-    
     public void Stun(float _stunDuration)
     {
         if (!enemyBase.stats.canStun) return;
-        animator.SetBool("IsWalk",    false);
-        animator.SetBool("IsAttacked", true);
-        animator.SetTrigger("Attacked");
+        animator.SetBool(IsWalk,     false);
+        animator.SetBool(IsAttacked, true);
+        animator.SetTrigger(Attacked);
         _stunned = true;
         if (!(_stunTime > _stunDuration)) //기존 스턴시간이 더 길면 무시
             _stunTime = _stunDuration;
@@ -109,14 +110,10 @@ public class EnemyAI : MonoBehaviour
     public void Daze()
     {
         if (!enemyBase.stats.canDazed) return;
-        animator.SetBool("IsWalk",    false);
-        animator.SetBool("IsAttacked", true);
-        animator.SetTrigger("Attacked");
+        animator.SetBool(IsWalk,     false);
+        animator.SetBool(IsAttacked, true);
+        animator.SetTrigger(Attacked);
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
     }
-
-
-
-    
 }

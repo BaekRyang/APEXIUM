@@ -364,7 +364,7 @@ PrefabInstance:
     - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4512246943716303404, guid: 31dbabe34224369498f5cb358cb33d5f,
         type: 3}
@@ -452,6 +452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dc30dfdc072874182eb621a36377f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: 
   stats:
     isLocalPlayer: 0
     health: 100
@@ -470,6 +471,7 @@ MonoBehaviour:
     attackType: 0
     attackRange: 0
     stopWhenAttack: 0
+  animator: {fileID: 0}
 --- !u!114 &-8639249466388217110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,7 +535,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 5, y: 5}
     newSize: {x: 0.64949644, y: 1.6503333}
     adaptiveTilingThreshold: 0.5
@@ -542,14 +544,23 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 1.4375, y: 0.75}
-      - {x: -0.9375, y: 0.75}
-      - {x: -1.3125, y: 0.4375}
-      - {x: -1.3125, y: -0.25}
-      - {x: -1.125, y: -0.5}
-      - {x: 1.6875, y: -0.5}
-      - {x: 1.9375, y: -0.1875}
-      - {x: 1.9375, y: 0.125}
+    - - {x: 2.0249999, y: 3}
+      - {x: 2.0249999, y: 3.375}
+      - {x: 1.6499999, y: 4.1875}
+      - {x: 1.1499999, y: 4.6875}
+      - {x: 0.83749986, y: 4.6875}
+      - {x: 0.71249986, y: 4.375}
+      - {x: 0.46249986, y: 4}
+      - {x: 0.024999857, y: 3.6875}
+      - {x: -0.91250014, y: 3.5625}
+      - {x: -1.5375001, y: 2.4375}
+      - {x: -1.5375001, y: 1.875}
+      - {x: -1.2875001, y: 0.375}
+      - {x: -1.1000001, y: 0}
+      - {x: 0.77499986, y: 0}
+      - {x: 1.2124999, y: 0.5}
+      - {x: 1.3374999, y: 1.25}
+      - {x: 1.9624999, y: 2.3125}
   m_UseDelaunayMesh: 0
 --- !u!4 &7746770201873532363 stripped
 Transform:

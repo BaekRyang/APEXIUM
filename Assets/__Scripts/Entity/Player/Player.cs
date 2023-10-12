@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cinemachine;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using Unity.VisualScripting;
@@ -10,7 +7,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IEntity
 {
@@ -50,7 +46,8 @@ public class Player : MonoBehaviour, IEntity
 
         _animator = GetComponent<Animator>();
 
-        _animator.runtimeAnimatorController = Animation.GetAnimatorController(_playerData.characterName);
+        GetComponent<SpriteRenderer>().sprite = _playerData.sprite;
+        _animator.runtimeAnimatorController   = _playerData.animatorController;
 
         skills.Add(SkillTypes.Item,      SkillFactory.MakeSkill("ItemSkill",                this));
         skills.Add(SkillTypes.Passive,   SkillFactory.MakeSkill(_playerData.skillPassive,   this));
@@ -142,13 +139,13 @@ public class Player : MonoBehaviour, IEntity
 
     private async void DeadAction()
     {
-        Debug.Log("DEAD");
         AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
         Time.timeScale = 0.3f;
+
         //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
 
         if (_deadClip == null) return; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
-        
+
         _animator.SetBool("IsDead", true);
 
         //0.3초에 걸쳐서 TimeScale을 1으로 만든다.(Lerp)
@@ -156,17 +153,16 @@ public class Player : MonoBehaviour, IEntity
         float _duration    = 5f;
         while (_elapsedTime < _duration)
         {
-            Time.timeScale = Mathf.Lerp(0.1f, 1f, _elapsedTime / _duration);
-            _elapsedTime  += Time.unscaledDeltaTime;
+            Time.timeScale =  Mathf.Lerp(0.1f, 1f, _elapsedTime / _duration);
+            _elapsedTime   += Time.unscaledDeltaTime;
             await UniTask.Yield();
         }
-        
-        
+
+
         while (true)
         {
             if (Controller.Rigidbody2D.velocity.sqrMagnitude == 0)
             {
-                Debug.Log("Land");
                 _animator.speed = 1;
                 break;
             }
@@ -185,9 +181,8 @@ public class Player : MonoBehaviour, IEntity
     {
         Debug.Log($"<color=green>ConsumeResource : {_requiredResourceAmount} - {Stats.EnergyCrystal}</color>");
         if (Stats.EnergyCrystal < _requiredResourceAmount) return false;
-        
+
         Stats.EnergyCrystal -= _requiredResourceAmount;
         return true;
-
     }
 }

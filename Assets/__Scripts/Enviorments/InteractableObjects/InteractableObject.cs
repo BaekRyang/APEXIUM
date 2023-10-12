@@ -48,11 +48,6 @@ public abstract class InteractableObject : MonoBehaviour
 
     protected abstract bool InteractPredicate(Player _player);
 
-    private void AnimateSprites()
-    {
-        throw new NotImplementedException();
-    }
-
     private void DestroyAction()
     {
         DestroyImmediate(text.gameObject);

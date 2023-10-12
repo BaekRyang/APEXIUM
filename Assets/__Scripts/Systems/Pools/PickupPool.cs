@@ -10,8 +10,11 @@ public class PickupPool : MonoBehaviour
 {
     public static PickupPool Instance;
 
-    private static readonly Dictionary<PickupType, List<Pickup>> PickupPools          = new();
-    private static readonly Dictionary<PickupType, Transform>    PickupPoolTransforms = new();
+    private readonly Dictionary<PickupType, List<Pickup>> PickupPools          = new();
+    private readonly Dictionary<PickupType, Transform>    PickupPoolTransforms = new();
+
+    [SerializeField] private Sprite                  _nullSprite;
+    private                  Dictionary<int, Sprite> _itemSprites = new();
 
     private void Start()
     {
@@ -155,6 +158,6 @@ public class PickupPool : MonoBehaviour
 
     private Sprite GetSpriteFromID(int _id)
     {
-        return null;
+        return _nullSprite;
     }
 }
