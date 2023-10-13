@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,8 +16,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private const int MAX_ENEMIES = 30;
     [SerializeField] private       int currentEnemies;
 
-    private                  UniTask spawnTask;
-    [SerializeField] private string    taskStatus;
+    [SerializeField] private string taskStatus;
+    [SerializeField] private bool   doSpawn;
+    private const            int    INITIALIZE_DELAY = 5;
+    private const            int    SPAWN_FREQUENCY  = 1;
+
     private void OnEnable()
     {
         EventBus.Subscribe<PlayMapChangedEvent>(PlayMapChangedHandler);
@@ -32,7 +36,7 @@ public class EnemySpawner : MonoBehaviour
         DIContainer.Inject(this);
         _objectPoolManager.MakePool<EnemyBase>("Assets/_Prefabs/Entities/Enemy.prefab", 10);
 
-        spawnTask = SpawnEnemy();
+        SpawnEnemy();
     }
 
     private void PlayMapChangedHandler(PlayMapChangedEvent _obj)
@@ -49,31 +53,29 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log("Spawnable enemies: " + _spawnableEnemies.Count);
     }
 
-    private void Update()
-    {
-        taskStatus = spawnTask.Status.ToString();
-    }
-
     private async UniTask SpawnEnemy()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(5));
-        
+        await UniTask.Delay(TimeSpan.FromSeconds(INITIALIZE_DELAY));
+
         while (true)
         {
+            if (!doSpawn)
+                return;
+
             if (currentEnemies >= MAX_ENEMIES)
                 return;
-            
+
             EnemyData _enemyData   = GetRandomEnemy();
-            EnemyBase _enemyObject = _objectPoolManager.GetObj<EnemyBase>(false);
-            
+            EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
+
             _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_playerManager.GetRandomPlayer());
 
             _enemyObject.Initialize(_enemyData);
             _enemyObject.gameObject.SetActive(true);
-            
+
             currentEnemies++;
             Debug.Log($"<color=green>Enemy spawned</color> : {_enemyData.name} in {_enemyObject.transform.position}");
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            await UniTask.Delay(TimeSpan.FromSeconds(SPAWN_FREQUENCY));
         }
     }
 

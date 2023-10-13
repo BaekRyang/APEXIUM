@@ -110,7 +110,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         //현재 재생중인 애니메이션이 종료될때 까지 대기
         await new WaitUntil(() => _enemyAI.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
 
-        _objectPoolManager.ReturnObj(this);
+        _objectPoolManager.ReturnObject(this);
     }
 
     private void GetDamage(int _damage)

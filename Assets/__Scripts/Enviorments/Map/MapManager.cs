@@ -94,8 +94,8 @@ public class MapManager : MonoBehaviour
         
         float _yOffset  = _position.y;
         
-        Vector2 _rightTopPoint = new Vector2(_position.x + 20, _position.y + 20);
-        Vector2 _leftTopPoint = new Vector2(_position.x - 20, _position.y + 20);
+        Vector2 _rightTopPoint = new Vector2(_position.x + 20, _position.y + 15);
+        Vector2 _leftTopPoint = new Vector2(_position.x - 20, _position.y + 15);
         
         Vector2     _randomTopPoint     = new Vector2(Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
         

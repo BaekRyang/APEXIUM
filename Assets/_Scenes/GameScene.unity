@@ -16745,6 +16745,7 @@ MonoBehaviour:
   _spawnableEnemies: []
   currentEnemies: 0
   taskStatus: 
+  doSpawn: 0
 --- !u!1001 &1530362678
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3,124 +3,109 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+interface IComponentPool
+{
+    void       ReturnObject(Component _obj);
+    Component  GetObject(bool         _isActive);
+    GameObject GetOriginalPrefab();
+}
+
+public class ObjectPool<T> : IComponentPool where T : Component
+{
+    private readonly Transform  _parentTransform;
+    private readonly GameObject _prefab;
+    private readonly Queue<T>   _pool = new();
+
+    public ObjectPool(Transform _parentTransform, GameObject _prefab, int _poolSize)
+    {
+        this._parentTransform = _parentTransform;
+        this._prefab          = _prefab;
+
+        for (int i = 0; i < _poolSize; i++)
+        {
+            GameObject _obj = GameObject.Instantiate(_prefab, this._parentTransform);
+            _obj.SetActive(false);
+            _pool.Enqueue(_obj.GetComponent<T>());
+        }
+    }
+
+    public void ReturnObject(Component obj)
+    {
+        obj.gameObject.SetActive(false);
+        obj.transform.SetParent(this._parentTransform);
+        _pool.Enqueue(obj as T);
+    }
+
+    public GameObject GetOriginalPrefab()
+    {
+        return _prefab;
+    }
+
+    public Component GetObject(bool _isActive)
+    {
+        if (_pool.Count == 0)
+        {
+            GameObject _gameObject = GameObject.Instantiate(_prefab, _parentTransform);
+            _gameObject.SetActive(_isActive);
+            return _gameObject.GetComponent<T>();
+        }
+
+        T _obj = _pool.Dequeue();
+        _obj.gameObject.SetActive(_isActive);
+        return _obj;
+    }
+}
+
 public class ObjectPoolManager : MonoBehaviour
 {
-    public interface IComponentPool
+    private readonly Dictionary<string, IComponentPool> _pools       = new();
+    private readonly Dictionary<Component, string>      _objPath     = new();
+    private readonly Dictionary<Type, string>           _defaultPath = new();
+
+    public GameObject GetPrefab<T>() where T : Component => _pools[_defaultPath[typeof(T)]].GetOriginalPrefab();
+
+    public void MakePool<T>(string _path, int _size) where T : Component
     {
-        void      ReturnObj(Component obj);
-        Component GetObject(bool      _isActive);
-
-        GameObject GetPrefab();
-    }
-
-    public class ObjPool<T> : IComponentPool where T : Component
-    {
-        public          Transform  parentTransform;
-        public          GameObject prefab;
-        public readonly Queue<T>   pool = new();
-
-        public ObjPool(Transform _parentTransform, GameObject _prefab, int _poolSize)
-        {
-            parentTransform = _parentTransform;
-            prefab          = _prefab;
-
-            for (int i = 0; i < _poolSize; i++)
-            {
-                var _obj = Instantiate(_prefab, parentTransform);
-                _obj.SetActive(false);
-                pool.Enqueue(_obj.GetComponent<T>());
-            }
-        }
-
-        public void ReturnObj(Component obj)
-        {
-            obj.gameObject.SetActive(false);
-            obj.transform.SetParent(this.parentTransform);
-            pool.Enqueue(obj as T);
-        }
-
-        public GameObject GetPrefab()
-        {
-            return prefab;
-        }
-
-        public Component GetObject(bool _isActive)
-        {
-            T obj;
-
-            if (pool.Count == 0)
-            {
-                var gameObj = Instantiate(prefab, parentTransform);
-                obj = gameObj.GetComponent<T>();
-                obj.gameObject.SetActive(_isActive);
-
-                return obj;
-            }
-
-            obj = pool.Dequeue();
-            obj.gameObject.SetActive(_isActive);
-            return obj;
-        }
-    }
-
-    private readonly Dictionary<string, IComponentPool> _pools = new();
-    private readonly Dictionary<Component, string> _objPath = new();
-    private readonly Dictionary<Type, string> _defaultPath = new();
-    
-    public GameObject GetPrefab<T>() where T : Component => _pools[_defaultPath[typeof(T)]].GetPrefab();
-
-    public void MakePool<T>(string path, int size) where T : Component
-    {
-        if (_pools.ContainsKey(path))
-        {
+        if (_pools.ContainsKey(_path))
             return;
-        }
 
-        var _obj = Addressables.LoadAssetAsync<GameObject>(path).WaitForCompletion();
+        GameObject _originalPrefab = Addressables.LoadAssetAsync<GameObject>(_path).WaitForCompletion();
 
-        var _poolObj = new GameObject();
-        _poolObj.name = _obj.name + "Pool";
-
+        GameObject _poolObj = new(_originalPrefab.name + "Pool");
         _poolObj.transform.SetParent(transform);
 
-        var pool = new ObjPool<T>(_poolObj.transform, _obj, size);
-
-        _pools.Add(path, pool);
-
-        _defaultPath[typeof(T)] = path;
+        var _pool = new ObjectPool<T>(_poolObj.transform, _originalPrefab, _size);
+        _pools.Add(_path, _pool);
+        _defaultPath[typeof(T)] = _path;
     }
 
-    public T GetObj<T>(bool _isActive = true) where T : Component => GetObj<T>(_defaultPath[typeof(T)], _isActive);
+    public T GetObject<T>(bool _isActive = true) where T : Component => GetObject<T>(_defaultPath[typeof(T)], _isActive);
 
-    public T GetObj<T>(string _path, bool _isActive = true) where T : Component
+    public T GetObject<T>(string _path, bool _isActive = true) where T : Component
     {
-        if (_pools.ContainsKey(_path) == false) 
+        if (_pools.ContainsKey(_path) == false)
             throw new Exception("Not Exist Pool " + _path);
 
-        var obj = _pools[_path].GetObject(_isActive) as T;
+        T _obj = _pools[_path].GetObject(_isActive) as T;
 
-        _objPath.Add(obj, _path);
+        _objPath.Add(_obj, _path);
 
-        return obj;
+        return _obj;
     }
 
-    public void ReturnObj<T>(T obj) where T : Component
+    public void ReturnObject<T>(T _object) where T : Component
     {
-        if (_objPath.ContainsKey(obj) == false)
-        {
-            throw new Exception("Not from ObjPool:  " + obj.name);
-        }
+        if (_objPath.ContainsKey(_object) == false)
+            throw new Exception("Not from ObjPool:  " + _object.name);
 
-        var path = _objPath[obj];
-        _pools[path].ReturnObj(obj);
-        _objPath.Remove(obj);
+        string _path = _objPath[_object];
+        _pools[_path].ReturnObject(_object);
+        _objPath.Remove(_object);
     }
 
     private void OnDestroy()
     {
-        foreach (var pool in _pools)
-        {
-            Addressables.Release(pool.Value.GetPrefab());
-        }
+        foreach (var _pool in _pools)
+            Addressables.Release(_pool.Value.GetOriginalPrefab());
     }
 }
