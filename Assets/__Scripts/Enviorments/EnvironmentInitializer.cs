@@ -86,13 +86,14 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private void PlaceBossRoomEntrance(MapData _mapObject)
     {
-        int     _loopCnt      = 0;
-        Vector2 _entranceSize = bossRoomEntrance.GetComponent<BoxCollider2D>().size;
+        int     _loopCnt       = 0;
+        Vector2 _outlineOffset = new(){x = 10, y = 10};
+        Vector2 _entranceSize  = bossRoomEntrance.GetComponent<BoxCollider2D>().size;
         do
         {
             if (Tools.LoopLimit(ref _loopCnt)) break;
 
-            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject);
+            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject, _outlineOffset);
 
             if (_randomPositionInMap.y < 10)
             {
@@ -138,17 +139,18 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private GameObject PlaceObject(MapData _mapObject, GameObject _gameObject)
     {
-        int        _loopCnt    = 0;
-        Vector2    _objectSize = _gameObject.GetComponent<BoxCollider2D>().size;
+        int     _loopCnt       = 0;
+        Vector2 _outlineOffset = new(){x = 3, y = 10};
+        Vector2 _objectSize    = _gameObject.GetComponent<BoxCollider2D>().size;
         do
         {
             if (Tools.LoopLimit(ref _loopCnt)) break;
 
-            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject);
+            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject, _outlineOffset);
 
             if (_randomPositionInMap.y < 10)
             {
-                Debug.Log("Too low");
+                Debug.Log(_gameObject.name + "Too low");
                 continue;
             }
 
@@ -156,10 +158,10 @@ public class EnvironmentInitializer : MonoBehaviour
                 = Physics2D.OverlapBox(_randomPositionInMap + new Vector2(0, _objectSize.y / 2 + .1f),
                                        _objectSize,
                                        0,
-                                       LayerMask.GetMask("Floor"));
+                                       LayerMask.GetMask("Floor", "Interactable"));
             if (_capturedCollider != null)
             {
-                Debug.Log("Overlap");
+                Debug.Log(_gameObject.name + "Floor Overlap");
                 continue;
             }
 
@@ -175,11 +177,11 @@ public class EnvironmentInitializer : MonoBehaviour
 
             if (_left.collider == null || _right.collider == null)
             {
-                Debug.Log("Not on the floor");
+                Debug.Log(_gameObject.name + "Not on the floor");
                 continue;
             }
 
-            Debug.Log("Random Position : " + _randomPositionInMap);
+            Debug.Log(_gameObject.name + "Random Position : " + _randomPositionInMap);
             
             return Instantiate(_gameObject,
                                _randomPositionInMap,

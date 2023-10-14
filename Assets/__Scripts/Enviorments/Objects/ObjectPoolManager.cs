@@ -2,62 +2,65 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-
-interface IComponentPool
-{
-    void       ReturnObject(Component _obj);
-    Component  GetObject(bool         _isActive);
-    GameObject GetOriginalPrefab();
-}
-
-public class ObjectPool<T> : IComponentPool where T : Component
-{
-    private readonly Transform  _parentTransform;
-    private readonly GameObject _prefab;
-    private readonly Queue<T>   _pool = new();
-
-    public ObjectPool(Transform _parentTransform, GameObject _prefab, int _poolSize)
-    {
-        this._parentTransform = _parentTransform;
-        this._prefab          = _prefab;
-
-        for (int i = 0; i < _poolSize; i++)
-        {
-            GameObject _obj = GameObject.Instantiate(_prefab, this._parentTransform);
-            _obj.SetActive(false);
-            _pool.Enqueue(_obj.GetComponent<T>());
-        }
-    }
-
-    public void ReturnObject(Component obj)
-    {
-        obj.gameObject.SetActive(false);
-        obj.transform.SetParent(this._parentTransform);
-        _pool.Enqueue(obj as T);
-    }
-
-    public GameObject GetOriginalPrefab()
-    {
-        return _prefab;
-    }
-
-    public Component GetObject(bool _isActive)
-    {
-        if (_pool.Count == 0)
-        {
-            GameObject _gameObject = GameObject.Instantiate(_prefab, _parentTransform);
-            _gameObject.SetActive(_isActive);
-            return _gameObject.GetComponent<T>();
-        }
-
-        T _obj = _pool.Dequeue();
-        _obj.gameObject.SetActive(_isActive);
-        return _obj;
-    }
-}
+using Object = UnityEngine.Object;
 
 public class ObjectPoolManager : MonoBehaviour
 {
+    interface IComponentPool
+    {
+        void ReturnObject(Component _obj);
+
+        Component GetObject(bool _isActive);
+
+        GameObject GetOriginalPrefab();
+    }
+
+    class ObjectPool<T> : IComponentPool where T : Component
+    {
+        private readonly Transform  _parentTransform;
+        private readonly GameObject _prefab;
+        private readonly Queue<T>   _pool = new();
+
+        public ObjectPool(Transform _parentTransform, GameObject _prefab, int _poolSize)
+        {
+            this._parentTransform = _parentTransform;
+            this._prefab          = _prefab;
+
+            for (int i = 0; i < _poolSize; i++)
+            {
+                GameObject _obj = Instantiate(_prefab, this._parentTransform);
+                _obj.SetActive(false);
+                _pool.Enqueue(_obj.GetComponent<T>());
+            }
+        }
+
+        public void ReturnObject(Component obj)
+        {
+            obj.gameObject.SetActive(false);
+            obj.transform.SetParent(_parentTransform);
+            _pool.Enqueue(obj as T);
+        }
+
+        public GameObject GetOriginalPrefab()
+        {
+            return _prefab;
+        }
+
+        public Component GetObject(bool _isActive)
+        {
+            if (_pool.Count == 0)
+            {
+                GameObject _gameObject = Instantiate(_prefab, _parentTransform);
+                _gameObject.SetActive(_isActive);
+                return _gameObject.GetComponent<T>();
+            }
+
+            T _obj = _pool.Dequeue();
+            _obj.gameObject.SetActive(_isActive);
+            return _obj;
+        }
+    }
+
     private readonly Dictionary<string, IComponentPool> _pools       = new();
     private readonly Dictionary<Component, string>      _objPath     = new();
     private readonly Dictionary<Type, string>           _defaultPath = new();

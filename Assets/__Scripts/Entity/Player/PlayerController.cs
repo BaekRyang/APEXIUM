@@ -487,13 +487,16 @@ public class PlayerController : MonoBehaviour
 
         if (climbLadder)
         {
-            if (input.vertical > 0                                           && //사다리에서 위로 올라가려고 할때
-                HasTile(floorTilemap, transform.position + Vector3.up).Item1 && //위에 타일이 있는데
-                !HasTile(ladderTilemap, transform.position + Vector3.up).Item1) //사다리는 없으면 못올라가게 한다.
-                return;                                                         //(위가 막혀있는 사다리)
+            if (input.vertical > 0                                                && //사다리에서 위로 올라가려고 할때
+                MapManager.HasTile(floorTilemap, transform.position + Vector3.up * 2) && //위에 타일이 있는데
+                !MapManager.HasTile(ladderTilemap, transform.position + Vector3.up * 2)) //사다리는 없으면 못올라가게 한다.
+            {
+                _player._animator.speed = 0;
+                return;
+            }                                                             //(위가 막혀있는 사다리)
 
             float _deltaY = input.vertical * Speed * Time.deltaTime;
-            transform.position += new Vector3(0, _deltaY, 0);
+            transform.position      += new Vector3(0, _deltaY, 0);
         }
 
         _player._animator.speed = 1;
@@ -519,12 +522,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void SetLadderStatus()
     {
-        var _hasTile = HasTile(ladderTilemap, transform.position);
+        Vector3 _position = transform.position;
+
+        bool _hasTile = MapManager.HasTile(ladderTilemap,
+                                           _position + Vector3.up * (input.vertical > 0 ? 1 : 0));
 
         //현재 서있는 곳이 사다리인지 확인한다.
-        if (_hasTile.Item1)
+        if (_hasTile)
         {
-            ladderPos = _hasTile.Item2;
+            ladderPos = new Vector2((int)_position.x + .5f, _position.y);
             onLadder  = true;
             return;
         }
@@ -535,34 +541,6 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D.gravityScale = 1;
         _boxCollider2D.isTrigger  = false;
         _player._animator.SetBool("IsClimb", false);
-    }
-
-    /// <summary>
-    /// 플레이어 위치에 해당 타일이 있는지 확인한다.
-    /// </summary>
-    private (bool, Vector2) HasTile(Tilemap _tilemap, Vector3 _targetPosition)
-    {
-        //플레이어의 위치를 타일맵의 로컬 좌표로 변환한다.
-        Vector3 _localPosition = _tilemap.transform.InverseTransformPoint(_targetPosition);
-
-        int _isUpInput = input.vertical > 0 ? 1 : 0;
-
-        Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), //여기서 사다리 위에서 위키로 사다리에 타지 못하게 막는다.
-                                       Mathf.FloorToInt(_localPosition.y + _isUpInput));
-
-        //플레이어의 위치는 서있는 타일기준 2칸 위 이므로, 아래를 누를때는 하향 사다리가 존재하는 서있는 타일 위를 조사한다.
-        //점프하고 사다리를 타면 공중에서 사다리를 타는 문제가 있으므로 y이동이 없을때만 사용한다.
-
-        Debug.DrawRay(_tilemap.transform.TransformPoint(_tilePosition + new Vector3(.5f, .5f)), Vector3.right * 0.1f, Color.blue);
-        if (!_tilemap.HasTile(_tilePosition)) return (false, Vector2.zero);
-
-        //tilePosition은 HasTile을 사용하기위해서 Int로 변환했기 때문에 좌하단 좌표를 가리키고 있다.
-        //따라서 타일의 중심을 가리키기 위해서는 0.5만큼 더해줘야한다.
-        Vector3 _localLadderPos = new Vector2(_tilePosition.x + .5f, _tilePosition.y);
-
-        //로컬 좌표를 다시 월드 좌표로 변환한다.
-        Vector2 _tileWorldPosition = _tilemap.transform.TransformPoint(_localLadderPos);
-        return (true, _tileWorldPosition);
     }
 
 #endregion
@@ -598,6 +576,7 @@ public class PlayerController : MonoBehaviour
 
     //TODO: 임시 변수
     private bool _hasItem = false;
+
     private void UseSkill()
     {
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
@@ -630,9 +609,10 @@ public class PlayerController : MonoBehaviour
         Controllable = _controllable;
 
         if (_controllable) return;
-        
+
         if (_allStop)
-        { //_allStop 플래그가 있으면 현재 이동/가속을 전부 없앤다.
+        {
+            //_allStop 플래그가 있으면 현재 이동/가속을 전부 없앤다.
             _rigidbody2D.velocity = Vector2.zero;
             input.horizontal      = input.vertical = 0;
             _player._animator.SetBool("IsWalk", false);
@@ -640,9 +620,10 @@ public class PlayerController : MonoBehaviour
         }
 
         if (_rigidbody2D.velocity.y == 0)
-        { //공중이 아니라면 x속도도 0으로 만들어준다.
+        {
+            //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
             return;
-        } 
+        }
     }
 }

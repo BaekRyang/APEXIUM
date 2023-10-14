@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public enum MapType
 {
@@ -63,7 +64,7 @@ public class MapManager : MonoBehaviour
         return _spawnPosition;
     }
 
-    public static Vector2 GetRandomPositionInMap(MapData _mapData)
+    public static Vector2 GetRandomPositionInMap(MapData _mapData, Vector2 _padding)
     {
         float _yOffset = _mapData.currentMap.GetMapSize().y;
         var   _points  = _mapData.currentMap.GetComponent<PolygonCollider2D>().points;
@@ -77,7 +78,10 @@ public class MapManager : MonoBehaviour
                                    .First();
 
 
-        var     _randomTopPoint     = new Vector2(Random.Range(_rightTopPoint.x - 10, _leftTopPoint.x + 10), _rightTopPoint.y - 10 + _yOffset);
+        Vector2 _randomTopPoint = new(
+            x: Random.Range(_rightTopPoint.x - _padding.x, _leftTopPoint.x + _padding.x),
+            y: _rightTopPoint.y - _padding.y + _yOffset);
+        
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
         Vector2 _randomPoint        = _everyContactPoints[Random.Range(0, _everyContactPoints.Count)];
 
@@ -89,16 +93,16 @@ public class MapManager : MonoBehaviour
     {
         if (_player is null)
             return Vector2.zero;
-        
-        Vector3   _position = _player.transform.position;
-        
-        float _yOffset  = _position.y;
-        
-        Vector2 _rightTopPoint = new Vector2(_position.x + 20, _position.y + 15);
-        Vector2 _leftTopPoint = new Vector2(_position.x - 20, _position.y + 15);
-        
-        Vector2     _randomTopPoint     = new Vector2(Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
-        
+
+        Vector3 _position = _player.transform.position;
+
+        float _yOffset = _position.y;
+
+        Vector2 _rightTopPoint = new(_position.x + 20, _position.y + 15);
+        Vector2 _leftTopPoint  = new(_position.x - 20, _position.y + 15);
+
+        Vector2 _randomTopPoint = new(Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
+
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint, 40);
         Vector2 _randomPoint        = _everyContactPoints[Random.Range(0, _everyContactPoints.Count)];
 
@@ -108,37 +112,41 @@ public class MapManager : MonoBehaviour
 
     private const float CELL_HEIGHT = 1;
 
-    public static List<Vector2> GetEveryContactPoints(Vector2 _randomTopPoint, int _maxDepth = -1)
+    private static List<Vector2> GetEveryContactPoints(Vector2 _randomTopPoint, int _maxDepth = -1)
     {
         Vector2 _rayStartPoint = _randomTopPoint;
         var     _contactPoints = new List<Vector2>();
         int     _loopCnt       = 0;
-        int     _currentDepth   = 0;
+        int     _currentDepth  = 0;
 
         while (true)
         {
             if (Tools.LoopLimit(ref _loopCnt))
                 break;
-            
+
             RaycastHit2D _randomPoints = Physics2D.Raycast(
                 _rayStartPoint,
                 Vector2.down,
                 1000,
-                LayerMask.GetMask("Floor"));    //레이를 처음 위치에서 쏜다.
-            
+                LayerMask.GetMask("Floor")); //레이를 처음 위치에서 쏜다.
+
+            Debug.DrawLine(_randomPoints.point - Vector2.left, _randomPoints.point + Vector2.right, Color.cyan, 10f);
+
             if (_randomPoints.collider == null) //null이면 맵 바깥(여기에서는 최하단 아래)에서 쏜 것
                 break;
-            
+
             _contactPoints.Add(_randomPoints.point); //null이 아니면 해당 포인트를 리스트에 저장하고
 
             int _loopCnt2 = 0;
             _rayStartPoint = _randomPoints.point - new Vector2(0, CELL_HEIGHT);                //해당 포인트 1타일 아래
             while (Physics2D.OverlapPoint(_rayStartPoint, LayerMask.GetMask("Floor")) != null) //해당 위치에 타일이 있는가?
             {
-                if (Tools.LoopLimit(ref _loopCnt2) ||
-                    _currentDepth >= _maxDepth)
+                if (Tools.LoopLimit(ref _loopCnt2))
                     break;
-                
+
+                if (_maxDepth != -1 && _currentDepth >= _maxDepth)
+                    break;
+
                 _currentDepth++;
                 _rayStartPoint -= new Vector2(0, CELL_HEIGHT); //있다면 한 칸 아래로 변경 ->
 
@@ -147,5 +155,15 @@ public class MapManager : MonoBehaviour
         }
 
         return _contactPoints;
+    }
+
+    public static bool HasTile(Tilemap _tilemap, Vector3 _targetPosition)
+    {
+        //위치를 타일맵의 로컬 좌표로 변환한다.
+        Vector3 _localPosition = _tilemap.transform.InverseTransformPoint(_targetPosition);
+
+        Vector3Int _tilePosition = new(Mathf.FloorToInt(_localPosition.x), Mathf.FloorToInt(_localPosition.y));
+
+        return _tilemap.HasTile(_tilePosition);
     }
 }

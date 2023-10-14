@@ -37,3 +37,5 @@ MonoBehaviour:
   skillSecondary: PierceShot
   skillUtility: Roll
   skillUltimate: Spree
+  sprite: {fileID: 21300000, guid: 8d278e6bfa5930248bb6482895443888, type: 3}
+  animatorController: {fileID: 9100000, guid: 8be79bc8dc0239e4895ce6bb58e966f0, type: 2}

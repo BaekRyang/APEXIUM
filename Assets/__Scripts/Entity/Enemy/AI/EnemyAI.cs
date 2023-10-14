@@ -43,9 +43,10 @@ public class EnemyAI : MonoBehaviour
     public Dictionary<string, State> States;
 
     [SerializeReference] private State currentState;
-    private static readonly      int   IsAttacked = Animator.StringToHash("IsAttacked");
-    private static readonly      int   IsWalk     = Animator.StringToHash("IsWalk");
-    private static readonly      int   Attacked   = Animator.StringToHash("Attacked");
+
+    private static readonly int IsAttacked = Animator.StringToHash("IsAttacked");
+    private static readonly int IsWalk     = Animator.StringToHash("IsWalk");
+    private static readonly int Attacked   = Animator.StringToHash("Attacked");
 
     public void Initialize(EnemyBase _enemyBase)
     {

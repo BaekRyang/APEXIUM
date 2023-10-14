@@ -21,12 +21,15 @@ public class EnemyBase : MonoBehaviour, IEntity
     public EnemyStats stats;
     public Animator   animator;
 
+    private EnemyData _enemyData;
+    
     public event EventHandler OnEnemyHpChange;
 
     readonly InjectObj _injectObj = new();
 
-    public void Initialize(EnemyData _enemyData)
+    public void Initialize(EnemyData _importedData)
     {
+        _enemyData = _importedData;
         _injectObj.CheckAndInject(this);
         stats = new EnemyStats(_enemyData);
 
@@ -110,7 +113,14 @@ public class EnemyBase : MonoBehaviour, IEntity
         //현재 재생중인 애니메이션이 종료될때 까지 대기
         await new WaitUntil(() => _enemyAI.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1);
 
+        await UniTask.Delay(TimeSpan.FromSeconds(1));
+        PlaceCorpse();
         _objectPoolManager.ReturnObject(this);
+    }
+
+    private void PlaceCorpse()
+    {
+        
     }
 
     private void GetDamage(int _damage)

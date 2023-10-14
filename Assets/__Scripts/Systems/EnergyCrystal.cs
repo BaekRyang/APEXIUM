@@ -19,7 +19,6 @@ public class EnergyCrystal : MonoBehaviour
 
     private void SetValue()
     {
-        Debug.Log("ACT" + _task.Status);
         remainingEmphasisTime = EMPHASIS_TIME;
         remainingReturnTime   = RETURN_TIME;
         if (_task.Status == UniTaskStatus.Pending) return;

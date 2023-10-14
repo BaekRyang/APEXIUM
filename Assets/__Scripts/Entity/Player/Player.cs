@@ -32,7 +32,8 @@ public class Player : MonoBehaviour, IEntity
 
     [SerializeField] public List<Item> items = new();
 
-    public bool dead;
+    public                  bool dead;
+    private static readonly int  IsDead = Animator.StringToHash("IsDead");
 
     private void Initialize(PlayerData _playerData)
     {
@@ -140,13 +141,13 @@ public class Player : MonoBehaviour, IEntity
     private async void DeadAction()
     {
         AnimationClip _deadClip = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(_clip => _clip.name.EndsWith("Dead"));
-        Time.timeScale = 0.3f;
+        Time.timeScale = .3f;
 
         //이름이 Dead로 끝나는 클립을 찾아 저장한다. 애니메이션 종류가 많지 않으므로 LINQ를 사용해도 Performance 손실이 적음
 
         if (_deadClip == null) return; //FirstOrDefault는 값을 찾지 못하면 null 반환하므로 null체크
 
-        _animator.SetBool("IsDead", true);
+        _animator.SetBool(IsDead, true);
 
         //0.3초에 걸쳐서 TimeScale을 1으로 만든다.(Lerp)
         float _elapsedTime = 0;

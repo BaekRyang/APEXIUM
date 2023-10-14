@@ -63,7 +63,7 @@ public class EnemySpawner : MonoBehaviour
                 return;
 
             if (currentEnemies >= MAX_ENEMIES)
-                return;
+                continue;
 
             EnemyData _enemyData   = GetRandomEnemy();
             EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
