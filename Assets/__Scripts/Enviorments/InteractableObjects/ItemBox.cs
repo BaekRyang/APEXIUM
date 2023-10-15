@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 public class ItemBox : InteractableObject
@@ -13,10 +14,18 @@ public class ItemBox : InteractableObject
 
     public bool open;
 
+    private MMF_Player _player;
+
     private void LateUpdate()
     {
         //TODO : 삭제
         if (open) Interact();
+    }
+
+    protected override void CanNotInteractAction()
+    {
+        _player ??= GetComponent<MMF_Player>();
+        _player.PlayFeedbacks();
     }
 
     protected override bool InteractPredicate(Player _player)

@@ -36,7 +36,11 @@ public abstract class InteractableObject : MonoBehaviour
 
     public void Interact(Player _player = null)
     {
-        if (!InteractPredicate(_player)) return;
+        if (!InteractPredicate(_player))
+        {
+            CanNotInteractAction();
+            return;
+        }
         
         GetComponent<SpriteAnimation>()?.Play();
 
@@ -46,6 +50,7 @@ public abstract class InteractableObject : MonoBehaviour
             DestroyAction();
     }
 
+    protected abstract void CanNotInteractAction();
     protected abstract bool InteractPredicate(Player _player);
 
     private void DestroyAction()

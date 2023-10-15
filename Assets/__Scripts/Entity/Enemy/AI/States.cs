@@ -23,7 +23,7 @@ public struct FloatPair
 public abstract class State : IState
 {
     [SerializeField] [Inject] protected PlayerManager _playerManager;
-
+    
     [SerializeField] protected EnemyAI enemyAI;
 
     public State Initialize(EnemyAI _enemyAI)
@@ -41,7 +41,7 @@ public abstract class State : IState
     public abstract void Execute();
     public abstract void Exit();
 
-    private const float CLIFF_DETECT_DISTANCE = 0.5f;
+    private const float CLIFF_DETECT_DISTANCE = 50f;
 
     protected static bool CliffDetect(EnemyAI _enemyAI) //절벽 감지 함수. 
     {
@@ -278,7 +278,6 @@ public class SAttack : State
         if (enemyAI.waitForAttack || //공격 대기중이거나 너무 멀어졌으면 Chase 상태로 전환
             _targetDistance > enemyAI.enemyBase.stats.attackRange)
         {
-            Debug.Log("Attack -> Chase");
             enemyAI.CurrentState = enemyAI.States["Chase"];
             return;
         }

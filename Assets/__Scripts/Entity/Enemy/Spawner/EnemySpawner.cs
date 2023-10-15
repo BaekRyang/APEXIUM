@@ -19,7 +19,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private string taskStatus;
     [SerializeField] private bool   doSpawn;
     private const            int    INITIALIZE_DELAY = 5;
-    private const            int    SPAWN_FREQUENCY  = 1;
+    private const            int    SPAWN_FREQUENCY  = 25;
+
+    private const int   DEFAULT_SPAWN_ENEMIES_ONCE_COUNT    = 3;
+    private const float SPAWN_ENEMIES_DIFFICULTY_MULTIPLIER = 1.5f;
 
     private void OnEnable()
     {
@@ -36,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
         DIContainer.Inject(this);
         _objectPoolManager.MakePool<EnemyBase>("Assets/_Prefabs/Entities/Enemy.prefab", 10);
 
-        SpawnEnemy();
+        SpawnEnemyLoop();
     }
 
     private void PlayMapChangedHandler(PlayMapChangedEvent _obj)
@@ -53,7 +56,7 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log("Spawnable enemies: " + _spawnableEnemies.Count);
     }
 
-    private async UniTask SpawnEnemy()
+    private async UniTask SpawnEnemyLoop()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(INITIALIZE_DELAY));
 
@@ -65,18 +68,38 @@ public class EnemySpawner : MonoBehaviour
             if (currentEnemies >= MAX_ENEMIES)
                 continue;
 
-            EnemyData _enemyData   = GetRandomEnemy();
-            EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
+            int _spawnCount = Mathf.RoundToInt(DEFAULT_SPAWN_ENEMIES_ONCE_COUNT * DifficultyManager.NowDifficulty * SPAWN_ENEMIES_DIFFICULTY_MULTIPLIER);
 
-            _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_playerManager.GetRandomPlayer());
+            SpawnEnemies(_spawnCount);
 
-            _enemyObject.Initialize(_enemyData);
-            _enemyObject.gameObject.SetActive(true);
-
-            currentEnemies++;
-            Debug.Log($"<color=green>Enemy spawned</color> : {_enemyData.name} in {_enemyObject.transform.position}");
             await UniTask.Delay(TimeSpan.FromSeconds(SPAWN_FREQUENCY));
         }
+    }
+
+    private async void SpawnEnemies(int _spawnCount)
+    {
+        await SpawnEnemy();
+
+        for (int _i = 0; _i < _spawnCount - 1; _i++)
+        {
+            float _delay = UnityEngine.Random.Range(.3f, 1f);
+            await SpawnEnemy(_delay);
+        }
+    }
+
+    private async UniTask SpawnEnemy(float _delay = 0)
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(_delay));
+        
+        EnemyData _enemyData   = GetRandomEnemy();
+        EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
+
+        _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_playerManager.GetRandomPlayer());
+
+        _enemyObject.Initialize(_enemyData);
+        _enemyObject.gameObject.SetActive(true);
+
+        currentEnemies++;
     }
 
     private EnemyData GetRandomEnemy()

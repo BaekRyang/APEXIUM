@@ -236,7 +236,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 12.829609
+  orthographic size: 19.992796
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6125,7 +6125,7 @@ Transform:
   m_GameObject: {fileID: 843371608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30, y: 27.539505, z: -10}
+  m_LocalPosition: {x: 30, y: 28.565966, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6210,7 +6210,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 2.829609
+  orthographic size: 9.992796
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -16745,7 +16745,7 @@ MonoBehaviour:
   _spawnableEnemies: []
   currentEnemies: 0
   taskStatus: 
-  doSpawn: 0
+  doSpawn: 1
 --- !u!1001 &1530362678
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -487,16 +487,16 @@ public class PlayerController : MonoBehaviour
 
         if (climbLadder)
         {
-            if (input.vertical > 0                                                && //사다리에서 위로 올라가려고 할때
+            if (input.vertical > 0                                                    && //사다리에서 위로 올라가려고 할때
                 MapManager.HasTile(floorTilemap, transform.position + Vector3.up * 2) && //위에 타일이 있는데
                 !MapManager.HasTile(ladderTilemap, transform.position + Vector3.up * 2)) //사다리는 없으면 못올라가게 한다.
             {
                 _player._animator.speed = 0;
                 return;
-            }                                                             //(위가 막혀있는 사다리)
+            } //(위가 막혀있는 사다리)
 
             float _deltaY = input.vertical * Speed * Time.deltaTime;
-            transform.position      += new Vector3(0, _deltaY, 0);
+            transform.position += new Vector3(0, _deltaY, 0);
         }
 
         _player._animator.speed = 1;
@@ -560,19 +560,16 @@ public class PlayerController : MonoBehaviour
 
 #region SkillUse
 
-    private bool IsSkillButtonPressed(SkillTypes _skillType)
+    private bool IsSkillButtonPressed(SkillTypes _skillType) => _skillType switch
     {
-        return _skillType switch
-        {
-            SkillTypes.Primary   => input.primarySkill,
-            SkillTypes.Secondary => input.secondarySkill,
-            SkillTypes.Utility   => input.utilitySkill,
-            SkillTypes.Ultimate  => input.ultimateSkill,
-            SkillTypes.Passive   => input.specialSkill,
-            SkillTypes.Item      => input.itemSkill,
-            _                    => false
-        };
-    }
+        SkillTypes.Primary   => input.primarySkill,
+        SkillTypes.Secondary => input.secondarySkill,
+        SkillTypes.Utility   => input.utilitySkill,
+        SkillTypes.Ultimate  => input.ultimateSkill,
+        SkillTypes.Passive   => input.specialSkill,
+        SkillTypes.Item      => input.itemSkill,
+        _                    => false
+    };
 
     //TODO: 임시 변수
     private bool _hasItem = false;

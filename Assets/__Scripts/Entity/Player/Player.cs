@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -150,11 +151,14 @@ public class Player : MonoBehaviour, IEntity
         _animator.SetBool(IsDead, true);
 
         //0.3초에 걸쳐서 TimeScale을 1으로 만든다.(Lerp)
-        float _elapsedTime = 0;
-        float _duration    = 5f;
+        float       _elapsedTime = 0;
+        float       _duration    = 3.5f;
+        MMTweenType _tween       = new(MMTween.MMTweenCurve.EaseInQuartic);
+        
         while (_elapsedTime < _duration)
         {
-            Time.timeScale =  Mathf.Lerp(0.1f, 1f, _elapsedTime / _duration);
+            float _t = _tween.Evaluate(_elapsedTime / _duration);
+            Time.timeScale =  Mathf.Lerp(0.1f, 1f, _t);
             _elapsedTime   += Time.unscaledDeltaTime;
             await UniTask.Yield();
         }
@@ -162,7 +166,7 @@ public class Player : MonoBehaviour, IEntity
 
         while (true)
         {
-            if (Controller.Rigidbody2D.velocity.sqrMagnitude == 0)
+            if (Controller.Rigidbody2D.velocity.sqrMagnitude <= 0.01f)
             {
                 _animator.speed = 1;
                 break;
@@ -180,7 +184,6 @@ public class Player : MonoBehaviour, IEntity
 
     public bool ConsumeResource(int _requiredResourceAmount)
     {
-        Debug.Log($"<color=green>ConsumeResource : {_requiredResourceAmount} - {Stats.EnergyCrystal}</color>");
         if (Stats.EnergyCrystal < _requiredResourceAmount) return false;
 
         Stats.EnergyCrystal -= _requiredResourceAmount;

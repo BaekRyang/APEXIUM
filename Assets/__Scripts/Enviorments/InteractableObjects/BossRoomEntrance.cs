@@ -22,16 +22,15 @@ public class BossRoomEntrance : InteractableObject
         _mapManager.GetMap(_rootMapType).transform.root.gameObject.GetComponent<MMF_Player>().Initialization();
     }
 
-    protected override bool InteractPredicate(Player _player)
-    {
-        return true;
-    }
+    protected override void CanNotInteractAction() { }
+    protected override bool InteractPredicate(Player _player) => true;
 
     protected override async void InteractAction(Player _player)
     {
         _player.transform.position = transform.position;
+
         //플레이어 위치를 문 위치로 이동
-        
+
         Debug.Log("BossRoomEntrance InteractAction");
         Debug.Log($"_rootMapType : {_rootMapType}");
         _shieldBlackBoard.gameObject.SetActive(true);
@@ -39,14 +38,13 @@ public class BossRoomEntrance : InteractableObject
         Transform _normalTransform = _mapManager.GetMap(MapType.Normal).transform.root;
         Transform _bossTransform   = _mapManager.GetMap(MapType.Boss).transform.root;
 
-        MMF_Player _thisMMF = GetComponent<MMF_Player>();
+        MMF_Player _thisMMF   = GetComponent<MMF_Player>();
         MMF_Player _normalMMF = _normalTransform.GetComponent<MMF_Player>();
         MMF_Player _bossMMF   = _bossTransform.GetComponent<MMF_Player>();
 
         MapType _targetMapType  = _rootMapType == MapType.Normal ? MapType.Boss : MapType.Normal;
         MapType _currentMapType = _rootMapType != MapType.Normal ? MapType.Boss : MapType.Normal;
         Debug.Log($"<color=green>targetMapType : {_targetMapType} - _currentMapType : {_currentMapType}</color>");
-
 
         //플레이어가 문 중심을 기준으로 얼마나 떨어져있는지 구한다.
         Vector3 _playerOffsetPosition = _player.transform.position - transform.position;
@@ -72,14 +70,15 @@ public class BossRoomEntrance : InteractableObject
             _rawImage.gameObject.SetActive(true);
             _camera.gameObject.SetActive(true);
         }
+
         _player.transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition;
 
         InstantiatePlayerWalkingObject();
-        
+
         _cameraManager.SetCameraBoundBox(_mapManager.GetMap(_targetMapType));
 
         _thisMMF.PlayFeedbacks();
-        
+
         switch (_rootMapType)
         {
             case MapType.Normal:
@@ -103,14 +102,13 @@ public class BossRoomEntrance : InteractableObject
                 _bossMMF.Direction = MMFeedbacks.Directions.BottomToTop;
                 UniTask _task = _bossMMF.PlayFeedbacksUniTask(transform.position);
                 await _task;
-                
+
                 break;
             }
         }
 
         _cameraManager.InvalidateCache();
         _player.Controller.SetControllable(true);
-
 
         for (int _index = 0; _index < 2; _index++)
         {
@@ -119,12 +117,9 @@ public class BossRoomEntrance : InteractableObject
             _rawImage.gameObject.SetActive(false);
             _camera.gameObject.SetActive(false);
         }
+
         _shieldBlackBoard.gameObject.SetActive(false);
-
     }
 
-    private void InstantiatePlayerWalkingObject()
-    {
-        
-    }
+    private void InstantiatePlayerWalkingObject() { }
 }

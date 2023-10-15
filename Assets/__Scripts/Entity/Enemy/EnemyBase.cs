@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
+using MoreMountains.Tools;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -45,7 +46,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
         if (!TryGetComponent(out _enemyAI))
             _enemyAI = transform.AddComponent<EnemyAI>();
-        
+
         GetComponent<Rigidbody2D>().simulated = true;
         GetComponent<Collider2D>().enabled    = true;
 
@@ -77,7 +78,6 @@ public class EnemyBase : MonoBehaviour, IEntity
             else                                           //없으면
                 _attackID.Add(_nowAttackID.Value, 0);      //해당 ID의 공격을 만들고 value를 초기화
 
-
             _floatingText.TargetPosition = transform.position + Vector3.up * (VERTICAL_OFFSET * _attackID[_nowAttackID.Value]);
         }
 
@@ -92,7 +92,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         GetDamage(_damage);
 
         if (stats.canKnockback)
-            Knockback(_attacker, 200);
+            Knockback(_attacker, .1f);
 
         if (stats.Health <= 0)
             Dead();
@@ -105,6 +105,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         GetComponent<Rigidbody2D>().simulated = false;
         GetComponent<Collider2D>().enabled    = false;
 
+        DropReward();
 
         //TODO: 적절한 방법이 아닌 것 같음
         if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
@@ -118,10 +119,15 @@ public class EnemyBase : MonoBehaviour, IEntity
         _objectPoolManager.ReturnObject(this);
     }
 
-    private void PlaceCorpse()
+    private void DropReward()
     {
-        
+        Vector3 _position = transform.position;
+
+        EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, GameManager.GetRandomCapsuleReward(PickupType.Resource) / 2, _position),
+                         new ItemSpawnEvent(PickupType.Exp,      GameManager.GetRandomCapsuleReward(PickupType.Exp)      / 2, _position));
     }
+
+    private void PlaceCorpse() { }
 
     private void GetDamage(int _damage)
     {
@@ -131,17 +137,24 @@ public class EnemyBase : MonoBehaviour, IEntity
         OnEnemyHpChange?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Knockback(Player _attacker, float _knockbackForce)
+    private async void Knockback(Player _attacker, float _knockbackForce)
     {
         Vector2 _knockbackDirection = (transform.position - _attacker.PlayerPosition).normalized;
-
-        // GetComponent<Rigidbody2D>().velocity = _knockbackDirection * p_pKnockbackForce;
-        GetComponent<Rigidbody2D>().AddForce(_knockbackDirection * _knockbackForce, ForceMode2D.Impulse);
+        
+        float _elapsedTime = 0;
+        float _duration    = 0.1f;
+        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseInQuartic);
+        
+        while (_elapsedTime < _duration)
+        {
+            float _t = 1 - _tween.Evaluate(_elapsedTime / _duration);
+            transform.Translate(_knockbackDirection * (_knockbackForce * _t));
+            _elapsedTime += Time.deltaTime;
+            await UniTask.Yield();
+        }
     }
 
-    private void LevelUp(object _sender, EventArgs _args)
-    {
-    }
+    private void LevelUp(object _sender, EventArgs _args) { }
 }
 
 public class EEnemyHpChange
