@@ -2,14 +2,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public static class StaticVar<T> where T : new()
+{
+    private static T _value = new();
+    public static  T GetValue() => _value;
+}
+
 public static class EventBus
 {
     private static Dictionary<Type, List<Delegate>> EventTable = new();
 
+    public static void PublishOne<T>(Action<T> _settingFunc) where T : new()
+    {
+        var a = StaticVar<T>.GetValue();
+        _settingFunc(a);
+        Publish(a);
+    }
+
     public static void Publish<T>(params T[] _data)
     {
         var _type = typeof(T);
-        
+
         if (EventTable.ContainsKey(_type) == false)
         {
             Debug.Log($"<color=blue>EventBus</color> - Publish : No Subscribers");

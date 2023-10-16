@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -16,6 +17,10 @@ public class PlayerStats : Stats
     [SerializeField] protected int   advancedResource;
     [SerializeField] protected float criticalChance;
     [SerializeField] protected float criticalDamage;
+
+    private Dictionary<ChangeableStatsTypes, float> _basicStat       = new();
+    private Dictionary<ChangeableStatsTypes, float> _statAddSum      = new();
+    private Dictionary<ChangeableStatsTypes, float> _statMultipliers = new();
 
     public PlayerStats(PlayerStats _other)
     {
@@ -36,6 +41,14 @@ public class PlayerStats : Stats
         advancedResource = _other.advancedResource;
         criticalChance   = _other.CriticalChance;
         criticalDamage   = _other.CriticalDamage;
+
+        //_basicStat을 열거형을 순회하여 채운다.
+        foreach (ChangeableStatsTypes _type in Tools.GetEnumValues<ChangeableStatsTypes>())
+        {
+            _basicStat.Add(_type, (float)GetValue(_type));
+            _statAddSum.Add(_type, 0);
+            _statMultipliers.Add(_type, 1);
+        }
     }
 
     public int Resource
@@ -125,5 +138,97 @@ public class PlayerStats : Stats
             Level++;
             await UniTask.Delay(10); //TODO: 무한 루프 방지용(없애야함)
         } while (exp >= maxExp);
+    }
+
+    private double GetValue(ChangeableStatsTypes type)
+    {
+        //type에 따라 각 값을 리턴한다
+        return type switch
+        {
+            ChangeableStatsTypes.MaxHealth      => MaxHealth,
+            ChangeableStatsTypes.AttackDamage   => AttackDamage,
+            ChangeableStatsTypes.Speed          => Speed,
+            ChangeableStatsTypes.Defense        => Defense,
+            ChangeableStatsTypes.AttackSpeed    => AttackSpeed,
+            ChangeableStatsTypes.MaxJumpCount   => MaxJumpCount,
+            ChangeableStatsTypes.JumpHeight     => JumpHeight,
+            ChangeableStatsTypes.Resource       => Resource,
+            ChangeableStatsTypes.MaxResource    => MaxResource,
+            ChangeableStatsTypes.EnergyCrystal  => EnergyCrystal,
+            ChangeableStatsTypes.CriticalChance => CriticalChance,
+            ChangeableStatsTypes.CriticalDamage => CriticalDamage,
+            _                                   => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
+    /// <summary>
+    /// type에 따라 각 값을 설정한다 형변환은 여기서 이루어짐
+    /// </summary>
+    private void SetValue(ChangeableStatsTypes type, double v)
+    {
+        //type에 따라 각 값을 설정한다 형변환도 적절하게한다
+        switch (type)
+        {
+            case ChangeableStatsTypes.MaxHealth:
+                MaxHealth = (int)v;
+                break;
+            case ChangeableStatsTypes.AttackDamage:
+                AttackDamage = (int)v;
+                break;
+            case ChangeableStatsTypes.Speed:
+                Speed = (float)v;
+                break;
+            case ChangeableStatsTypes.Defense:
+                Defense = (int)v;
+                break;
+            case ChangeableStatsTypes.AttackSpeed:
+                AttackSpeed = (float)v;
+                break;
+            case ChangeableStatsTypes.MaxJumpCount:
+                MaxJumpCount = (int)v;
+                break;
+            case ChangeableStatsTypes.JumpHeight:
+                JumpHeight = (float)v;
+                break;
+            case ChangeableStatsTypes.Resource:
+                Resource = (int)v;
+                break;
+            case ChangeableStatsTypes.MaxResource:
+                MaxResource = (int)v;
+                break;
+            case ChangeableStatsTypes.EnergyCrystal:
+                EnergyCrystal = (int)v;
+                break;
+            case ChangeableStatsTypes.CriticalChance:
+                CriticalChance = (float)v;
+                break;
+            case ChangeableStatsTypes.CriticalDamage:
+                CriticalDamage = (float)v;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
+        }
+    }
+
+    public void ApplyStats(StatModifier _mod, bool _isRevert = false)
+    {
+        double _targetValue = _basicStat[_mod.statType];
+        float  _value       = _mod.value;
+
+        switch (_mod.calculationType)
+        {
+            case CalculationType.Add:
+                _statAddSum[_mod.statType] += _isRevert ? -_value : _value;
+                break;
+            case CalculationType.Multiply:
+                _statMultipliers[_mod.statType] += _isRevert ? -(_value - 1) : (_value - 1);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        _targetValue += _statAddSum[_mod.statType];
+        _targetValue *= _statMultipliers[_mod.statType];
+        SetValue(_mod.statType, _targetValue);
     }
 }

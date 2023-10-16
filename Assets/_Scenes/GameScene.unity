@@ -236,7 +236,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 19.992796
+  orthographic size: 10.134539
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6125,7 +6125,7 @@ Transform:
   m_GameObject: {fileID: 843371608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30, y: 28.565966, z: -10}
+  m_LocalPosition: {x: 30, y: 30.045784, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6210,7 +6210,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 9.992796
+  orthographic size: 0.13453841
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -18429,6 +18429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 486d784f4193452438b530abb6927b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemList: {fileID: 11400000, guid: b3959fb678b366a45b3ff8545df54eec, type: 2}
 --- !u!1 &1827588387
 GameObject:
   m_ObjectHideFlags: 0
@@ -20075,6 +20076,7 @@ MonoBehaviour:
   shieldBlackBoard: {fileID: 1880860995}
   volumeProfile: {fileID: 0}
   objectPoolManager: {fileID: 1311782985}
+  itemManager: {fileID: 1814920620}
 --- !u!114 &2091573433
 MonoBehaviour:
   m_ObjectHideFlags: 0

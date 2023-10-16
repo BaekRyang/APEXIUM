@@ -4,18 +4,14 @@ using UnityEngine;
 
 public abstract class InteractableObject : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
     [SerializeField] protected TMP_Text text;
 
-    [SerializeField] private Sprite[] sprites;
-    
     protected bool destroyAfterInteract;
 
     private void Start()
     {
         text         = GetComponentInChildren<TMP_Text>();
         text.enabled = false;
-        animator     = GetComponent<Animator>();
 
         text.transform.position = new Vector2(transform.position.x, GetComponent<Collider2D>().bounds.max.y);
 

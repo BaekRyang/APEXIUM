@@ -112,7 +112,7 @@ public static class Tools
     {
         return Enum.GetValues(typeof(T)).Cast<T>();
     }
-    
+
     public static float Remap(float _value, Vector2 _origin, Vector2 _target) =>
         _target.x + (_value - _origin.x) * (_target.y - _target.x) / (_origin.y - _origin.x);
 
@@ -129,7 +129,7 @@ public static class Tools
             Remap(_value.x, new Vector2(_origin[0].x, _origin[1].x), new Vector2(_target[0].x, _target[1].x)),
             Remap(_value.y, new Vector2(_origin[0].y, _origin[1].y), new Vector2(_target[0].y, _target[1].y)));
     }
-    
+
     public static Vector2 GetResolution(this Sprite _sprite)
     {
         Debug.Log($"{_sprite.texture.width}, {_sprite.texture.height}");
@@ -151,21 +151,23 @@ public static class Tools
             KeyType.Keyboard => "<Keyboard>/",
             KeyType.Mouse    => "<Mouse>/",
             KeyType.Gamepad  => "<Gamepad>/",
+            _                => throw new ArgumentOutOfRangeException(nameof(_schema), _schema, null)
         };
-        
+
         int _control = _schema switch
         {
-            KeyType.Keyboard => 0,
-            KeyType.Gamepad  => 1,
+            KeyType.Keyboard   => 0,
+            KeyType.Gamepad    => 1,
+            KeyType.Mouse or _ => throw new ArgumentOutOfRangeException(nameof(_schema), _schema, null)
         };
-        
+
         InputAction _action    = _input.actions.FindAction(_actionName);
-        int _bindIndex = _action.GetBindingIndexForControl(_action.controls[_control]);
-        
+        int         _bindIndex = _action.GetBindingIndexForControl(_action.controls[_control]);
+
         _action.ApplyBindingOverride(_bindIndex, _targetSchema + _targetKey);
         _input.enabled = true;
     }
-    
+
     const int MAX_LOOP_COUNT = 1000;
 
     public static bool LoopLimit(ref int _loopCnt)
@@ -174,6 +176,5 @@ public static class Tools
         if (_loopCnt <= MAX_LOOP_COUNT) return false;
         Debug.LogError("Loop count exceeded");
         return true;
-
     }
 }

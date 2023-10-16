@@ -31,10 +31,10 @@ public class Player : MonoBehaviour, IEntity
 
     public PlayerStats Stats => _stats;
 
-    [SerializeField] public List<Item> items = new();
+    [SerializeField] public Items items;
 
-    public                  bool dead;
-    private static readonly int  IsDead = Animator.StringToHash("IsDead");
+    public                   bool       dead;
+    private static readonly  int        IsDead = Animator.StringToHash("IsDead");
 
     private void Initialize(PlayerData _playerData)
     {
@@ -42,6 +42,8 @@ public class Player : MonoBehaviour, IEntity
                  {
                      isLocalPlayer = true
                  };
+
+        items = new Items(this);
 
         _playerController      = gameObject.AddComponent<PlayerController>().Initialize(this);
         Controller.playerStats = _stats;
@@ -131,7 +133,6 @@ public class Player : MonoBehaviour, IEntity
 
         Controller.Rigidbody2D.velocity = Vector2.zero; //속도 초기화
 
-
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
         Vector2 _direction = new((transform.position - _attacker.transform.position).normalized.x, 2f);
 
@@ -154,7 +155,7 @@ public class Player : MonoBehaviour, IEntity
         float       _elapsedTime = 0;
         float       _duration    = 3.5f;
         MMTweenType _tween       = new(MMTween.MMTweenCurve.EaseInQuartic);
-        
+
         while (_elapsedTime < _duration)
         {
             float _t = _tween.Evaluate(_elapsedTime / _duration);
@@ -162,7 +163,6 @@ public class Player : MonoBehaviour, IEntity
             _elapsedTime   += Time.unscaledDeltaTime;
             await UniTask.Yield();
         }
-
 
         while (true)
         {

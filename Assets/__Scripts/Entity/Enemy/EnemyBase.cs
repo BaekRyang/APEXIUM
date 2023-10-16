@@ -12,9 +12,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     private const float VERTICAL_OFFSET    = .7f;
     private const float CRITICAL_FONT_SIZE = 1.05f;
-
-    public string name;
-
+    
     private EnemyAI          _enemyAI;
     private MMF_Player       _damageFeedback;
     private MMF_FloatingText _floatingText;
@@ -92,7 +90,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         GetDamage(_damage);
 
         if (stats.canKnockback)
-            Knockback(_attacker, .1f);
+            Knockback(_attacker, .3f);
 
         if (stats.Health <= 0)
             Dead();
@@ -143,7 +141,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         
         float _elapsedTime = 0;
         float _duration    = 0.1f;
-        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseInQuartic);
+        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseInQuintic);
         
         while (_elapsedTime < _duration)
         {

@@ -40,6 +40,7 @@ public class ItemBox : InteractableObject
         {
             int _itemID = GetRandomItem(chestType);
             EventBus.Publish(new ItemSpawnEvent(PickupType.Item, _itemID, transform.position));
+            return;
         }
 
         if (expAmount > 0)
@@ -52,8 +53,13 @@ public class ItemBox : InteractableObject
     private int GetRandomItem(ChestType _chestType)
     {
         Debug.Log($"<color=red>GetRandomItem</color> : {GameManager.GetRarityFromChestType(_chestType)}");
-        return Random.Range(0, 100);
+        
+        
+        
+        // return Random.Range(0, 100);
+        return 0;
     }
+    
 
     protected override void Initialize()
     {

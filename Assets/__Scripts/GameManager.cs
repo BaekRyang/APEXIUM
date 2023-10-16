@@ -69,27 +69,26 @@ public static class GameManager
     public static Vector4 RATIO_CHEST_LARGE     = new(0.10f, 0.30f, 0.50f, 0.10f);
     public static Vector4 RATIO_CHEST_LEGENDARY = new(0.00f, 0.10f, 0.20f, 0.70f);
 
-    public static Item.ItemRarity GetRarityFromChestType(ChestType _chestType)
+    public static ItemRarity GetRarityFromChestType(ChestType _chestType)
     {
-        float   _randomRatio = Random.Range(0, 1f);
+        float _randomRatio = Random.Range(0, 1f);
         Vector4 _targetRatio = _chestType switch
         {
-            ChestType.Small     => RATIO_CHEST_SMALL,
-            ChestType.Medium    => RATIO_CHEST_MEDIUM,
-            ChestType.Large     => RATIO_CHEST_LARGE,
-            ChestType.Legendary => RATIO_CHEST_LEGENDARY
+            ChestType.Small        => RATIO_CHEST_SMALL,
+            ChestType.Medium       => RATIO_CHEST_MEDIUM,
+            ChestType.Large        => RATIO_CHEST_LARGE,
+            ChestType.Legendary    => RATIO_CHEST_LEGENDARY,
+            ChestType.Capsule or _ => throw new ArgumentOutOfRangeException(nameof(_chestType), _chestType, null)
         };
-        
-        
-        if (_randomRatio < _targetRatio.x)
-            return Item.ItemRarity.Common;
-        if (_randomRatio < _targetRatio.x + _targetRatio.y)
-            return Item.ItemRarity.Uncommon;
-        if (_randomRatio < _targetRatio.x + _targetRatio.y + _targetRatio.z)
-            return Item.ItemRarity.Rare;
-        return Item.ItemRarity.Epic;
 
+        if (_randomRatio < _targetRatio.x)
+            return ItemRarity.Common;
+        if (_randomRatio < _targetRatio.x + _targetRatio.y)
+            return ItemRarity.Uncommon;
+        if (_randomRatio < _targetRatio.x + _targetRatio.y + _targetRatio.z)
+            return ItemRarity.Rare;
+        return ItemRarity.Epic;
     }
-    
+
 #endregion
 }

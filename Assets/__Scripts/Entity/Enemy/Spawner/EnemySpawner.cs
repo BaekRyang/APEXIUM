@@ -39,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
         DIContainer.Inject(this);
         _objectPoolManager.MakePool<EnemyBase>("Assets/_Prefabs/Entities/Enemy.prefab", 10);
 
-        SpawnEnemyLoop();
+        UniTask _task = SpawnEnemyLoop();
     }
 
     private void PlayMapChangedHandler(PlayMapChangedEvent _obj)

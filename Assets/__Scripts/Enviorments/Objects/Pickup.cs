@@ -105,7 +105,7 @@ public class Pickup : MonoBehaviour
             switch (pickupType)
             {
                 case PickupType.Item:
-                    _player.items.Add(Item.ToItem(value));
+                    _player.items.AddItem(value);
                     break;
                 case PickupType.Resource:
                     _player.Stats.EnergyCrystal += value;

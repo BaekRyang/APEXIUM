@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum PickupType
@@ -18,9 +19,30 @@ public enum PickupSize
 
 public class ItemManager : MonoBehaviour
 {
+    [SerializeField] private ItemList              itemList;
+    private                  Dictionary<int, Item> _items = new();
+    
+    public Item GetItem(int _itemID)
+    {
+        if (_items.TryGetValue(_itemID, out Item _item)) return _item;
+        
+        Debug.Log($"<color=red>ItemManager</color> : {_itemID} is not exist!");
+        return null;
+    }
+
     private void OnEnable()
     {
         EventBus.Subscribe<ItemSpawnEvent>(InstantiateItemHandler);
+
+        MakeItems();
+    }
+
+    private void MakeItems()
+    {
+        foreach (Item _itemListItem in itemList.items)
+        {
+            _items.Add(_itemListItem.id, _itemListItem);
+        }
     }
 
     private void OnDisable()
@@ -35,11 +57,11 @@ public class ItemManager : MonoBehaviour
 
     private void InstantiatePickupObjects(PickupType _pickupType, int _value, Vector3 _position)
     {
-        if (_value <= 0) return;
+        if (_value < 0) return;
 
         if (_pickupType == PickupType.Item) //아이템일때
         {
-            Pickup _itemPickup = PickupPool.Instance.GetAvailablePickupComponents(_pickupType, 1)[0];
+            Pickup _itemPickup = PickupPool.Instance.GetAvailablePickupComponents(_pickupType, _value)[0];
             PickupInitialize(_itemPickup, _value, _position).Activate();
             return;
         }

@@ -16,6 +16,8 @@ public class PickupPool : MonoBehaviour
     [SerializeField] private Sprite                  _nullSprite;
     private                  Dictionary<int, Sprite> _itemSprites = new();
 
+    [Inject] private ItemManager _itemManager;
+
     private void Start()
     {
         Instance ??= this;
@@ -32,44 +34,35 @@ public class PickupPool : MonoBehaviour
             _transform.position = Vector3.zero;
             _transform.parent   = transform;
         }
+
+        DIContainer.Inject(this);
     }
 
     [SerializeField] private Sprite[]   exp, health, resource;
     [SerializeField] private GameObject pickupPrefab;
 
-    public List<GameObject> GetAvailablePickupObjects(PickupType _pickupType, int _value)
-    {
-        //TODO:Lock이 필요하지 않을까?
-        int _availablePickupCount = GetAvailablePickupCount(_pickupType);
-
-        if (_pickupType           == PickupType.Item && //아이템은 _value를 ID로 사용한다.
-            _availablePickupCount < 1)                 //그러니까 한개만 필요함
-            InstantiatePickupObject(_pickupType);
-        else if (_availablePickupCount < _value)
-        {
-            for (int _i = 0; _i < _value - _availablePickupCount; _i++)
-                InstantiatePickupObject(_pickupType);
-        }
-
-
-        return PickupPools[_pickupType]
-              .Select(_pickup => _pickup.gameObject)            //Pool안에 Pickup GameObject를
-              .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
-              .Take(_value)                                     //p_count만큼
-              .ToList();                                        //List로 반환
-    }
-
     public List<Pickup> GetAvailablePickupComponents(PickupType _pickupType, int _value)
     {
         //TODO:Lock이 필요하지 않을까?
         int _availablePickupCount = GetAvailablePickupCount(_pickupType);
+        Debug.Log($"<color=green>Available {_pickupType} : {_availablePickupCount}</color>");
 
-        if (_pickupType           == PickupType.Item && //아이템은 _value를 ID로 사용한다.
-            _availablePickupCount < 1)                 //그러니까 한개만 필요함
-            InstantiatePickupObject(_pickupType, _value);
-        else if (_availablePickupCount < _value)
+        if (_pickupType == PickupType.Item) //아이템 전용
         {
-            for (int _i = 0; _i < _value - _availablePickupCount; _i++)
+            if (_availablePickupCount <= 0)
+                InstantiatePickupObject(_pickupType, _value);
+            
+            return PickupPools[_pickupType]
+                  .Select(_pickup => _pickup)                       //Pool안에 Pickup Component를
+                  .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
+                  .Take(1)
+                  .ToList();
+        }
+
+        if (_availablePickupCount < _value) //풀에 픽업이 부족하면
+        {
+            Debug.Log($"<color=green>Create {_pickupType} : {_value - _availablePickupCount}</color>");
+            for (int _i = 0; _i < _value - _availablePickupCount; _i++) //모자란 만큼 만든다.
                 InstantiatePickupObject(_pickupType);
         }
 
@@ -89,6 +82,7 @@ public class PickupPool : MonoBehaviour
 
     private void InstantiatePickupObject(PickupType _pickupType, int _id = -1)
     {
+        Debug.Log($"<color=green>Instantiate {_pickupType} / id : {_id}</color>");
         GameObject     _pickup               = Instantiate(pickupPrefab, PickupPoolTransforms[_pickupType]);
         SpriteRenderer _pickupSpriteRenderer = _pickup.GetComponent<SpriteRenderer>();
 
@@ -96,8 +90,7 @@ public class PickupPool : MonoBehaviour
 
         _pickupSpriteRenderer.sprite = _pickupType switch
         {
-            //해당 배열의 랜덤값을 가져온다.
-            PickupType.Item     => GetSpriteFromID(_id),
+            PickupType.Item     => _itemManager.GetItem(_id).sprite,
             PickupType.Resource => resource[Random.Range(0, resource.Length)],
             PickupType.Exp      => exp[Random.Range(0,      exp.Length)],
             PickupType.Health   => health[Random.Range(0,   health.Length)],
