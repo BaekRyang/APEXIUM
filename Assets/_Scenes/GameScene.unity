@@ -16760,10 +16760,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 4b386878fa2358741b49de73eeae9341,
         type: 2}
+    - target: {fileID: 5525419052563986084, guid: e86160f79a48e5647afa6d806f25d572,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 47e9fea6f6d85d043bffc6fd3b056290, type: 2}
     - target: {fileID: 6290005279379259483, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6290005279379259483, guid: e86160f79a48e5647afa6d806f25d572,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7746770201873532363, guid: e86160f79a48e5647afa6d806f25d572,
         type: 3}
@@ -18429,7 +18439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 486d784f4193452438b530abb6927b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemList: {fileID: 11400000, guid: b3959fb678b366a45b3ff8545df54eec, type: 2}
+  itemList: {fileID: 11400000, guid: 3811a2f4dc7b87247a4d29cde5037a8a, type: 2}
 --- !u!1 &1827588387
 GameObject:
   m_ObjectHideFlags: 0

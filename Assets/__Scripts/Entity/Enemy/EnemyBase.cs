@@ -26,7 +26,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     readonly InjectObj _injectObj = new();
 
-    public void Initialize(EnemyData _importedData)
+    public async void Initialize(EnemyData _importedData)
     {
         _enemyData = _importedData;
         _injectObj.CheckAndInject(this);
@@ -38,7 +38,7 @@ public class EnemyBase : MonoBehaviour, IEntity
             gameObject.AddComponent<Animator>();
 
         animator.runtimeAnimatorController = _enemyData.animatorController;
-
+        
         if (_enemyData.isBoss)
             BossHealthDisplay.Instance.SyncToBossHealthBar(this);
 

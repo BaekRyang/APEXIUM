@@ -19,8 +19,8 @@ public enum PickupSize
 
 public class ItemManager : MonoBehaviour
 {
-    [SerializeField] private ItemList              itemList;
-    private                  Dictionary<int, Item> _items = new();
+    [SerializeField] private ItemData              itemList;
+    private readonly         Dictionary<int, Item> _items = new();
     
     public Item GetItem(int _itemID)
     {
@@ -39,10 +39,8 @@ public class ItemManager : MonoBehaviour
 
     private void MakeItems()
     {
-        foreach (Item _itemListItem in itemList.items)
-        {
+        foreach (Item _itemListItem in itemList.items) 
             _items.Add(_itemListItem.id, _itemListItem);
-        }
     }
 
     private void OnDisable()

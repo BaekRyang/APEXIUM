@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -48,7 +50,7 @@ public class EnemyAI : MonoBehaviour
     private static readonly int IsWalk     = Animator.StringToHash("IsWalk");
     private static readonly int Attacked   = Animator.StringToHash("Attacked");
 
-    public void Initialize(EnemyBase _enemyBase)
+    public async void Initialize(EnemyBase _enemyBase)
     {
         thisCollider    = GetComponent<Collider2D>();
         enemyBase       = _enemyBase;
@@ -57,7 +59,10 @@ public class EnemyAI : MonoBehaviour
         bodySize = thisCollider.bounds.size;
 
         animator = enemyBase.animator;
-
+        
+        //재생중인 애니메이션이 끝날때 까지 대기
+        await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
+        
         States = new Dictionary<string, State>
                  {
                      { "Wander", new SWander().Initialize(this) },

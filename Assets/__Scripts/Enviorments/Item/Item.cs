@@ -32,58 +32,12 @@ public enum ChangeableStatsTypes
 [Serializable]
 public class Item
 {
-    public int        id;
-    public string     name;
-    public ItemRarity rarity;
-    public Sprite     sprite;
+    [SerializeField] public int        id;
+    [SerializeField] public string     name;
+    [SerializeField] public ItemRarity rarity = ItemRarity.Common;
+    [SerializeField] public Sprite     sprite;
 
     [Space(20)]
-    public List<StatModifier> statValues;
-    public List<Effect> effect;
-}
-
-[CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemData", order = 1)]
-public class ItemList : ScriptableObject
-{
-    public List<Item> items;
-}
-
-public enum TriggerCondition
-{
-    OnAttack,
-    OnHit,
-}
-
-public enum FxType
-{
-    AddMana
-}
-
-[Serializable]
-public enum CalculationType
-{
-    Add,
-    Multiply
-}
-
-[Serializable]
-public class StatModifier
-{
-    public ChangeableStatsTypes statType;
-    public CalculationType      calculationType;
-    public float                value;
-}
-
-[Serializable]
-public class Fx
-{
-    public FxType      fxType;
-    public List<float> values;
-}
-
-[Serializable]
-public class Effect
-{
-    public TriggerCondition triggerCondition;
-    public List<Fx>         fxes;
+    [SerializeField] public List<StatModifier> statValues;
+    [SerializeField] public List<Effect> effect;
 }

@@ -135,11 +135,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 458c0be76cab8c94c9ce084f45590a67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  size: 0
+  pickupType: 0
+  value: 0
   interactable: 0
-  _targetPosition: {x: 0, y: 0}
-  _randomDirection: {x: 0, y: 0}
+  targetPosition: {x: 0, y: 0}
+  randomDirection: {x: 0, y: 0}
   _rigidbody2D: {fileID: 0}
 --- !u!114 &8239469019363994264
 MonoBehaviour:
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.7
   m_Color: {r: 0.8, g: 0.96850395, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 0.8
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000

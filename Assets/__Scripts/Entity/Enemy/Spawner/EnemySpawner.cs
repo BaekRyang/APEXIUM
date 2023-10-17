@@ -19,9 +19,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private string taskStatus;
     [SerializeField] private bool   doSpawn;
     private const            int    INITIALIZE_DELAY = 5;
-    private const            int    SPAWN_FREQUENCY  = 25;
+    private const            int    SPAWN_FREQUENCY  = 5;
 
-    private const int   DEFAULT_SPAWN_ENEMIES_ONCE_COUNT    = 3;
+    private const int   DEFAULT_SPAWN_ENEMIES_ONCE_COUNT    = 2;
     private const float SPAWN_ENEMIES_DIFFICULTY_MULTIPLIER = 1.5f;
 
     private void OnEnable()

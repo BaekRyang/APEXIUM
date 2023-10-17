@@ -25,7 +25,8 @@ public class Items
         else
             _items[_itemID] += 1;
 
-        List<StatModifier> _itemStatsMods = _itemManager.GetItem(_itemID).statValues;
+        var _itemStatsMods = _itemManager.GetItem(_itemID).statValues;
+        
         if (_itemStatsMods.Count > 0)
         {
             foreach (StatModifier _itemStatMod in _itemStatsMods)
