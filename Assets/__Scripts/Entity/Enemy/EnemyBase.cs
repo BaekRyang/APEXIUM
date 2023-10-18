@@ -90,7 +90,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         GetDamage(_damage);
 
         if (stats.canKnockback)
-            Knockback(_attacker, .3f);
+            Knockback(_attacker, .15f);
 
         if (stats.Health <= 0)
             Dead();

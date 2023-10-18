@@ -16,7 +16,7 @@ public class BossRoomEntrance : InteractableObject
     protected override void Initialize()
     {
         destroyAfterInteract = false;
-        _rootMapType         = GetComponentInParent<MapData>().currentMap is BossPlayMap ? MapType.Boss : MapType.Normal;
+        _rootMapType         = GetComponentInParent<MapData>().currentMap.MapType is MapType.Boss ? MapType.Boss : MapType.Normal;
         DIContainer.Inject(this);
 
         _mapManager.GetMap(_rootMapType).transform.root.gameObject.GetComponent<MMF_Player>().Initialization();
@@ -46,6 +46,8 @@ public class BossRoomEntrance : InteractableObject
         MapType _currentMapType = _rootMapType != MapType.Normal ? MapType.Boss : MapType.Normal;
         Debug.Log($"<color=green>targetMapType : {_targetMapType} - _currentMapType : {_currentMapType}</color>");
 
+        PlayMap _targetPlayMap = _mapManager.GetMap(_targetMapType);
+        
         //플레이어가 문 중심을 기준으로 얼마나 떨어져있는지 구한다.
         Vector3 _playerOffsetPosition = _player.transform.position - transform.position;
         int     _targetIndex          = _rootMapType == MapType.Normal ? 0 : 1;
@@ -59,7 +61,7 @@ public class BossRoomEntrance : InteractableObject
         Debug.Log($"<color=green> CAM : {_cameras[_currentIndex].name} - {_cameras[_currentIndex].transform.position}</color>");
 
         //다른 위치의 카메라를 해당 지역의 문 위치 + 오프셋 위치로 이동
-        _cameras[_targetIndex].transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition + Vector3.back * 10f;
+        _cameras[_targetIndex].transform.position = _targetPlayMap.bossRoomEntrance.position + _playerOffsetPosition + Vector3.back * 10f;
         Debug.Log($"<color=green> CAM : {_cameras[_targetIndex].name} - {_cameras[_targetIndex].transform.position}</color>");
 
         _player.Controller.SetControllable(false, true);
@@ -71,11 +73,14 @@ public class BossRoomEntrance : InteractableObject
             _camera.gameObject.SetActive(true);
         }
 
-        _player.transform.position = _mapManager.GetMap(_targetMapType).bossRoomEntrance.position + _playerOffsetPosition;
-
+        _player.transform.position = _targetPlayMap.bossRoomEntrance.position + _playerOffsetPosition;
+        
+        //플레이어 데이터 업데이트
+        _player.currentMap          = _targetPlayMap;
+        
         InstantiatePlayerWalkingObject();
 
-        _cameraManager.SetCameraBoundBox(_mapManager.GetMap(_targetMapType));
+        _cameraManager.SetCameraBoundBox(_targetPlayMap);
 
         _thisMMF.PlayFeedbacks();
 

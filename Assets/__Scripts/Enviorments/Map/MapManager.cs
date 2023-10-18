@@ -22,8 +22,7 @@ public enum MapTheme
 /// </summary>
 public class MapManager : MonoBehaviour
 {
-    [SerializeField] private PlayMap     currentMap;
-    [SerializeField] private BossPlayMap bossPlayMap;
+    [SerializeField] private PlayMap currentMap, bossPlayMap;
 
     private void OnEnable()
     {
@@ -41,7 +40,7 @@ public class MapManager : MonoBehaviour
         currentMap = _playMapData.mapData[0].currentMap;
 
         if (_playMapData.mapData.Length > 1)
-            bossPlayMap = _playMapData.mapData[1].currentMap as BossPlayMap;
+            bossPlayMap = _playMapData.mapData[1].currentMap;
     }
 
     public PlayMap GetMap(MapType _mapType)
@@ -77,11 +76,10 @@ public class MapManager : MonoBehaviour
                                    .ThenByDescending(_point => _point.y)
                                    .First();
 
-
         Vector2 _randomTopPoint = new(
             x: Random.Range(_rightTopPoint.x - _padding.x, _leftTopPoint.x + _padding.x),
             y: _rightTopPoint.y - _padding.y + _yOffset);
-        
+
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
         Vector2 _randomPoint        = _everyContactPoints[Random.Range(0, _everyContactPoints.Count)];
 

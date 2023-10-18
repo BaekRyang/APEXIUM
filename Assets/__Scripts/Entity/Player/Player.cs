@@ -30,11 +30,12 @@ public class Player : MonoBehaviour, IEntity
     public PlayerController Controller => _playerController;
 
     public PlayerStats Stats => _stats;
+    public PlayMap     currentMap;
 
     [SerializeField] public Items items;
 
-    public                   bool       dead;
-    private static readonly  int        IsDead = Animator.StringToHash("IsDead");
+    public                  bool dead;
+    private static readonly int  IsDead = Animator.StringToHash("IsDead");
 
     private void Initialize(PlayerData _playerData)
     {
@@ -132,9 +133,14 @@ public class Player : MonoBehaviour, IEntity
         _collider2D.enabled = true;
 
         Controller.Rigidbody2D.velocity = Vector2.zero; //속도 초기화
+        Vector3 _bounceOrigin = _attacker switch
+        {
+            null => transform.position - (Random.Range(0, 2) == 0 ? Vector3.left : Vector3.right),
+            _    => _attacker.transform.position
+        };
 
         //마지막으로 공격한 몬스터 -> 플레이어 방향으로 밀어낸다.
-        Vector2 _direction = new((transform.position - _attacker.transform.position).normalized.x, 2f);
+        Vector2 _direction = new((transform.position - _bounceOrigin).normalized.x, 2f);
 
         Controller.Rigidbody2D.AddForce(_direction * 7f, ForceMode2D.Impulse);
         DeadAction();

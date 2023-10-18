@@ -5,18 +5,26 @@ using Random = UnityEngine.Random;
 
 public class MapData : MonoBehaviour
 {
-    public Transform                   sceneObjects;
-    public Transform                   background;
-    public PlayMap                     currentMap;
-    public ObjectPrefabs               objectPrefabs;
-    public List<SpawnRatio<ChestType>> spawnRatio;
-    public List<EnemyData>             spawnableEnemies;
+    public Transform     sceneObjects;
+    public Transform     background;
+    public PlayMap       currentMap;
+    public ObjectPrefabs objectPrefabs;
+
+    public List<SpawnRatio<ChestType>> spawnRatio = new()
+                                                    {
+                                                        new SpawnRatio<ChestType>(ChestType.Small,     60),
+                                                        new SpawnRatio<ChestType>(ChestType.Medium,    25),
+                                                        new SpawnRatio<ChestType>(ChestType.Large,     10),
+                                                        new SpawnRatio<ChestType>(ChestType.Legendary, 5)
+                                                    };
+
+    public List<EnemyData> spawnableEnemies;
 
     public ChestType GetRandomChest()
     {
         return spawnRatio.GetRandomKey();
     }
-    
+
     public GameObject GetRandomChestGameObject(ChestType _chestType)
     {
         GameObject _obj = objectPrefabs.GetObject(_chestType);
@@ -37,7 +45,7 @@ public struct ObjectPrefabs
         ChestType.Medium    => medium,
         ChestType.Large     => large,
         ChestType.Legendary => legendary,
-        _                => throw new ArgumentOutOfRangeException(nameof(_chestType), _chestType, null)
+        _                   => throw new ArgumentOutOfRangeException(nameof(_chestType), _chestType, null)
     };
 }
 
@@ -55,6 +63,12 @@ public class SpawnRatio<T>
 {
     public T     key;
     public float ratio;
+
+    public SpawnRatio(T _key, float _ratio)
+    {
+        key   = _key;
+        ratio = _ratio;
+    }
 }
 
 public static class SpawnRatioExt

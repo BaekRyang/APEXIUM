@@ -27,6 +27,7 @@ public class PlayerObjectController
 
             Debug.Log("PlayerEnterEventHandler : " + _eventData.PlayerID);
             Player _player = InstantiatePlayer(_eventData.PlayerID, _mapManager.GetSpawnLocation());
+            _player.currentMap = _mapManager.GetMap(MapType.Normal);
             _playerManager.AddPlayer(_eventData.PlayerID, _player);
             _player.clientID = _eventData.PlayerID;
         });

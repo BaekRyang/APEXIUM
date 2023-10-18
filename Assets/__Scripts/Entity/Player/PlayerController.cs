@@ -70,7 +70,6 @@ public class PlayerController : MonoBehaviour
 
         attackPosTransform = transform.Find("AttackPoint") ?? transform;
 
-
         DIContainer.Inject(this);
         Initialize(_mapManager.GetMap(MapType.Normal));
     }
@@ -281,6 +280,16 @@ public class PlayerController : MonoBehaviour
     //바닥 착지시 실행할 Action
     private Action _landingAction;
 
+    //낙하데미지용 함수
+    private void ApplyLandingDamage()
+    {
+        if (fallTimer - .5f <= 0) return;
+
+        int _damage = (int)(fallTimer * 10);
+
+        _player.Attacked(_damage, 0, null);
+    }
+
     public void AddLandingAction(Action _pAction)
     {
         _landingAction += _pAction;
@@ -299,7 +308,7 @@ public class PlayerController : MonoBehaviour
 
             //landingAction 실행후 초기화(바닥에 착지시 실행할 Action)
             _landingAction?.Invoke();
-            _landingAction = null;
+            _landingAction = ApplyLandingDamage;
         }
     }
 
@@ -547,13 +556,23 @@ public class PlayerController : MonoBehaviour
 
 #region Gravity
 
-    [SerializeField] private float maxFallSpeed = 20;
+    [SerializeField] private float   fallTimer    = 0; //낙뎀 타이머
+    [SerializeField] private float   maxFallSpeed = 20;
+    private                  Vector2 _clampVelocity;
 
     private void ClampVelocity()
     {
         //하강속도 제한
-        if (_rigidbody2D.velocity.y < -maxFallSpeed)
-            _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, -maxFallSpeed);
+        if (_rigidbody2D.velocity.y < -maxFallSpeed * .9f)
+        {
+            fallTimer             += Time.deltaTime;
+            _clampVelocity.y      =  -maxFallSpeed;
+            _rigidbody2D.velocity =  _clampVelocity;
+        }
+        else
+            fallTimer = 0;
+
+        //매 프레임마다 Vector2를 생성하는 것보다 미리 생성해두고 사용하는게 더 효율적일것 같아서
     }
 
 #endregion

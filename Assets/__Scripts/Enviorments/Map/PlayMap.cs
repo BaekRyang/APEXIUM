@@ -8,18 +8,21 @@ using UnityEngine.Tilemaps;
 [Serializable]
 public class PlayMap : MonoBehaviour
 {
+    [SerializeField] private   MapType           mapType;
     [SerializeField] private   int               level;
     [SerializeField] private   int               mapIndex;
     [SerializeField] private   Vector2           mapSize;
     [SerializeField] private   PolygonCollider2D boundCollider;
     [SerializeField] public    Transform         bossRoomEntrance;
     [SerializeField] protected Vector2           entrancePositionOffset;
-    public                     Vector2           GetEntranceOffset => entrancePositionOffset;
-    public                     int               GetLevel          => level;
-    public                     int               GetIndex          => mapIndex;
-    public                     string            GetName           => $"{level}-{mapIndex}";
-    public                     Vector2           GetSize           => mapSize;
-    public                     PolygonCollider2D GetBound          => boundCollider;
+
+    public Vector2           GetEntranceOffset => entrancePositionOffset;
+    public int               GetLevel          => level;
+    public int               GetIndex          => mapIndex;
+    public string            GetName           => $"{level}-{mapIndex}";
+    public Vector2           GetSize           => mapSize;
+    public PolygonCollider2D GetBound          => boundCollider;
+    public MapType           MapType           => mapType;
 
     public Vector2 GetMapSize()
     {
@@ -44,7 +47,6 @@ public class PlayMap : MonoBehaviour
         Transform _cachedTransform = transform;
         _cachedTransform.position = new Vector3(0, mapSize.y);
 
-
         if (boundCollider == null)
         {
             boundCollider = gameObject.AddComponent<PolygonCollider2D>();
@@ -52,7 +54,6 @@ public class PlayMap : MonoBehaviour
         }
         else
             SetBoundCollider();
-
 
         //ShadowCaster2D 생성
         Transform _mapTransform = _cachedTransform.Find("Map");
@@ -74,7 +75,6 @@ public class PlayMap : MonoBehaviour
 
         foreach (GameObject _destroyRequiredObject in _destroyRequiredObjects)
             DestroyImmediate(_destroyRequiredObject);
-
 
         //cacheTransform의 자식중 Collision이라는 이름을 가진 오브젝트를 찾아서 있으면 foreach
         Transform _collisions;
@@ -109,7 +109,7 @@ public class PlayMap : MonoBehaviour
     }
 
     public Tilemap GetTilemap(string _name) => transform.Find(_name).GetComponent<Tilemap>();
-    
+
     public void SetEntranceOffset()
     {
         BossRoomEntrance _bossRoomEntrance = GetComponentInChildren<BossRoomEntrance>();
@@ -119,6 +119,7 @@ public class PlayMap : MonoBehaviour
         entrancePositionOffset = (Vector2)bossRoomEntrance.position //문의 위치(월드좌표)
                                - (Vector2)transform.position        //맵의 위치(월드좌표)
                                + new Vector2(0, GetSize.y);         //해당 오프셋은 맵의 피벗인 왼쪽 위 기준이므로
+
         //왼쪽 아래 기준으로 바꿔줘야함 (맵의 높이만큼 더해줌)
     }
 }

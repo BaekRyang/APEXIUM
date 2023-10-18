@@ -8,6 +8,9 @@ using UnityEngine.AddressableAssets;
 
 public class EnemySpawner : MonoBehaviour
 {
+    private MapData _playMap;
+    private MapData _bossMap;
+
     [SerializeField] private List<EnemyData> _spawnableEnemies;
 
     [Inject] private ObjectPoolManager _objectPoolManager;
@@ -19,9 +22,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private string taskStatus;
     [SerializeField] private bool   doSpawn;
     private const            int    INITIALIZE_DELAY = 5;
-    private const            int    SPAWN_FREQUENCY  = 5;
+    private const            int    SPAWN_FREQUENCY  = 30;
 
-    private const int   DEFAULT_SPAWN_ENEMIES_ONCE_COUNT    = 2;
+    private const int   DEFAULT_SPAWN_ENEMIES_ONCE_COUNT    = 3;
     private const float SPAWN_ENEMIES_DIFFICULTY_MULTIPLIER = 1.5f;
 
     private void OnEnable()
@@ -44,16 +47,8 @@ public class EnemySpawner : MonoBehaviour
 
     private void PlayMapChangedHandler(PlayMapChangedEvent _obj)
     {
-        MapData _playMap = _obj.mapData.FirstOrDefault(_data => _data.currentMap is not BossPlayMap);
-
-        if (_playMap is null)
-        {
-            Debug.Log("Not a play map");
-            return;
-        }
-
-        _spawnableEnemies = _playMap.spawnableEnemies;
-        Debug.Log("Spawnable enemies: " + _spawnableEnemies.Count);
+        _playMap = _obj.mapData[0];
+        _bossMap = _obj.mapData[1];
     }
 
     private async UniTask SpawnEnemyLoop()
@@ -89,21 +84,29 @@ public class EnemySpawner : MonoBehaviour
 
     private async UniTask SpawnEnemy(float _delay = 0)
     {
+        Player _randomPlayer = _playerManager.GetRandomPlayer();
+        if (_randomPlayer.currentMap.MapType is not MapType.Normal) 
+            return;
+
         await UniTask.Delay(TimeSpan.FromSeconds(_delay));
+
+        EnemyData _enemyData   = GetRandomEnemy(_randomPlayer.currentMap.MapType);
+        if (_enemyData is null) 
+            return;
         
-        EnemyData _enemyData   = GetRandomEnemy();
         EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
 
-        _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_playerManager.GetRandomPlayer());
-
+        _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_randomPlayer);
         _enemyObject.Initialize(_enemyData);
         _enemyObject.gameObject.SetActive(true);
 
         currentEnemies++;
     }
 
-    private EnemyData GetRandomEnemy()
+    private EnemyData GetRandomEnemy(MapType _mapType)
     {
-        return _spawnableEnemies[UnityEngine.Random.Range(0, _spawnableEnemies.Count)];
+        return _mapType == MapType.Normal ?
+            _playMap.spawnableEnemies.Count > 0 ? _playMap.spawnableEnemies[UnityEngine.Random.Range(0, _spawnableEnemies.Count)] : null :
+            _bossMap.spawnableEnemies.Count > 0 ? _bossMap.spawnableEnemies[UnityEngine.Random.Range(0, _spawnableEnemies.Count)] : null;
     }
 }
