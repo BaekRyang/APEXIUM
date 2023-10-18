@@ -27,11 +27,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 74ac16302f2994b898e17f225c303437
-    m_Address: Assets/AssetKits/ParticleImage/Demo/Sprites/4Star.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: feeb617575a5c3b4e89c813cf872372a
     m_Address: "Assets/_Sprites/Items/\uAD11\uC11D.png"
     m_ReadOnly: 0

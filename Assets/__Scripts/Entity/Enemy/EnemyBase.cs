@@ -26,7 +26,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     readonly InjectObj _injectObj = new();
 
-    public async void Initialize(EnemyData _importedData)
+    public void Initialize(EnemyData _importedData)
     {
         _enemyData = _importedData;
         _injectObj.CheckAndInject(this);

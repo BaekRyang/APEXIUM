@@ -59,10 +59,10 @@ public class EnemyAI : MonoBehaviour
         bodySize = thisCollider.bounds.size;
 
         animator = enemyBase.animator;
-        
+
         //재생중인 애니메이션이 끝날때 까지 대기
         await UniTask.Delay(TimeSpan.FromSeconds(1.5f));
-        
+
         States = new Dictionary<string, State>
                  {
                      { "Wander", new SWander().Initialize(this) },
@@ -75,6 +75,8 @@ public class EnemyAI : MonoBehaviour
 
     public void Update()
     {
+        if (States == null) return;
+
         if (_stunned)
         {
             _stunTime -= Time.deltaTime;

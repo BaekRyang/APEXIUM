@@ -64,21 +64,21 @@ public static class GameManager
 
 #region ChestItemRatio
 
-    public static Vector4 RATIO_CHEST_SMALL     = new(0.65f, 0.30f, 0.05f, 0.00f);
-    public static Vector4 RATIO_CHEST_MEDIUM    = new(0.30f, 0.47f, 0.20f, 0.03f);
-    public static Vector4 RATIO_CHEST_LARGE     = new(0.10f, 0.30f, 0.50f, 0.10f);
-    public static Vector4 RATIO_CHEST_LEGENDARY = new(0.00f, 0.10f, 0.20f, 0.70f);
+    private static Vector4 RATIO_CHEST_SMALL     = new(0.65f, 0.30f, 0.05f, 0.00f);
+    private static Vector4 RATIO_CHEST_MEDIUM    = new(0.30f, 0.47f, 0.20f, 0.03f);
+    private static Vector4 RATIO_CHEST_LARGE     = new(0.10f, 0.30f, 0.50f, 0.10f);
+    private static Vector4 RATIO_CHEST_LEGENDARY = new(0.00f, 0.10f, 0.20f, 0.70f);
 
     public static ItemRarity GetRarityFromChestType(ChestType _chestType)
     {
         float _randomRatio = Random.Range(0, 1f);
         Vector4 _targetRatio = _chestType switch
         {
-            ChestType.Small        => RATIO_CHEST_SMALL,
-            ChestType.Medium       => RATIO_CHEST_MEDIUM,
-            ChestType.Large        => RATIO_CHEST_LARGE,
-            ChestType.Legendary    => RATIO_CHEST_LEGENDARY,
-            ChestType.Capsule or _ => throw new ArgumentOutOfRangeException(nameof(_chestType), _chestType, null)
+            ChestType.Small     => RATIO_CHEST_SMALL,
+            ChestType.Medium    => RATIO_CHEST_MEDIUM,
+            ChestType.Large     => RATIO_CHEST_LARGE,
+            ChestType.Legendary => RATIO_CHEST_LEGENDARY,
+            _                   => throw new ArgumentOutOfRangeException(nameof(_chestType), _chestType, null)
         };
 
         if (_randomRatio < _targetRatio.x)
