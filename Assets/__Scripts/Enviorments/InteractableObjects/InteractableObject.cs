@@ -37,7 +37,7 @@ public abstract class InteractableObject : MonoBehaviour
             CanNotInteractAction();
             return;
         }
-        
+
         GetComponent<SpriteAnimation>()?.Play();
 
         InteractAction(_player);
@@ -56,9 +56,11 @@ public abstract class InteractableObject : MonoBehaviour
     }
 
     protected abstract void InteractAction(Player _player);
+
     //오브젝트에 상호작용했을때 실행되는 함수
 
     protected abstract void Initialize();
+
     //오브젝트가 생성될때 실행되는 함수
 }
 
@@ -67,11 +69,13 @@ public class ItemSpawnEvent
     public readonly PickupType pickupType;
     public readonly int        value;
     public readonly Vector3    position;
+    public readonly Player     player;
 
-    public ItemSpawnEvent(PickupType _pickupType, int _value, Vector3 _position)
+    public ItemSpawnEvent(PickupType _pickupType, int _value, Vector3 _position, Player _player)
     {
         pickupType = _pickupType;
-        value     = _value;
+        value      = _value;
         position   = _position;
+        player     = _player;
     }
 }

@@ -285,8 +285,9 @@ public class PlayerController : MonoBehaviour
     //낙하데미지용 함수
     private void ApplyLandingDamage()
     {
-        if (fallTimer - .5f <= 0) return;
-
+        Debug.Log($"Timer : {fallTimer}");
+        if (fallTimer - .5f <= 0) 
+            return;
         int _damage = (int)(fallTimer * 10);
 
         _player.Attacked(_damage, 0, null);
@@ -537,21 +538,20 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float   fallTimer    = 0; //낙뎀 타이머
     [SerializeField] private float   maxFallSpeed = 20;
-    private                  Vector2 _clampVelocity;
 
     private void ClampVelocity()
     {
         //하강속도 제한
         if (_rigidbody2D.velocity.y < -maxFallSpeed * .9f)
         {
-            fallTimer             += Time.deltaTime;
-            _clampVelocity.y      =  -maxFallSpeed;
-            _rigidbody2D.velocity =  _clampVelocity;
+            fallTimer        += Time.deltaTime;
+            
+            Vector2 _clampVelocity = _rigidbody2D.velocity;
+            _clampVelocity.y      = -maxFallSpeed;
+            _rigidbody2D.velocity = _clampVelocity;
         }
         else
             fallTimer = 0;
-
-        //매 프레임마다 Vector2를 생성하는 것보다 미리 생성해두고 사용하는게 더 효율적일것 같아서
     }
 
 #endregion

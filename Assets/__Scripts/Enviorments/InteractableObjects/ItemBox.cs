@@ -39,15 +39,15 @@ public class ItemBox : InteractableObject
         if (IsItemChest)
         {
             int _itemID = GetRandomItem(chestType);
-            EventBus.Publish(new ItemSpawnEvent(PickupType.Item, _itemID, transform.position));
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Item, _itemID, transform.position, _player));
             return;
         }
 
         if (expAmount > 0)
-            EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, expAmount, transform.position));
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Exp, expAmount, transform.position, _player));
 
         if (resourceAmount > 0)
-            EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, resourceAmount, transform.position));
+            EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, resourceAmount, transform.position, _player));
     }
 
     private int GetRandomItem(ChestType _chestType)

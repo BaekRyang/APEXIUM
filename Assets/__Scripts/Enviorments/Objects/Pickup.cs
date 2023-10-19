@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Tools;
 using UnityEngine;
@@ -6,13 +7,13 @@ using Random = UnityEngine.Random;
 
 public class Pickup : MonoBehaviour
 {
-    [SerializeField] public  PickupType pickupType;
-    [SerializeField] private int        value;
-    [SerializeField] private bool       interactable;
-    public                   Vector2    targetPosition;
-    public                   Vector2    randomDirection;
-
-    public Rigidbody2D _rigidbody2D;
+    [SerializeField] public  PickupType  pickupType;
+    [SerializeField] private int         value;
+    [SerializeField] private bool        interactable;
+    public                   Vector2     targetPosition;
+    public                   Vector2     randomDirection;
+    public                   Rigidbody2D _rigidbody2D;
+    public                   float       _attractForceInSecond;
 
     public int PickupValue
     {
@@ -20,16 +21,64 @@ public class Pickup : MonoBehaviour
         set => this.value = value;
     }
 
-    public async void Activate()
+    public async void Activate(Player _player)
     {
         if (pickupType == PickupType.Resource)
             _rigidbody2D.gravityScale = 2;
 
         interactable = false;
-        
+
         await ActivateMove();
-        
+
         interactable = true;
+
+        StartCoroutine(AttractToPlayer(_player));
+    }
+
+    private IEnumerator AttractToPlayer(Player _player)
+    {
+        if (pickupType is PickupType.Item or PickupType.Health ||
+            _player is null)
+            yield break;
+
+        if (pickupType is PickupType.Resource)
+            SetRigidbodyState(false);
+
+        //플레이어 방향으로 끌려간다.
+
+        yield return new WaitForSeconds(2f);
+
+        //초당 끌려가는 힘
+        _attractForceInSecond = 0f;
+        float _t = 0;
+
+        while (true)
+        {
+            if (!gameObject.activeSelf) 
+                yield break;
+
+            if (_rigidbody2D != null) 
+                _rigidbody2D.gravityScale = 0;
+
+            Vector3 _toPlayerVector = _player.transform.position - transform.position;
+            Vector3 _nextPosition   = _toPlayerVector.normalized * (_attractForceInSecond * Time.deltaTime);
+            
+            _t                     += Time.deltaTime;
+            _attractForceInSecond =  _t * _t;
+
+            if (_toPlayerVector.magnitude < _nextPosition.magnitude)
+                _nextPosition = _nextPosition.normalized * _toPlayerVector.magnitude;
+
+            transform.position += _nextPosition;
+            yield return null;
+        }
+    }
+
+    public void SetRigidbodyState(bool _enable)
+    {
+        _rigidbody2D.velocity      = Vector2.zero;
+        _rigidbody2D.excludeLayers = _enable ? 0 : LayerMask.GetMask("Floor");
+        _rigidbody2D.gravityScale  = _enable ? 2 : 0;
     }
 
     private async UniTask ActivateMove()
@@ -39,7 +88,7 @@ public class Pickup : MonoBehaviour
             case PickupType.Item:
                 await FloatingMove();
                 break;
-            
+
             case PickupType.Resource:
                 //위쪽 방향으로 랜덤한 힘을 가함
                 _rigidbody2D.AddForce(new Vector2(Random.Range(-.7f, .7f), Random.Range(1f, 2f)) * 7.5f, ForceMode2D.Impulse);
@@ -60,13 +109,14 @@ public class Pickup : MonoBehaviour
 
     private const float FLOATING_DISTANCE = 1;
     private const float FLOATING_DURATION = .5f;
+
     private async UniTask FloatingMove()
     {
         Vector2 _originPosition = transform.position;
         targetPosition = _originPosition + new Vector2(0, FLOATING_DISTANCE);
 
         MMTweenType _tween = new(MMTween.MMTweenCurve.EaseOutQuadratic);
-        
+
         float _elapsedTime = 0;
         while (_elapsedTime < FLOATING_DURATION)
         {
@@ -147,6 +197,8 @@ public class Pickup : MonoBehaviour
         if (!interactable) return;
 
         if (!_other.CompareTag("PlayerPickRadius")) return;
-        if (pickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
+
+        if (pickupType == PickupType.Resource)
+            _rigidbody2D.gravityScale = 2;
     }
 }

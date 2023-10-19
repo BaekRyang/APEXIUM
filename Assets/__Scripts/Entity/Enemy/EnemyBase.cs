@@ -93,17 +93,17 @@ public class EnemyBase : MonoBehaviour, IEntity
             Knockback(_attacker, .15f);
 
         if (stats.Health <= 0)
-            Dead();
+            Dead(_attacker);
     }
 
-    private async void Dead()
+    private async void Dead(Player _attacker)
     {
         _enemyAI.animator.SetBool(IsDead, true);
         Destroy(_enemyAI);
         GetComponent<Rigidbody2D>().simulated = false;
         GetComponent<Collider2D>().enabled    = false;
 
-        DropReward();
+        DropReward(_attacker);
 
         //TODO: 적절한 방법이 아닌 것 같음
         if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
@@ -117,12 +117,12 @@ public class EnemyBase : MonoBehaviour, IEntity
         _objectPoolManager.ReturnObject(this);
     }
 
-    private void DropReward()
+    private void DropReward(Player _attacker)
     {
         Vector3 _position = transform.position;
 
-        EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, GameManager.GetRandomCapsuleReward(PickupType.Resource) / 2, _position),
-                         new ItemSpawnEvent(PickupType.Exp,      GameManager.GetRandomCapsuleReward(PickupType.Exp)      / 2, _position));
+        EventBus.Publish(new ItemSpawnEvent(PickupType.Resource, GameManager.GetRandomCapsuleReward(PickupType.Resource) / 2, _position, _attacker),
+                         new ItemSpawnEvent(PickupType.Exp,      GameManager.GetRandomCapsuleReward(PickupType.Exp)      / 2, _position, _attacker));
     }
 
     private void PlaceCorpse() { }

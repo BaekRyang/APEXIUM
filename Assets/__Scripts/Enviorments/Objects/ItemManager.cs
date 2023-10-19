@@ -21,11 +21,11 @@ public class ItemManager : MonoBehaviour
 {
     [SerializeField] private ItemData              itemList;
     private readonly         Dictionary<int, Item> _items = new();
-    
+
     public Item GetItem(int _itemID)
     {
         if (_items.TryGetValue(_itemID, out Item _item)) return _item;
-        
+
         Debug.Log($"<color=red>ItemManager</color> : {_itemID} is not exist!");
         return null;
     }
@@ -39,7 +39,7 @@ public class ItemManager : MonoBehaviour
 
     private void MakeItems()
     {
-        foreach (Item _itemListItem in itemList.items) 
+        foreach (Item _itemListItem in itemList.items)
             _items.Add(_itemListItem.id, _itemListItem);
     }
 
@@ -50,17 +50,17 @@ public class ItemManager : MonoBehaviour
 
     private void InstantiateItemHandler(ItemSpawnEvent _event)
     {
-        InstantiatePickupObjects(_event.pickupType, _event.value, _event.position);
+        InstantiatePickupObjects(_event.pickupType, _event.value, _event.position, _event.player);
     }
 
-    private void InstantiatePickupObjects(PickupType _pickupType, int _value, Vector3 _position)
+    private void InstantiatePickupObjects(PickupType _pickupType, int _value, Vector3 _position, Player _player)
     {
         if (_value < 0) return;
 
         if (_pickupType == PickupType.Item) //아이템일때
         {
             Pickup _itemPickup = PickupPool.Instance.GetAvailablePickupComponents(_pickupType, _value)[0];
-            PickupInitialize(_itemPickup, _value, _position).Activate();
+            PickupInitialize(_itemPickup, _value, _position).Activate(_player);
             return;
         }
 
@@ -79,24 +79,20 @@ public class ItemManager : MonoBehaviour
         foreach ((PickupSize _pickupSize, int _pickupValue) in _valueTuples)
         {
             foreach (Pickup _pickup in PickupPool.Instance.GetAvailablePickupComponents(_pickupType, _pickupValue))
-                PickupInitialize(_pickup, _pickupSize, _position).Activate();
+                PickupInitialize(_pickup, (int)_pickupSize, _position).Activate(_player);
         }
-    }
-
-    private Pickup PickupInitialize(Pickup _pickup, PickupSize _size, Vector3 _position)
-    {
-        _pickup.PickupValue          = (int)_size;
-        _pickup.transform.position   = _position + Vector3.up;
-        _pickup.transform.localScale = Vector3.one * GetPickupSize(_size);
-        _pickup.gameObject.SetActive(true);
-        return _pickup;
     }
 
     private Pickup PickupInitialize(Pickup _pickup, int _size, Vector3 _position)
     {
         _pickup.PickupValue          = _size;
         _pickup.transform.position   = _position + Vector3.up;
+        _pickup.transform.localScale = Vector3.one * GetPickupSize((PickupSize)_size);
         _pickup.gameObject.SetActive(true);
+
+        if (_pickup.pickupType is PickupType.Resource) 
+            _pickup.SetRigidbodyState(true);
+
         return _pickup;
     }
 
