@@ -32,7 +32,7 @@ public class Player : MonoBehaviour, IEntity
     public PlayerStats Stats => _stats;
     public PlayMap     currentMap;
 
-    [SerializeField] public Items items;
+    public Items items;
 
     public                  bool dead;
     private static readonly int  IsDead = Animator.StringToHash("IsDead");

@@ -43,7 +43,7 @@
       }
     },
     "com.unity.2d.tilemap.extras": {
-      "version": "3.1.1",
+      "version": "3.1.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -123,7 +123,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.25",
+      "version": "3.0.26",
       "depth": 0,
       "source": "registry",
       "dependencies": {

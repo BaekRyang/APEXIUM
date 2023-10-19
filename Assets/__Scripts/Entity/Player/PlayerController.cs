@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.Tilemaps;
 using Debug = UnityEngine.Debug;
 
@@ -44,6 +42,10 @@ public class PlayerController : MonoBehaviour
     private int      _jumpCountOffset; //점프 카운트를 조정하기 위한 변수
     private JumpDire _jumpDirection;
     private JumpDire _lastLadderJumpDirection;
+
+    private static readonly int IsWalk  = Animator.StringToHash("IsWalk");
+    private static readonly int IsClimb = Animator.StringToHash("IsClimb");
+    private static readonly int IsJump  = Animator.StringToHash("IsJump");
 
 #region Properties
 
@@ -129,7 +131,7 @@ public class PlayerController : MonoBehaviour
             //함수화 해야함
             {
                 if (Mathf.Abs(_rigidbody2D.velocity.y) > 0.001f)
-                    _player._animator.SetBool("IsJump", true);
+                    _player._animator.SetBool(IsJump, true);
             }
         }
 
@@ -312,29 +314,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-#region Input
-
-    private void GetInput()
-    {
-#if UNITY_EDITOR
-        input.horizontal     = Input.GetAxisRaw("Horizontal");
-        input.vertical       = Input.GetAxisRaw("Vertical");
-        input.jumpDown       = Input.GetButtonDown("Jump");
-        input.jumpUp         = Input.GetButtonUp("Jump");
-        input.primarySkill   = Input.GetButton("PrimarySkill");
-        input.secondarySkill = Input.GetButton("SecondarySkill");
-        input.utilitySkill   = Input.GetButton("MovementSkill");
-        input.ultimateSkill  = Input.GetButton("UltimateSkill");
-        input.specialSkill   = Input.GetButton("SpecialSkill");
-        input.itemSkill      = Input.GetButton("ItemSkill");
-
-#elif UNITY_ANDROID
-        input.horizontal = VJoystick.MovementDirection;
-#endif
-    }
-
-#endregion
-
 #region MoveAction
 
     private void Move()
@@ -342,7 +321,7 @@ public class PlayerController : MonoBehaviour
         if (!Controllable) return;
 
         _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
-        _player._animator.SetBool("IsWalk", input.horizontal != 0);
+        _player._animator.SetBool(IsWalk, input.horizontal != 0);
         FlipSprite();
     }
 
@@ -406,14 +385,14 @@ public class PlayerController : MonoBehaviour
         {
             _player._animator.speed = 1;
             climbLadder             = false;
-            _player._animator.SetBool("IsClimb", false);
+            _player._animator.SetBool(IsClimb, false);
 
-            _previousLadderPos = ladderPos.x;
+            previousLadderPos = ladderPos.x;
         }
 
         //실제 점프 및 점프관련 애니메이션 실행
         _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, _jumpHeight);
-        _player._animator.SetBool("IsJump", true);
+        _player._animator.SetBool(IsJump, true);
 
         if (jumpGraceTimer > 0)              //정상적으로 점프를 했다면
             jumpGraceTimer = float.MaxValue; //점프 횟수 조정을 받지 않도록 최대값을 넣어준다. (0이하가 되면 점프 횟수가 줄어듦)
@@ -432,7 +411,7 @@ public class PlayerController : MonoBehaviour
             jumpGraceTimer = JUMP_GRACE_TIME;
             jumpCount      = 0;
             _jumpDirection = _lastLadderJumpDirection = JumpDire.None;
-            _player._animator.SetBool("IsJump", false);
+            _player._animator.SetBool(IsJump, false);
         }
     }
 
@@ -457,7 +436,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 플레이어의 사다리 관련 액션 처리
     /// </summary>
-    [SerializeField] private float _previousLadderPos;
+    [SerializeField] private float previousLadderPos;
 
     private void ClimbLadder(Vector3 _pPosition)
     {
@@ -480,11 +459,11 @@ public class PlayerController : MonoBehaviour
         if (climbLadder && input.jumpDown)
             _lastLadderJumpDirection = GetNowJumpDirection();
 
-        if (_jumpDirection                             == _lastLadderJumpDirection && //플레이어가 내리기 위해서 점프했음을 감지하여
-            Math.Abs(_previousLadderPos - ladderPos.x) < .01f)
+        if (_jumpDirection                            == _lastLadderJumpDirection && //플레이어가 내리기 위해서 점프했음을 감지하여
+            Math.Abs(previousLadderPos - ladderPos.x) < .01f)
             return; //사다리에 다시 붙지 못하도록 한다.
 
-        _player._animator.SetBool("IsClimb", true);
+        _player._animator.SetBool(IsClimb, true);
 
         climbLadder           = true;
         transform.position    = new(ladderPos.x, _pPosition.y); //사다리에 붙여주고
@@ -549,7 +528,7 @@ public class PlayerController : MonoBehaviour
         climbLadder               = false;
         _rigidbody2D.gravityScale = 1;
         _boxCollider2D.isTrigger  = false;
-        _player._animator.SetBool("IsClimb", false);
+        _player._animator.SetBool(IsClimb, false);
     }
 
 #endregion
@@ -631,7 +610,7 @@ public class PlayerController : MonoBehaviour
             //_allStop 플래그가 있으면 현재 이동/가속을 전부 없앤다.
             _rigidbody2D.velocity = Vector2.zero;
             input.horizontal      = input.vertical = 0;
-            _player._animator.SetBool("IsWalk", false);
+            _player._animator.SetBool(IsWalk, false);
             return;
         }
 

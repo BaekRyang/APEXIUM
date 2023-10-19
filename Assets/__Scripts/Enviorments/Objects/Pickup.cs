@@ -1,7 +1,6 @@
 using System;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
+using MoreMountains.Tools;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -66,11 +65,13 @@ public class Pickup : MonoBehaviour
         Vector2 _originPosition = transform.position;
         targetPosition = _originPosition + new Vector2(0, FLOATING_DISTANCE);
 
-        float _elapsedTime = 0;
+        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseOutQuadratic);
         
+        float _elapsedTime = 0;
         while (_elapsedTime < FLOATING_DURATION)
         {
-            transform.position = Vector2.Lerp(_originPosition, targetPosition, EaseOut(_elapsedTime / FLOATING_DURATION));
+            float _t = _tween.Evaluate(_elapsedTime / FLOATING_DURATION);
+            transform.position =  Vector2.Lerp(_originPosition, targetPosition, _t);
             _elapsedTime       += Time.deltaTime;
             await UniTask.Yield();
         }
@@ -83,12 +84,15 @@ public class Pickup : MonoBehaviour
         Vector2 _originPosition = transform.position;
         targetPosition = _originPosition + randomDirection;
 
+        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseOutQuadratic);
+
         //해당 방향으로 0.2초동안 이동한다.
         float _elapsedTime = 0;
         float _duration    = 1f; //TODO: duration은 다른곳에 옮기는것이 좋을듯
         while (_elapsedTime < _duration)
         {
-            transform.position =  Vector2.Lerp(_originPosition, targetPosition, EaseOut(_elapsedTime / _duration));
+            float _t = _tween.Evaluate(_elapsedTime / _duration);
+            transform.position =  Vector2.Lerp(_originPosition, targetPosition, _t);
             _elapsedTime       += Time.deltaTime;
             await UniTask.Yield();
         }
@@ -144,26 +148,5 @@ public class Pickup : MonoBehaviour
 
         if (!_other.CompareTag("PlayerPickRadius")) return;
         if (pickupType == PickupType.Resource) _rigidbody2D.gravityScale = 2;
-    }
-
-    //TODO: 임시로 만들었음(옮기거나 삭제)
-    public static float Linear(float _t) //선형보간
-    {
-        return _t;
-    }
-
-    public static float EaseOut(float _t)
-    {
-        return Mathf.Sin(Mathf.Pow(_t, 0.5f) * Mathf.PI / 2);
-    }
-
-    public static float EaseIn(float _t)
-    {
-        return 1 - Mathf.Cos((_t * Mathf.PI) / 2);
-    }
-
-    public static float EaseInOut(float _t)
-    {
-        return -0.5f * (Mathf.Cos(Mathf.PI * _t) - 1);
     }
 }

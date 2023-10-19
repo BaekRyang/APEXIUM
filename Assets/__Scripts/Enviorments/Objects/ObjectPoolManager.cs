@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
 using Object = UnityEngine.Object;
 
 public class ObjectPoolManager : MonoBehaviour
 {
-    interface IComponentPool
+    private interface IComponentPool
     {
         void ReturnObject(Component _obj);
 
@@ -15,7 +17,7 @@ public class ObjectPoolManager : MonoBehaviour
         GameObject GetOriginalPrefab();
     }
 
-    class ObjectPool<T> : IComponentPool where T : Component
+    private class ObjectPool<T> : IComponentPool where T : Component
     {
         private readonly Transform  _parentTransform;
         private readonly GameObject _prefab;
@@ -26,7 +28,7 @@ public class ObjectPoolManager : MonoBehaviour
             this._parentTransform = _parentTransform;
             this._prefab          = _prefab;
 
-            for (int i = 0; i < _poolSize; i++)
+            for (int _i = 0; _i < _poolSize; _i++)
             {
                 GameObject _obj = Instantiate(_prefab, this._parentTransform);
                 _obj.SetActive(false);
@@ -91,8 +93,10 @@ public class ObjectPoolManager : MonoBehaviour
 
         T _obj = _pools[_path].GetObject(_isActive) as T;
 
+        if (_obj == null)
+            return null;
+        
         _objPath.Add(_obj, _path);
-
         return _obj;
     }
 

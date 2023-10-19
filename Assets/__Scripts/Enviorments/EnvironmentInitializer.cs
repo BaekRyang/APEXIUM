@@ -1,5 +1,4 @@
 using System;
-using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,7 +11,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class EnvironmentInitializer : MonoBehaviour
 {
-    private                  MapTheme?  _currentTheme = null;
+    private                  MapTheme?  _currentTheme;
     [SerializeField] private GameObject bossRoomEntrance;
 
     private const string DATA_DIRECTORY = "Datasets";
@@ -113,16 +112,16 @@ public class EnvironmentInitializer : MonoBehaviour
             }
 
             //문의 양끝점 아래가 바닥에 닿아있는지 확인
-            RaycastHit2D a = Physics2D.Raycast(_randomPositionInMap + Vector2.left * (_entranceSize.x / 2),
+            RaycastHit2D _leftConor = Physics2D.Raycast(_randomPositionInMap + Vector2.left * (_entranceSize.x / 2),
                                                Vector2.down,
                                                .1f,
                                                LayerMask.GetMask("Floor"));
-            RaycastHit2D b = Physics2D.Raycast(_randomPositionInMap + Vector2.right * (_entranceSize.x / 2),
+            RaycastHit2D _rightConor = Physics2D.Raycast(_randomPositionInMap + Vector2.right * (_entranceSize.x / 2),
                                                Vector2.down,
                                                .1f,
                                                LayerMask.GetMask("Floor"));
 
-            if (a.collider == null || b.collider == null)
+            if (_leftConor.collider == null || _rightConor.collider == null)
             {
                 Debug.Log("Not on the floor");
                 continue;
@@ -205,8 +204,6 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private void PlaceChests(MapData _normalMap)
     {
-        ObjectPrefabs _prefabs = _normalMap.objectPrefabs;
-
         for (int _i = 0; _i < MAX_CHEST_COUNT; _i++)
         {
             ChestType  _chest    = _normalMap.GetRandomChest();

@@ -8,8 +8,9 @@ public class Items
     private Dictionary<int, int> _items;
     private Action               _onItemAdded;
 
-    public   Dictionary<int, int> GetItem() => _items;
-    [Inject] ItemManager          _itemManager;
+    [Inject] private ItemManager _itemManager;
+
+    public Dictionary<int, int> GetItems() => _items;
 
     public Items(Player _owner)
     {
@@ -26,23 +27,24 @@ public class Items
             _items[_itemID] += 1;
 
         var _itemStatsMods = _itemManager.GetItem(_itemID).statValues;
-        
+
         if (_itemStatsMods.Count > 0)
         {
             foreach (StatModifier _itemStatMod in _itemStatsMods)
                 _owner.Stats.ApplyStats(_itemStatMod);
         }
 
-        List<Effect> _itemEffects = _itemManager.GetItem(_itemID).effect;
-        if (_itemEffects.Count > 0)
+        var _itemEffectList = _itemManager.GetItem(_itemID).effect;
+
+        if (_itemEffectList.Count > 0)
         {
-            foreach (Effect _itemEffect in _itemEffects)
+            foreach (Effect _itemEffect in _itemEffectList)
             {
                 //이벤트 적용
             }
         }
 
-        GlobalChangeItemEvent.Publish(this);
+        EventBus.Publish(new UpdateItemEvent(this, _itemID, 1));
         _onItemAdded?.Invoke();
     }
 
@@ -54,20 +56,33 @@ public class Items
         if (_itemAmount < _amount)
             return false; //아이템이 부족함
 
-        GlobalChangeItemEvent.Publish(this);
+        EventBus.Publish(new UpdateItemEvent(this, _itemID, -_amount));
         _items[_itemID] -= _amount;
 
         return true;
     }
+
+    public int GetItemAmount(int _itemID)
+    {
+        return !_items.TryGetValue(_itemID, out int _itemAmount) ? 0 : _itemAmount;
+    }
 }
 
-public class GlobalChangeItemEvent
+public class UpdateItemEvent
 {
     public Items Item;
+    public int   ItemID;
+    public int   ChangeAmount;
 
-    private GlobalChangeItemEvent() { }
+    private UpdateItemEvent() { }
+    public UpdateItemEvent(Items _item, int _itemID, int _changeAmount)
+    {
+        Item = _item;
+    }
 
-    private static GlobalChangeItemEvent StaticEvent = new();
+    //TODO : 이렇게 써도 된다면 다른 이벤트들도 이렇게 써도 되는거 아닌가?
+    //아니면 이벤트 전용 풀링을 하는것도 좋을듯
+    private static readonly UpdateItemEvent StaticEvent = new();
 
     public static void Publish(Items _items)
     {

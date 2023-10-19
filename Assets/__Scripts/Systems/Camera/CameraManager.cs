@@ -1,21 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Cinemachine;
-using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CameraManager : MonoBehaviour
 {
     public CinemachineVirtualCamera mainVirtualCamera;
     public Camera[]                 transitionCameras;
-
-    private void Start()
-    {
-        // virtualCamera = Camera.main.GetComponent<CinemachineBrain>().ActiveVirtualCamera as CinemachineVirtualCamera;
-    }
 
     private void OnEnable()  => EventBus.Subscribe<PlayMapChangedEvent>(OnMapChanged);
     private void OnDisable() => EventBus.Unsubscribe<PlayMapChangedEvent>(OnMapChanged);

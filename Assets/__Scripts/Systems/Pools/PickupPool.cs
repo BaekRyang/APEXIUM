@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Random = UnityEngine.Random;
@@ -10,11 +9,8 @@ public class PickupPool : MonoBehaviour
 {
     public static PickupPool Instance;
 
-    private readonly Dictionary<PickupType, List<Pickup>> PickupPools          = new();
-    private readonly Dictionary<PickupType, Transform>    PickupPoolTransforms = new();
-
-    [SerializeField] private Sprite                  _nullSprite;
-    private                  Dictionary<int, Sprite> _itemSprites = new();
+    private readonly Dictionary<PickupType, List<Pickup>> _pickupPools          = new();
+    private readonly Dictionary<PickupType, Transform>    _pickupPoolTransforms = new();
 
     [Inject] private ItemManager _itemManager;
 
@@ -24,12 +20,12 @@ public class PickupPool : MonoBehaviour
 
         foreach (PickupType _value in Tools.GetEnumValues<PickupType>())
         {
-            PickupPools.Add(_value, new List<Pickup>());
-            PickupPoolTransforms.Add(_value, new GameObject(_value.ToString()).transform);
+            _pickupPools.Add(_value, new List<Pickup>());
+            _pickupPoolTransforms.Add(_value, new GameObject(_value.ToString()).transform);
         }
 
         //위치 조정
-        foreach ((_, Transform _transform) in PickupPoolTransforms)
+        foreach ((_, Transform _transform) in _pickupPoolTransforms)
         {
             _transform.position = Vector3.zero;
             _transform.parent   = transform;
@@ -52,7 +48,7 @@ public class PickupPool : MonoBehaviour
             if (_availablePickupCount <= 0)
                 InstantiatePickupObject(_pickupType, _value);
             
-            return PickupPools[_pickupType]
+            return _pickupPools[_pickupType]
                   .Select(_pickup => _pickup)                       //Pool안에 Pickup Component를
                   .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
                   .Take(1)
@@ -66,7 +62,7 @@ public class PickupPool : MonoBehaviour
                 InstantiatePickupObject(_pickupType);
         }
 
-        return PickupPools[_pickupType]
+        return _pickupPools[_pickupType]
               .Select(_pickup => _pickup)                       //Pool안에 Pickup Component를
               .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
               .Take(_value)                                     //p_count만큼
@@ -75,7 +71,7 @@ public class PickupPool : MonoBehaviour
 
     private int GetAvailablePickupCount(PickupType _pickupType)
     {
-        return PickupPools[_pickupType]
+        return _pickupPools[_pickupType]
               .Select(_pickup => _pickup)
               .Count(_pickup => !_pickup.gameObject.activeSelf);
     }
@@ -83,7 +79,7 @@ public class PickupPool : MonoBehaviour
     private void InstantiatePickupObject(PickupType _pickupType, int _id = -1)
     {
         Debug.Log($"<color=green>Instantiate {_pickupType} / id : {_id}</color>");
-        GameObject     _pickup               = Instantiate(pickupPrefab, PickupPoolTransforms[_pickupType]);
+        GameObject     _pickup               = Instantiate(pickupPrefab, _pickupPoolTransforms[_pickupType]);
         SpriteRenderer _pickupSpriteRenderer = _pickup.GetComponent<SpriteRenderer>();
 
         Pickup _pickupComponent = _pickup.GetComponent<Pickup>();
@@ -100,7 +96,7 @@ public class PickupPool : MonoBehaviour
         InitializePickupObject(_pickupType, _pickup, _pickupComponent, _pickupSpriteRenderer);
 
         _pickup.SetActive(false);
-        PickupPools[_pickupType].Add(_pickupComponent);
+        _pickupPools[_pickupType].Add(_pickupComponent);
     }
 
     private static void InitializePickupObject(PickupType _pickupType, GameObject _pickup, Pickup _pickupComponent, SpriteRenderer _pickupSpriteRenderer)
@@ -147,10 +143,5 @@ public class PickupPool : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(_pickupType), _pickupType, null);
         }
-    }
-
-    private Sprite GetSpriteFromID(int _id)
-    {
-        return _nullSprite;
     }
 }
