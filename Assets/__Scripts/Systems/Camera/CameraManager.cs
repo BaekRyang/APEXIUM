@@ -1,10 +1,12 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
     public CinemachineVirtualCamera mainVirtualCamera;
     public Camera[]                 transitionCameras;
+    public RawImage[]               transitionTexture;
 
     private void OnEnable()  => EventBus.Subscribe<PlayMapChangedEvent>(OnMapChanged);
     private void OnDisable() => EventBus.Unsubscribe<PlayMapChangedEvent>(OnMapChanged);

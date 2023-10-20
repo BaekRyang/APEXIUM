@@ -58,8 +58,14 @@ public class MapManager : MonoBehaviour
         //TODO : 임시로 맵 중앙에 스폰
         Vector2 _mapCenter     = currentMap.GetSize / 2;
         Vector2 _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
-        _spawnPosition.y += 1.5f;
-
+        return _spawnPosition;
+    }
+    
+    public static Vector2 GetSpawnLocation(PlayMap _currentMap)
+    {
+        //TODO : 임시로 맵 중앙에 스폰
+        Vector2 _mapCenter     = _currentMap.GetSize / 2;
+        Vector2 _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
         return _spawnPosition;
     }
 

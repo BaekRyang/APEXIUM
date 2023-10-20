@@ -10,7 +10,6 @@ public class BossRoomEntrance : InteractableObject
     [Inject]                     private MapManager    _mapManager;
     [SerializeField]             private MapType       _rootMapType;
     [Inject]                     private CameraManager _cameraManager;
-    [Inject]                     private RawImage[]    _transitionTexture;
     [Inject("ShieldBlackBoard")] private Image         _shieldBlackBoard;
 
     protected override void Initialize()
@@ -67,7 +66,7 @@ public class BossRoomEntrance : InteractableObject
         _player.Controller.SetControllable(false, true);
         for (int _index = 0; _index < 2; _index++)
         {
-            RawImage _rawImage = _transitionTexture[_index];
+            RawImage _rawImage = _cameraManager.transitionTexture[_index];
             Camera   _camera   = _cameras[_index];
             _rawImage.gameObject.SetActive(true);
             _camera.gameObject.SetActive(true);
@@ -117,7 +116,7 @@ public class BossRoomEntrance : InteractableObject
 
         for (int _index = 0; _index < 2; _index++)
         {
-            RawImage _rawImage = _transitionTexture[_index];
+            RawImage _rawImage = _cameraManager.transitionTexture[_index];
             Camera   _camera   = _cameras[_index];
             _rawImage.gameObject.SetActive(false);
             _camera.gameObject.SetActive(false);

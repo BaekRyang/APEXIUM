@@ -44,18 +44,15 @@ public class EnvironmentInitializer : MonoBehaviour
         if (_currentTheme is null)
             return (null, null);
 
-
         MapData _normalMap = LoadMap((MapTheme)_currentTheme, MapType.Normal);
         _normalMap.currentMap.SetEntranceOffset();
         PlaceBossRoomEntrance(_normalMap);
         PlaceInteractableObjects(_normalMap);
 
-
         MapData _bossMap = LoadMap((MapTheme)_currentTheme, MapType.Boss);
         _bossMap.currentMap.SetEntranceOffset();
         _bossMap.transform.root.position = //기존 맵 왼쪽에 붙여준다. (너무 가까우면 카메라 트랜지션에 보일 수있으므로 약간 떨어뜨림)
             new Vector3(-(_bossMap.currentMap.GetSize.x + 5), 0, 0);
-
 
         return (_normalMap, _bossMap);
     }
@@ -86,13 +83,16 @@ public class EnvironmentInitializer : MonoBehaviour
     private void PlaceBossRoomEntrance(MapData _mapObject)
     {
         int     _loopCnt       = 0;
-        Vector2 _outlineOffset = new(){x = 10, y = 10};
-        Vector2 _entranceSize  = bossRoomEntrance.GetComponent<BoxCollider2D>().size;
+        Vector2 _outlineOffset = new() { x = 10, y = 10 };
+
+        Vector2 _entranceSize = bossRoomEntrance.GetComponent<BoxCollider2D>().size;
         do
         {
             if (Tools.LoopLimit(ref _loopCnt)) break;
 
-            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject, _outlineOffset);
+            Vector2 _randomPositionInMap = MapManager.GetSpawnLocation(_mapObject.currentMap);
+
+            // Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject, _outlineOffset);
 
             if (_randomPositionInMap.y < 10)
             {
@@ -113,13 +113,16 @@ public class EnvironmentInitializer : MonoBehaviour
 
             //문의 양끝점 아래가 바닥에 닿아있는지 확인
             RaycastHit2D _leftConor = Physics2D.Raycast(_randomPositionInMap + Vector2.left * (_entranceSize.x / 2),
-                                               Vector2.down,
-                                               .1f,
-                                               LayerMask.GetMask("Floor"));
+                                                        Vector2.down,
+                                                        .1f,
+                                                        LayerMask.GetMask("Floor"));
+            Debug.DrawRay(_randomPositionInMap + Vector2.left * (_entranceSize.x / 2), Vector2.down * 1f, Color.blue, 1f);
+
             RaycastHit2D _rightConor = Physics2D.Raycast(_randomPositionInMap + Vector2.right * (_entranceSize.x / 2),
-                                               Vector2.down,
-                                               .1f,
-                                               LayerMask.GetMask("Floor"));
+                                                         Vector2.down,
+                                                         .1f,
+                                                         LayerMask.GetMask("Floor"));
+            Debug.DrawRay(_randomPositionInMap + Vector2.right * (_entranceSize.x / 2), Vector2.down * 1f, Color.blue, 1f);
 
             if (_leftConor.collider == null || _rightConor.collider == null)
             {
@@ -139,7 +142,7 @@ public class EnvironmentInitializer : MonoBehaviour
     private GameObject PlaceObject(MapData _mapObject, GameObject _gameObject)
     {
         int     _loopCnt       = 0;
-        Vector2 _outlineOffset = new(){x = 3, y = 10};
+        Vector2 _outlineOffset = new() { x = 3, y = 10 };
         Vector2 _objectSize    = _gameObject.GetComponent<BoxCollider2D>().size;
         do
         {
@@ -181,7 +184,7 @@ public class EnvironmentInitializer : MonoBehaviour
             }
 
             Debug.Log(_gameObject.name + "Random Position : " + _randomPositionInMap);
-            
+
             return Instantiate(_gameObject,
                                _randomPositionInMap,
                                Quaternion.identity,
@@ -198,9 +201,7 @@ public class EnvironmentInitializer : MonoBehaviour
         PlaceCapsules(_normalMap);
     }
 
-    private void PlaceAlters(MapData _normalMap)
-    {
-    }
+    private void PlaceAlters(MapData _normalMap) { }
 
     private void PlaceChests(MapData _normalMap)
     {

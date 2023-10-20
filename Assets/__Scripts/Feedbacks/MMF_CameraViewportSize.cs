@@ -16,8 +16,6 @@ namespace MoreMountains.Feedbacks
 
         [SerializeField] private float       _duration       = 1f;
         [SerializeField] private bool        _targetCamIndex = false;
-        [SerializeField] private float       _origin         = 10f;
-        [SerializeField] private float       _range          = 2f;
         [SerializeField] private MMTweenType _tweenOpacity   = new(new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.3f, 1.5f), new Keyframe(1, 0)));
 
         private UniTask _animateTask;
@@ -28,7 +26,7 @@ namespace MoreMountains.Feedbacks
             set => _duration = value;
         }
 
-        protected override void CustomInitialization(MMF_Player owner)
+        protected override void CustomInitialization(MMF_Player owner) 
         {
             DIContainer.Inject(this);
             _cameras = _camManager.transitionCameras;
@@ -44,16 +42,18 @@ namespace MoreMountains.Feedbacks
 
         private async UniTask Animate()
         {
+            float _origin = _camManager.mainVirtualCamera.m_Lens.OrthographicSize;
+
             float _from, _to;
             switch (Owner.Direction)
             {
                 case MMFeedbacks.Directions.TopToBottom:
                     _from = _origin;
-                    _to   = _origin - _range;
+                    _to   = 0;
                     break;
                 case MMFeedbacks.Directions.BottomToTop:
                 default:
-                    _from = _origin + _range;
+                    _from = _origin * 2;
                     _to   = _origin;
                     break;
             }

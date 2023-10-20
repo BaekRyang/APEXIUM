@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,7 +10,13 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-    public RawImage[] rawImages;
+    [Inject] private CameraManager _cameraManager;
+
+    private void Start()
+    {
+        DIContainer.Inject(this);
+        SR();
+    }
 
     /// <summary>
     /// PPU와 Height Resolution을 통해 Orthographic Size를 계산
@@ -24,36 +29,38 @@ public class Settings : MonoBehaviour
 
     public void SR()
     {
-        SetResolution(Screen.width, Screen.height, Camera.main.GetComponent<CinemachineVirtualCamera>());
+        SetResolution(Screen.width, Screen.height);
     }
 
-    public void SetResolution(int _width, int _height, CinemachineVirtualCamera _camera)
+    public void SetResolution(int _width, int _height)
     {
         //TODO: 코드 정리 필요
-        Debug.Log($"<color=green>SetResolution</color> : {_width}x{_height}");
-        var _array = Camera.allCameras
-                           .Select(_cam => _cam.GetComponent<Camera>())
-                           .Where(_cam => _cam.name.StartsWith("T_"))
-                           .ToArray();
 
-
-        for (int _index = 0; _index < _array.Length; _index++)
+        for (int _index = 0; _index < 2; _index++)
         {
-            Camera _cams = _array[_index];
+            Camera _cams = _cameraManager.transitionCameras[_index];
 
-            if (_cams.targetTexture != null)
+            RenderTexture _camsTargetTexture = _cams.targetTexture;
+
+            if (_camsTargetTexture != null) //이미 렌더 텍스쳐가 있다면
             {
-                _cams.targetTexture.Release();
-                Destroy(_cams.targetTexture);
+                _camsTargetTexture.Release(); //렌더 텍스쳐를 해제하고
+                Destroy(_camsTargetTexture);  //렌더 텍스쳐를 삭제
             }
 
             RenderTexture _targetTexture = new(_width, _height, 16, RenderTextureFormat.ARGBFloat); //HDR 사용(Float)
+            _targetTexture.name = "TransitionTexture " + (_index + 1);
 
-            rawImages[_index].texture = _targetTexture;
+            _cameraManager.transitionTexture[_index].texture = _targetTexture;
 
             _targetTexture.Create();
 
             _cams.targetTexture = _targetTexture;
         }
+    }
+    
+    public void ChangeOrthographicSize(float _orthographicSize)
+    {
+        _cameraManager.mainVirtualCamera.m_Lens.OrthographicSize = _orthographicSize;
     }
 }

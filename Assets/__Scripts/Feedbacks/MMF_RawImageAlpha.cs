@@ -14,7 +14,7 @@ namespace MoreMountains.Feedbacks
     public class MMF_RawImageAlpha : MMF_Feedback
     {
         [MMFInspectorGroup("Tween", true, 79)]
-        [Inject] private RawImage[] _textures;
+        [Inject] private CameraManager _cameraManager;
 
         [SerializeField] private float       _duration       = 1f;
         [SerializeField] private bool        _targetCamIndex = false;
@@ -67,11 +67,11 @@ namespace MoreMountains.Feedbacks
                 _elapsedTime += Time.deltaTime;
                 float _t       = _elapsedTime / _duration;
                 float _current = _tweenOpacity.Evaluate(_t);
-                
+
                 float _targetAlpha = Mathf.Lerp(_from, _to, _current);
-                
-                Color _color   = _textures[_index].color;
-                _textures[_index].color = new Color(_color.r, _color.g, _color.b, _targetAlpha);
+
+                Color _color = _cameraManager.transitionTexture[_index].color;
+                _cameraManager.transitionTexture[_index].color = new Color(_color.r, _color.g, _color.b, _targetAlpha);
                 await UniTask.Yield();
             }
         }
