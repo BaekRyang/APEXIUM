@@ -287,7 +287,7 @@ public class SAttack : State
             _lastAttackTime = Time.time;
             _nextAttackTime = _lastAttackTime + 1 / enemyAI.enemyBase.stats.AttackSpeed; //공격속도에 따라 다음 공격시간 계산
 
-            _attackTask = Attack();
+            _attackTask = AttackAnimate();
         }
     }
 
@@ -296,18 +296,11 @@ public class SAttack : State
         enemyAI.animator.SetBool("IsAttack", false);
     }
 
-    private async UniTask Attack()
+    private async UniTask AttackAnimate()
     {
         enemyAI.animator.SetTrigger("Attack");
 
         enemyAI.animator.speed = enemyAI.enemyBase.stats.AttackSpeed * 2f;
-
-        var _attacked = Physics2D.OverlapCircleAll(enemyAI.transform.position, enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
-        foreach (Collider2D _player in _attacked)
-        {
-            if (_player.TryGetComponent(out Player _playerComponent)) //PickupRadius도 여기 걸려서 오류남 (지금은 레이어 분리하였음)
-                _playerComponent.Attacked(enemyAI.enemyBase.stats.AttackDamage, 0, enemyAI.enemyBase);
-        }
 
         float _attackAnimationDelay = enemyAI.animator.GetCurrentAnimatorClipInfo(0).Length / enemyAI.animator.speed; //공격속도 영향을 받음
         await UniTask.Delay(TimeSpan.FromSeconds(_attackAnimationDelay));

@@ -98,6 +98,14 @@ public class Player : MonoBehaviour, IEntity
         }
 
         _floatingText.Value = _text;
+        _floatingText.AnimateColorGradient = new Gradient
+                                             {
+                                                 colorKeys = new[]
+                                                             {
+                                                                 new GradientColorKey(new Color(.5f,.2f,.2f), 0),
+                                                                 new GradientColorKey(Color.red,                                                                               1)
+                                                             }
+                                             };
         _statusFeedback.PlayFeedbacks();
     }
 

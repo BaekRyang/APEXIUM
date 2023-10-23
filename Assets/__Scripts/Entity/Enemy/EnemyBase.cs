@@ -153,6 +153,16 @@ public class EnemyBase : MonoBehaviour, IEntity
     }
 
     private void LevelUp(object _sender, EventArgs _args) { }
+
+    public virtual void Attack()
+    {
+        var _attacked = Physics2D.OverlapCircleAll(_enemyAI.transform.position, _enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
+        foreach (Collider2D _player in _attacked)
+        {
+            if (_player.TryGetComponent(out Player _playerComponent)) //PickupRadius도 여기 걸려서 오류남 (지금은 레이어 분리하였음)
+                _playerComponent.Attacked(_enemyAI.enemyBase.stats.AttackDamage, 0, _enemyAI.enemyBase);
+        }
+    }
 }
 
 public class EEnemyHpChange
