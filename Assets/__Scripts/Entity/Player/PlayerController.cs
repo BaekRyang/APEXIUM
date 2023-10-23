@@ -618,7 +618,6 @@ public class PlayerController : MonoBehaviour
         {
             //공중이 아니라면 x속도도 0으로 만들어준다.
             _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
-            return;
         }
     }
 }

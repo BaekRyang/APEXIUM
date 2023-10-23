@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -49,7 +50,7 @@ public class Settings : MonoBehaviour
             }
 
             RenderTexture _targetTexture = new(_width, _height, 16, RenderTextureFormat.ARGBFloat); //HDR 사용(Float)
-            _targetTexture.name = "TransitionTexture " + (_index + 1);
+            _targetTexture.name = $"TransitionTexture {_index + 1}";
 
             _cameraManager.transitionTexture[_index].texture = _targetTexture;
 
@@ -58,9 +59,38 @@ public class Settings : MonoBehaviour
             _cams.targetTexture = _targetTexture;
         }
     }
-    
+
     public void ChangeOrthographicSize(float _orthographicSize)
     {
         _cameraManager.mainVirtualCamera.m_Lens.OrthographicSize = _orthographicSize;
+    }
+}
+
+public class SettingData
+{
+    public Graphic graphic = new();
+    public Sound   sound   = new();
+
+    public class Graphic
+    {
+        public bool useVsync;
+    }
+
+    public class Sound
+    {
+        public float volume;
+    }
+
+    public static SettingData Load()
+    {
+        if (!System.IO.File.Exists($"{Application.persistentDataPath}/Settings.json")) 
+            return new SettingData();
+        
+        
+        string      _json        = System.IO.File.ReadAllText(Application.persistentDataPath + "/Settings.json");
+        SettingData _settingData = JsonConvert.DeserializeObject<SettingData>(_json);
+            
+        return _settingData;
+
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour, IEntity
 {
+    [SerializeField] private Collider2D _attackCollider;
     [Inject] ObjectPoolManager _objectPoolManager;
 
     private const float VERTICAL_OFFSET    = .7f;
@@ -156,8 +157,16 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     public virtual void Attack()
     {
-        var _attacked = Physics2D.OverlapCircleAll(_enemyAI.transform.position, _enemyAI.enemyBase.stats.attackRange, LayerMask.GetMask("Player"));
-        foreach (Collider2D _player in _attacked)
+        
+        List<Collider2D> _colliders = new();
+        Physics2D.OverlapCollider(_attackCollider, new ContactFilter2D()
+                                                   {
+                                                         useLayerMask = true,
+                                                         layerMask = LayerMask.GetMask("Player")
+                                                   }, _colliders);
+        
+        Debug.Log($"Captured colliders: {_colliders.Count}");
+        foreach (Collider2D _player in _colliders)
         {
             if (_player.TryGetComponent(out Player _playerComponent)) //PickupRadius도 여기 걸려서 오류남 (지금은 레이어 분리하였음)
                 _playerComponent.Attacked(_enemyAI.enemyBase.stats.AttackDamage, 0, _enemyAI.enemyBase);

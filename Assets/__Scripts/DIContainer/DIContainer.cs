@@ -42,27 +42,24 @@ public class DIContainer
 
     private Dictionary<string, object> _objects = new();
 
-    public void Regist<T>(T _type, string _key = "")
+    public void Register<T>(T _type, string _key = "")
     {
         _objects.Add(GetKey(typeof(T), _key), _type);
     }
 
-    private string GetKey(Type _type, string _key = "")
+    private static string GetKey(Type _type, string _key = "")
     {
-        return _type.Name + "@" + _key;
+        return $"{_type.Name}@{_key}";
     }
 
     public object GetValue(Type _type, string _key)
     {
         string _diKey = GetKey(_type, _key);
-        
-        if (_objects.TryGetValue(_diKey, out object _o))
-        {
-            Debug.Log($"{PREFIX} GetValue - " + _diKey + " " + _o);
-            return _o;
-        }
 
-        return null;
+        if (!_objects.TryGetValue(_diKey, out object _o)) return null;
+        Debug.Log($"{PREFIX} GetValue - " + _diKey + " " + _o);
+        return _o;
+
     }
 
     public static void Inject(object o)
@@ -80,6 +77,7 @@ public class DIContainer
 
             object _value = Local.GetValue(_fi.FieldType, _injectAttr.key) ??
                             Global.GetValue(_fi.FieldType, _injectAttr.key);
+                                
             if (_value == null)
                 throw new Exception($"{PREFIX} Can't Find Object {_fi.FieldType.Name}");
 

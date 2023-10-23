@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class BossAreaEntrace : MonoBehaviour
+public class BossAreaEntrance : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer wallSpriteRenderer;
     [SerializeField] private float          wallHeight             = 6f;

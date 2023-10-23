@@ -26,10 +26,10 @@ MonoBehaviour:
     canDazed: 1
     canStun: 1
     canKnockback: 1
-    chaseDistance: 20
+    chaseDistance: 30
     eliteType: 0
     attackType: 0
-    attackRange: 5
+    attackRange: 4
     stopWhenAttack: 1
   isBoss: 0
   sprite: {fileID: 21300000, guid: 0109a63181e90394f8795d1a902338e2, type: 3}

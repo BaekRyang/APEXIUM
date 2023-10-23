@@ -59,9 +59,9 @@ public class EnvironmentInitializer : MonoBehaviour
 
     private MapData LoadMap(MapTheme _theme, MapType _mapType)
     {
-        string _mapDirectory = DATA_DIRECTORY + "/MapData/" + _mapType + "/" + _theme;
+        string _mapDirectory = $"{DATA_DIRECTORY}/MapData/{_mapType}/{_theme}";
         Debug.Log(_mapDirectory);
-        GameObject[] _mapData = Resources.LoadAll<GameObject>(_mapDirectory);
+        var _mapData = Resources.LoadAll<GameObject>(_mapDirectory);
         if (_mapData.Length == 0)
         {
             Debug.LogError("Map data not found");
@@ -130,7 +130,7 @@ public class EnvironmentInitializer : MonoBehaviour
                 continue;
             }
 
-            Debug.Log("Random Position : " + _randomPositionInMap);
+            Debug.Log($"Random Position : {_randomPositionInMap}");
             _mapObject.currentMap.bossRoomEntrance = Instantiate(bossRoomEntrance,
                                                                  _randomPositionInMap,
                                                                  Quaternion.identity,
@@ -179,11 +179,11 @@ public class EnvironmentInitializer : MonoBehaviour
 
             if (_left.collider == null || _right.collider == null)
             {
-                Debug.Log(_gameObject.name + "Not on the floor");
+                Debug.Log($"{_gameObject.name}Not on the floor");
                 continue;
             }
 
-            Debug.Log(_gameObject.name + "Random Position : " + _randomPositionInMap);
+            Debug.Log($"{_gameObject.name}Random Position : {_randomPositionInMap}");
 
             return Instantiate(_gameObject,
                                _randomPositionInMap,

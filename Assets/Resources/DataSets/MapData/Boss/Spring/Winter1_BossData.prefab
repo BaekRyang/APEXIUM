@@ -228,7 +228,7 @@ MonoBehaviour:
   - {x: 187, y: 10.999966, z: 0}
   m_ShapePathHash: -908974855
   m_Mesh: {fileID: 0}
-  m_InstanceId: 42228
+  m_InstanceId: 58974
   m_LocalBounds:
     m_Center: {x: 102.5, y: 33.5, z: 0}
     m_Extent: {x: 87.5, y: 23.5, z: 0}
@@ -669,7 +669,7 @@ MonoBehaviour:
   - {x: 0.000029300001, y: 0, z: 0}
   m_ShapePathHash: -1599777119
   m_Mesh: {fileID: 0}
-  m_InstanceId: 42174
+  m_InstanceId: 58930
   m_LocalBounds:
     m_Center: {x: 99.999985, y: 35, z: 0}
     m_Extent: {x: 99.999985, y: 35, z: 0}
@@ -83996,6 +83996,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7946638081779203649}
     m_Modifications:
+    - target: {fileID: 1196099812988704750, guid: 3b3ad5c2df9f4c94db217b9f95e00aa3,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0a546c1db8547154d8b97a49d6821add,
+        type: 3}
+    - target: {fileID: 1196099812988704750, guid: 3b3ad5c2df9f4c94db217b9f95e00aa3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 8ed31cc9e8ee7c64c8bf022510d8504e,
+        type: 3}
     - target: {fileID: 1252166534163142111, guid: 3b3ad5c2df9f4c94db217b9f95e00aa3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -84051,6 +84063,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossRoomDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 8174667555327157895, guid: 3b3ad5c2df9f4c94db217b9f95e00aa3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 024d04a597f4ad94a960720199150ab3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -84070,6 +84087,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7946638081779203649}
     m_Modifications:
+    - target: {fileID: 2537817791736816555, guid: d3ebfc9f58c823a488e0118099f90edb,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2922738192480216089, guid: d3ebfc9f58c823a488e0118099f90edb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -84118,6 +84140,11 @@ PrefabInstance:
     - target: {fileID: 2922738192480216089, guid: d3ebfc9f58c823a488e0118099f90edb,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5617784749817247762, guid: d3ebfc9f58c823a488e0118099f90edb,
+        type: 3}
+      propertyPath: m_Size.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6483075459385936288, guid: d3ebfc9f58c823a488e0118099f90edb,
