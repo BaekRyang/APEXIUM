@@ -198,7 +198,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.334
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -215,6 +215,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingValueFloat: 0
+  settingNameText: {fileID: 5008656896896128653}
+  labelText: {fileID: 852648610537026586}
 --- !u!1 &6021941615271649818
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +340,7 @@ GameObject:
   - component: {fileID: 673501996941434895}
   - component: {fileID: 852648610537026586}
   m_Layer: 5
-  m_Name: Index
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -544,6 +546,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
+        type: 3}
+      propertyPath: m_fontSizeMin
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4480594233440499991, guid: 1eb23f6dc65058248a4129d2820213b1,
         type: 3}
       propertyPath: m_Pivot.x
@@ -665,8 +687,70 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5554805090021782479}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7262597998852350446, guid: 1eb23f6dc65058248a4129d2820213b1,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2217727722245520375}
   m_SourcePrefab: {fileID: 100100000, guid: 1eb23f6dc65058248a4129d2820213b1, type: 3}
+--- !u!1 &3047892088455228171 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7262597998852350446, guid: 1eb23f6dc65058248a4129d2820213b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 5658113027549317861}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2217727722245520375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3047892088455228171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5008656896896128653}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &5008656896896128653 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 5658113027549317861}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3047892088455228171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5952551417399689209 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2026076862405244188, guid: 1eb23f6dc65058248a4129d2820213b1,

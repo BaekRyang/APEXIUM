@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -7,11 +8,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-    [Inject] private CameraManager _cameraManager;
+    [Inject] private SettingData   _settingData;
+    private CameraManager _cameraManager;
 
     private void Start()
     {
@@ -28,6 +32,11 @@ public class Settings : MonoBehaviour
         return _orthographicSize;
     }
 
+    public void SaveSettingToFile()
+    {
+        SettingData.Save(_settingData);
+    }
+
     public void SR()
     {
         SetResolution(Screen.width, Screen.height);
@@ -35,7 +44,7 @@ public class Settings : MonoBehaviour
 
     public void SetResolution(int _width, int _height)
     {
-        //TODO: 코드 정리 필요
+        //TODO: 이거 여기서 하는게 아니라 카메라 매니저로 넘겨야 함
 
         for (int _index = 0; _index < 2; _index++)
         {
@@ -66,31 +75,53 @@ public class Settings : MonoBehaviour
     }
 }
 
+[Serializable]
 public class SettingData
 {
     public Graphic graphic = new();
     public Sound   sound   = new();
 
+    [Serializable]
     public class Graphic
     {
         public bool useVsync;
     }
 
+    [Serializable]
     public class Sound
     {
-        public float volume;
+        public float masterVolume;
+        public float bgmVolume;
+        public float sfxVolume;
     }
 
     public static SettingData Load()
     {
-        if (!System.IO.File.Exists($"{Application.persistentDataPath}/Settings.json")) 
-            return new SettingData();
+        string Path = $"{Application.persistentDataPath}/Settings.json";
+        SettingData _settingData;
+        if (!File.Exists(Path))
+        {
+            Debug.Log($"File not found : {Path} : Create new file");
+            _settingData = new SettingData();
+        }
+        else
+        {
+            Debug.Log($"File found : {Path} : Load file");
+            string _json = File.ReadAllText(Path);
+            _settingData = JsonConvert.DeserializeObject<SettingData>(_json);
+        }
         
-        
-        string      _json        = System.IO.File.ReadAllText(Application.persistentDataPath + "/Settings.json");
-        SettingData _settingData = JsonConvert.DeserializeObject<SettingData>(_json);
-            
-        return _settingData;
+        if (_settingData == null)
+        {
+            Debug.Log($"Data is null : {Path} : Create new file");
+            _settingData = new SettingData();
+        }
 
+        Save(_settingData);
+
+        return _settingData;
     }
+
+    public static void Save(SettingData _settingData) =>
+        File.WriteAllText($"{Application.persistentDataPath}/Settings.json", JsonConvert.SerializeObject(_settingData));
 }

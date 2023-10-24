@@ -39,6 +39,18 @@ MonoBehaviour:
     m_Key: Back
     m_Metadata:
       m_Items: []
+  - m_Id: 11534001776812032
+    m_Key: MasterVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11534169385394176
+    m_Key: BGMVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11534250104774656
+    m_Key: SFXVolume
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
