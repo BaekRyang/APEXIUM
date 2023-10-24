@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 53a1705fb594f174a91fb47d18b2e6a7
+guid: 51ad721d1183b15479e5265c2ab05ccc
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,13 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spider creature Walking-Sheet_0
+      name: spider jumping_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 32
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f353c99148df74946adb0b52d8068032
-      internalID: -1709731836
+      spriteID: 1141b9faa17911d43990747408ada876
+      internalID: -456036760
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature Walking-Sheet_1
+      name: spider jumping_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 48
         y: 0
-        width: 32
-        height: 32
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,41 +158,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d2d74dd8a04d1f5409d0e4bb940a93d5
-      internalID: -697567166
+      spriteID: d3f39f91a23de6247b3c1e3012bf8d72
+      internalID: -2045536639
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature Walking-Sheet_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 063ad716337715f488cd0a029660e0c2
-      internalID: -241533606
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spider creature Walking-Sheet_3
+      name: spider jumping_2
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 32
-        height: 32
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,8 +179,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 69eef610755ed4c49a9cf68da14df632
-      internalID: -633132426
+      spriteID: 30633a5568745b144a1522b3ead726d8
+      internalID: 1758677211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider jumping_3
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 003ffb0a27874064a9a8e99a9bc0f4d9
+      internalID: -1086730839
       vertices: []
       indices: 
       edges: []
@@ -217,10 +217,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spider creature Walking-Sheet_0: -1709731836
-      spider creature Walking-Sheet_1: -697567166
-      spider creature Walking-Sheet_2: -241533606
-      spider creature Walking-Sheet_3: -633132426
+      spider jumping_0: -456036760
+      spider jumping_1: -2045536639
+      spider jumping_2: 1758677211
+      spider jumping_3: -1086730839
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

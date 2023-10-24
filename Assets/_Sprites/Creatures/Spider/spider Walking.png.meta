@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d765f3b6c6fbbf94a917909aab0f1c11
+guid: f7ead01906e37c54eaea9512f6f8e4f2
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spider creature explosion-Sheet_0
+      name: spider Walking_0
       rect:
         serializedVersion: 2
         x: 0
@@ -137,14 +137,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8e1696e04238076409473db131f99b23
-      internalID: -1358529425
+      spriteID: 03529ac0f193c4a4785a6d65c36e9a70
+      internalID: -1150520472
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature explosion-Sheet_1
+      name: spider Walking_1
       rect:
         serializedVersion: 2
         x: 32
@@ -158,14 +158,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a7030edf900c55a41abbc338c66a5c33
-      internalID: -559149782
+      spriteID: 90718f1f284641a409e5a057940753e0
+      internalID: 622848918
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature explosion-Sheet_2
+      name: spider Walking_2
       rect:
         serializedVersion: 2
         x: 64
@@ -179,14 +179,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cc6e206ebba1ba74898bb4b739c96b48
-      internalID: 1973734996
+      spriteID: bf35a3ee681546a4082679f333f1a4cf
+      internalID: -272727406
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature explosion-Sheet_3
+      name: spider Walking_3
       rect:
         serializedVersion: 2
         x: 96
@@ -200,71 +200,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 487d2b943f8e8184e8bb5bd7da10ec7d
-      internalID: 648648892
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spider creature explosion-Sheet_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7f11dd162761c674f86ee9f52fcdd9d5
-      internalID: -1645151024
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spider creature explosion-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 581d1119a70e3c7488c8fef8e0f391ab
-      internalID: 1826820613
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spider creature explosion-Sheet_6
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 51d09259cf8593447bff4cc5f9e9ef3a
-      internalID: -535243463
+      spriteID: 9ecdd91e4c4a4b94dbc3c3f6c95ccbdc
+      internalID: -1827388292
       vertices: []
       indices: 
       edges: []
@@ -280,13 +217,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spider creature explosion-Sheet_0: -1358529425
-      spider creature explosion-Sheet_1: -559149782
-      spider creature explosion-Sheet_2: 1973734996
-      spider creature explosion-Sheet_3: 648648892
-      spider creature explosion-Sheet_4: -1645151024
-      spider creature explosion-Sheet_5: 1826820613
-      spider creature explosion-Sheet_6: -535243463
+      spider Walking_0: -1150520472
+      spider Walking_1: 622848918
+      spider Walking_2: -272727406
+      spider Walking_3: -1827388292
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

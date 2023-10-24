@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b9b11776614376f458dd999f7db3edbe
+guid: e9b1f902791a2714f9d20f435186e529
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,13 +123,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spider creature Standing-Sheet_0
+      name: spider explosion 1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 32
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a2653671ac42fa842aab7680fc45f8a5
-      internalID: 1802601645
+      spriteID: 21ec1b0be1820ea48a146a772f2f52ec
+      internalID: -172740434
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature Standing-Sheet_1
+      name: spider explosion 1_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 60
         y: 0
-        width: 32
-        height: 32
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,20 +158,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6f2814e86896e8e42b11e37ed82c21f8
-      internalID: 1438224047
+      spriteID: 0246b79fe8c4ccc47a619d67d724fc3a
+      internalID: -1602431552
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spider creature Standing-Sheet_2
+      name: spider explosion 1_2
       rect:
         serializedVersion: 2
-        x: 64
+        x: 120
         y: 0
-        width: 32
-        height: 32
+        width: 60
+        height: 60
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -179,8 +179,113 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: de735e833a5065944a52867b41ea3b46
-      internalID: -257637670
+      spriteID: 5a4ed466b23b27e428327f46ff11d1f0
+      internalID: -1929786817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_3
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d5f8e0b7075aef4693ab83191cc9a55
+      internalID: -2093373494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_4
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa60d169041de774195a39560b1e0425
+      internalID: 42063583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_5
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 208731e08e297e542868ad4b89b8c301
+      internalID: 205919152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_6
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8445f66c68338be4f82b8f017c9fbd3b
+      internalID: -938854334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_7
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 0
+        width: 60
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2aae5fdc839496349b6de3165674e7be
+      internalID: 1694031522
       vertices: []
       indices: 
       edges: []
@@ -196,9 +301,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spider creature Standing-Sheet_0: 1802601645
-      spider creature Standing-Sheet_1: 1438224047
-      spider creature Standing-Sheet_2: -257637670
+      spider explosion 1_0: -172740434
+      spider explosion 1_1: -1602431552
+      spider explosion 1_2: -1929786817
+      spider explosion 1_3: -2093373494
+      spider explosion 1_4: 42063583
+      spider explosion 1_5: 205919152
+      spider explosion 1_6: -938854334
+      spider explosion 1_7: 1694031522
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
