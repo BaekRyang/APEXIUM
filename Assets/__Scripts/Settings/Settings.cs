@@ -15,7 +15,7 @@ using UnityEngine.UI;
 public class Settings : MonoBehaviour
 {
     [Inject] private SettingData   _settingData;
-    private CameraManager _cameraManager;
+    [Inject] private CameraManager _cameraManager;
 
     private void Start()
     {
@@ -97,7 +97,7 @@ public class SettingData
 
     public static SettingData Load()
     {
-        string Path = $"{Application.persistentDataPath}/Settings.json";
+        string      Path = $"{Application.persistentDataPath}/Settings.json";
         SettingData _settingData;
         if (!File.Exists(Path))
         {
@@ -110,7 +110,7 @@ public class SettingData
             string _json = File.ReadAllText(Path);
             _settingData = JsonConvert.DeserializeObject<SettingData>(_json);
         }
-        
+
         if (_settingData == null)
         {
             Debug.Log($"Data is null : {Path} : Create new file");

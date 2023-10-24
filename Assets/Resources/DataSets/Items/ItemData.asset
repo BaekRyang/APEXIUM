@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   items:
   - id: 0
-    name: Syringe
+    name: 
     rarity: 0
     sprite: {fileID: 21300000, guid: feeb617575a5c3b4e89c813cf872372a, type: 3}
     statValues:
