@@ -1,7 +1,9 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
+using Screen = UnityEngine.Device.Screen;
 
 [RequireComponent(typeof(Toggle))]
 public class UI_SettingCheckBox : DIMono
@@ -17,10 +19,10 @@ public class UI_SettingCheckBox : DIMono
     }
 
     public bool GetValue() => settingValueBoolean switch
-        {
-            SettingValueBoolean.UseVsync => _settingData.graphic.useVsync,
-            _                            => throw new ArgumentOutOfRangeException()
-        };
+    {
+        SettingValueBoolean.UseVsync => _settingData.graphic.useVsync,
+        _                            => throw new ArgumentOutOfRangeException()
+    };
 
     public void SetValue(bool _value)
     {
@@ -28,6 +30,7 @@ public class UI_SettingCheckBox : DIMono
         {
             case SettingValueBoolean.UseVsync:
                 _settingData.graphic.useVsync = _value;
+                QualitySettings.vSyncCount = _value ? 1 : 0;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -37,6 +40,9 @@ public class UI_SettingCheckBox : DIMono
     public override void Initialize()
     {
         settingNameText.text = settingValueBoolean.ToString();
+        LocalizeStringEvent _localizeStringEvent = settingNameText.GetComponent<LocalizeStringEvent>();
+        _localizeStringEvent.SetTable($"Settings");
+        _localizeStringEvent.SetEntry($"{settingValueBoolean}");
 
         Toggle _toggle = GetComponent<Toggle>();
 

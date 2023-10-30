@@ -19,10 +19,6 @@ public class ItemDataEditor : Editor
         new EnumTypeConverter<CalculationType>()
     };
 
-    private void OnEnable()
-    {
-        var _itemData = target as ItemData;
-    }
 
     public override void OnInspectorGUI()
     {

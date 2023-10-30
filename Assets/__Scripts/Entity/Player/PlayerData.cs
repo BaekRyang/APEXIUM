@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData", order = 1)]
 public class PlayerData : ScriptableObject
@@ -23,6 +18,6 @@ public class PlayerData : ScriptableObject
     
     [Space] [Header("Sprites")]
     public Sprite sprite;
-    public AnimatorController animatorController;
+    public RuntimeAnimatorController animatorController;
 }
     

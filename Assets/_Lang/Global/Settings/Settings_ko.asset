@@ -54,6 +54,42 @@ MonoBehaviour:
     m_Localized: "\uD6A8\uACFC\uC74C \uBCFC\uB968"
     m_Metadata:
       m_Items: []
+  - m_Id: 13743019137617920
+    m_Localized: "V-Sync \uC0AC\uC6A9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743262583410688
+    m_Localized: "\uD574\uC0C1\uB3C4"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743322356436992
+    m_Localized: "\uC8FC\uC0AC\uC728"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743659813359616
+    m_Localized: "\uD654\uBA74\uBAA8\uB4DC"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746453559562240
+    m_Localized: "\uBB34\uC81C\uD55C"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746494999285760
+    m_Localized: "\uC804\uCCB4\uD654\uBA74"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746528092344320
+    m_Localized: "\uD14C\uB450\uB9AC \uC5C6\uB294 \uCC3D \uBAA8\uB4DC"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746582479884288
+    m_Localized: "\uCC3D\uBAA8\uB4DC"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13751904460263424
+    m_Localized: "\uC5B8\uC5B4"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

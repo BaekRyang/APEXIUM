@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -11,7 +13,6 @@ public class Settings : MonoBehaviour
     private void Start()
     {
         DIContainer.Inject(this);
-        SR();
     }
 
     /// <summary>
@@ -26,11 +27,6 @@ public class Settings : MonoBehaviour
     public void SaveSettingToFile()
     {
         SettingData.Save(_settingData);
-    }
-
-    public void SR()
-    {
-        SetResolution(Screen.width, Screen.height);
     }
 
     public void SetResolution(int _width, int _height)
@@ -69,13 +65,56 @@ public class Settings : MonoBehaviour
 [Serializable]
 public class SettingData
 {
+    public General general = new();
     public Graphic graphic = new();
     public Sound   sound   = new();
 
     [Serializable]
+    public struct Resolution
+    {
+        public readonly int width, height;
+
+        public Resolution(UnityEngine.Resolution res)
+        {
+            width  = res.width;
+            height = res.height;
+        }
+
+        public override string ToString()
+        {
+            return $"{width}x{height}";
+        }
+
+        public void ApplyResolution(SettingData _settingData)
+        {
+            Screen.SetResolution(width, height, _settingData.graphic.fullScreenMode);
+            Debug.LogError($"Resolution => : {Graphic.ResolutionList[_settingData.graphic.resolutionIndex]}");
+            Debug.LogError($"Now Value  => : {Screen.currentResolution}");
+        }
+    }
+
+    [Serializable]
+    public class General
+    {
+        public int LocalizationIndex;
+    }
+
+    [Serializable]
     public class Graphic
     {
-        public bool useVsync;
+        public bool           useVsync;
+        public FullScreenMode fullScreenMode;
+        public int            resolutionIndex;
+        public int            frameRate;
+
+        private static List<Resolution> _resolutionList;
+
+        public static void Init()
+        {
+            _resolutionList = Screen.resolutions.Select(_res => new Resolution(_res)).Distinct().ToList();
+        }
+
+        public static List<Resolution> ResolutionList => _resolutionList;
     }
 
     [Serializable]
@@ -111,6 +150,15 @@ public class SettingData
         Save(_settingData);
 
         return _settingData;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+    public static void BeforeGameStart()
+    {
+        Graphic.Init();
+        SettingData _settingData = Load();
+
+        Graphic.ResolutionList[_settingData.graphic.resolutionIndex].ApplyResolution(_settingData);
     }
 
     public static void Save(SettingData _settingData) =>

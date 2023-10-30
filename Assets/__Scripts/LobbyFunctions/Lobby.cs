@@ -22,14 +22,6 @@ public class Lobby : MonoBehaviour
     [SerializeField] private MMF_Player _currentMMF;
     [SerializeField] private MMF_Player _previousMMF;
 
-    private void Awake()
-    {
-        Screen.SetResolution(Screen.width / 2, Screen.height / 2, true);
-        
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
-    }
-
     private void Start()
     {
         EventBus.Subscribe<ButtonPressedAction>(OnButtonPressed);

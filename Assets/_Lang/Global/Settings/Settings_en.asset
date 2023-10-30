@@ -35,7 +35,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 82329567232
-    m_Localized: Controlls
+    m_Localized: Controls
     m_Metadata:
       m_Items: []
   - m_Id: 292389591285760
@@ -52,6 +52,42 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 11534250104774656
     m_Localized: SFX Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743019137617920
+    m_Localized: Use V-Sync
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743262583410688
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743322356436992
+    m_Localized: FrameRate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13743659813359616
+    m_Localized: ScreenMode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746453559562240
+    m_Localized: Unlimited
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746494999285760
+    m_Localized: Exclusive FullScreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746528092344320
+    m_Localized: Fullscreen Window
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13746582479884288
+    m_Localized: Windowed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13751904460263424
+    m_Localized: Localization
     m_Metadata:
       m_Items: []
   references:
