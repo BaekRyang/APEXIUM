@@ -12,6 +12,9 @@ using UnityEngine.UI;
 
 public class CharacterSelect : MonoBehaviour
 {
+    private const int NOT_READIED  = -2;
+    private const int NOT_SELECTED = -1;
+
     [SerializeField] private Color         selectedColor, unSelectedColor, lockedColor;
     [SerializeField] private TMP_Text      readyButtonText;
     [SerializeField] private RectTransform charactersTransform;
@@ -80,16 +83,16 @@ public class CharacterSelect : MonoBehaviour
 
     private async void StartGame(Slider _gauge)
     {
-        Image _image              = _gauge.fillRect.GetComponent<Image>();
-        UniTask _textAnimationTask = readyGaugeTransform.GetComponent<MMF_Player>().PlayFeedbacksUniTask(transform.position);
-        UniTask  _gaugeAnimationTask = LerpColor(_image, _image.color, Color.green, .5f);
-        
+        Image   _image              = _gauge.fillRect.GetComponent<Image>();
+        UniTask _textAnimationTask  = readyGaugeTransform.GetComponent<MMF_Player>().PlayFeedbacksUniTask(transform.position);
+        UniTask _gaugeAnimationTask = LerpColor(_image, _image.color, Color.green, .5f);
+
         await UniTask.WhenAll(_textAnimationTask, _gaugeAnimationTask);
         Debug.Log("START GAME");
-        
+
         //입력을 막는다.
         EventSystem.current.enabled = false;
-        
+
         //로딩
         EventBus.Publish(new ButtonPressedAction("LoadGame"));
     }
@@ -99,15 +102,15 @@ public class CharacterSelect : MonoBehaviour
         float _time = 0;
         while (_time < _duration)
         {
-            _time += Time.deltaTime;
-            _target.color = Color.Lerp(_from, _to, _time / _duration);
+            _time         += Time.deltaTime;
+            _target.color =  Color.Lerp(_from, _to, _time / _duration);
             await Task.Yield();
         }
     }
 
     private void Ready(int _selectorID)
     {
-        if (lastSelectedIndex == -1)
+        if (lastSelectedIndex == NOT_SELECTED)
             return;
 
         readyButtonText.text = "Cancel";
@@ -117,7 +120,7 @@ public class CharacterSelect : MonoBehaviour
         characters[lockOnIndex].lockedID.Add(_selectorID);
 
         characters[lockOnIndex].ready.SetActive(true);
-        
+
         characters[lockOnIndex].lockOnImage.color = lockedColor;
 
         characters[lockOnIndex].readyText.text = isMultiplayer ?
@@ -125,19 +128,35 @@ public class CharacterSelect : MonoBehaviour
             "Ready";
     }
 
-    private void UnReady(int _selectorID)
+    private void UnReady(int _selectorID, bool _clear = false)
     {
-        if (lockOnIndex == -1)
-            return;
+        //준비 안했을 때
+        if (lockOnIndex == NOT_READIED)
+        {
+            if (lastSelectedIndex == NOT_SELECTED)
+                return;
 
+            //준비는 안했지만 선택은 했다면 불 꺼준다.
+            characters[lastSelectedIndex].lockOnImage.color = unSelectedColor;
+            return;
+        }
+
+        //준비는 했는데 다른 캐릭터를 클릭했을 때
+        if (lockOnIndex != lastSelectedIndex)
+            characters[lastSelectedIndex].lockOnImage.color = unSelectedColor;
+
+        //초기화 플래그 있으면 값 변경 시켜줌
+        if (_clear)
+            lastSelectedIndex = NOT_SELECTED;
+
+        //준비만 한 상태일 때
         readyButtonText.text = "Ready";
 
         characters[lockOnIndex].lockedID.Remove(_selectorID);
-
         characters[lockOnIndex].ready.SetActive(false);
         characters[lockOnIndex].lockOnImage.color = lockOnIndex == lastSelectedIndex ? selectedColor : unSelectedColor;
 
-        lockOnIndex = -2;
+        lockOnIndex = NOT_READIED;
 
         if (isMultiplayer)
             characters[lastSelectedIndex].readyText.text =
@@ -170,12 +189,11 @@ public class CharacterSelect : MonoBehaviour
         {
             Debug.Log($"lastSelectedIndex: {lastSelectedIndex}, _obj.index: {_clickedCellIndex}");
             if (lastSelectedIndex == _clickedCellIndex) return;
-            
+
             characters[_clickedCellIndex].lockOnImage.color = selectedColor;
-            if (lastSelectedIndex != -1)
+            if (lastSelectedIndex != NOT_SELECTED)
                 characters[lastSelectedIndex].lockOnImage.color = unSelectedColor;
         }
-
 
         lastSelectedIndex = _clickedCellIndex;
     }
@@ -194,11 +212,11 @@ public class CharacterSelect : MonoBehaviour
         //     _characterCell.lockOnImage.color = unSelectedColor;
         //     _characterCell.lockedID.Clear();
         // }
+        Debug.Log($"LastSelectedIndex: {lastSelectedIndex}");
+        if (lastSelectedIndex == NOT_SELECTED) return;
+        UnReady(Client.ClientID, _clear: true);
         lastSelectedIndex = -1;
-        UnReady(Client.ClientID);
     }
 
-    private void SelectCharacter(CharacterCell _cell)
-    {
-    }
+    private void SelectCharacter(CharacterCell _cell) { }
 }
