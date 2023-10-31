@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 2
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -292,7 +292,7 @@ PrefabInstance:
     - target: {fileID: 4480594233440499991, guid: 1eb23f6dc65058248a4129d2820213b1,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 633
       objectReference: {fileID: 0}
     - target: {fileID: 4480594233440499991, guid: 1eb23f6dc65058248a4129d2820213b1,
         type: 3}

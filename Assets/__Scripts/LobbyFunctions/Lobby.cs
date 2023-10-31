@@ -37,7 +37,7 @@ public class Lobby : MonoBehaviour
 
     private void OnButtonPressed(ButtonPressedAction _obj)
     {
-        switch (_obj.buttonName)
+        switch (_obj.ButtonName)
         {
             case "Entrance":
                 Entrance();

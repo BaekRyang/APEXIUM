@@ -12,12 +12,11 @@ public class ButtonListener : MonoBehaviour, IPointerEnterHandler
         {
             _button.onClick.AddListener(ButtonAction);
         }
-        
     }
 
     public void ButtonAction()
-    { 
-        EventBus.Publish(new ButtonPressedAction(gameObject.name));
+    {
+        EventBus.Publish(new ButtonPressedAction(GetComponent<Button>()));
     }
 
     public void OnPointerEnter(PointerEventData _eventData)
@@ -28,10 +27,18 @@ public class ButtonListener : MonoBehaviour, IPointerEnterHandler
 
 public class ButtonPressedAction
 {
-    public readonly string buttonName;
+    public readonly  Button button;
+    private readonly string _buttonText; //버튼이 아니고 이름만 주어질 때 사용함
 
-    public ButtonPressedAction(string _buttonName)
+    public string ButtonName => button != null ? button.name : _buttonText;
+
+    public ButtonPressedAction(Button _button)
     {
-        buttonName = _buttonName;
+        button = _button;
+    }
+
+    public ButtonPressedAction(string _buttonText)
+    {
+        this._buttonText = _buttonText;
     }
 }

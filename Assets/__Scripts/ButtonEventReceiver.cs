@@ -33,7 +33,7 @@ public class ButtonEventReceiver : MonoBehaviour
 
     private async void OnButtonPressed(ButtonPressedAction _obj)
     {
-        bool _targetIsMe = _obj.buttonName == gameObject.name;
+        bool _targetIsMe = _obj.ButtonName == gameObject.name;
 
         //대상이 난데, 이미 내가 활성화 되어있으면 무시
         if (_targetIsMe && _canvasGroup.interactable) return;
@@ -62,6 +62,6 @@ public class ButtonEventReceiver : MonoBehaviour
         
         _canvasGroup.interactable   = _targetIsMe;
         _canvasGroup.blocksRaycasts = _targetIsMe;
-        Debug.Log($"{_obj.buttonName} is {gameObject.name}? {_targetIsMe}");
+        Debug.Log($"{_obj.ButtonName} is {gameObject.name}? {_targetIsMe}");
     }
 }

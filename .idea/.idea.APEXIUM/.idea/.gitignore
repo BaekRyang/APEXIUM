@@ -3,6 +3,7 @@
 /workspace.xml
 # Rider에서 무시된 파일
 /.idea.APEXIUM.iml
+/sonarlint/*
 /modules.xml
 /projectSettingsUpdater.xml
 /contentModel.xml

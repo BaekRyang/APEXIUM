@@ -35,10 +35,10 @@ public class CharacterSelect : MonoBehaviour
 
     private void OnButtonPressed(ButtonPressedAction _obj)
     {
-        if (_obj.buttonName == "Back")
+        if (_obj.ButtonName == "Back")
             ClearCharacterCells();
 
-        if (_obj.buttonName != "Ready") return;
+        if (_obj.ButtonName != "Ready") return;
 
         switch (IsLocalReady)
         {
@@ -117,6 +117,7 @@ public class CharacterSelect : MonoBehaviour
         characters[lockOnIndex].lockedID.Add(_selectorID);
 
         characters[lockOnIndex].ready.SetActive(true);
+        
         characters[lockOnIndex].lockOnImage.color = lockedColor;
 
         characters[lockOnIndex].readyText.text = isMultiplayer ?
@@ -134,7 +135,7 @@ public class CharacterSelect : MonoBehaviour
         characters[lockOnIndex].lockedID.Remove(_selectorID);
 
         characters[lockOnIndex].ready.SetActive(false);
-        characters[lockOnIndex].lockOnImage.color = unSelectedColor;
+        characters[lockOnIndex].lockOnImage.color = lockOnIndex == lastSelectedIndex ? selectedColor : unSelectedColor;
 
         lockOnIndex = -2;
 
@@ -168,6 +169,8 @@ public class CharacterSelect : MonoBehaviour
         else
         {
             Debug.Log($"lastSelectedIndex: {lastSelectedIndex}, _obj.index: {_clickedCellIndex}");
+            if (lastSelectedIndex == _clickedCellIndex) return;
+            
             characters[_clickedCellIndex].lockOnImage.color = selectedColor;
             if (lastSelectedIndex != -1)
                 characters[lastSelectedIndex].lockOnImage.color = unSelectedColor;
