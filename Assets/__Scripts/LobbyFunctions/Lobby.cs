@@ -62,7 +62,7 @@ public class Lobby : MonoBehaviour
             case "Back":
                 BackToPrevious();
                 break;
-            
+
             case "LoadGame":
                 LoadGame();
                 break;
@@ -98,9 +98,11 @@ public class Lobby : MonoBehaviour
         throw new NotImplementedException();
     }
 
-    private void OpenSettings()
+    private async void OpenSettings()
     {
         LerpToScene(mainUI, settingsUI);
+        await UniTask.Delay(TimeSpan.FromSeconds(.1f));
+        EventBus.Publish(new ButtonPressedAction("General"));
     }
 
     private async void QuitGame()
@@ -130,11 +132,10 @@ public class Lobby : MonoBehaviour
         _current.Direction = MMFeedbacks.Directions.BottomToTop;
         UniTask _previousTask = _current.PlayFeedbacksUniTask(_position);
 
-
         _previous.gameObject.SetActive(true);
         _previous.Direction = MMFeedbacks.Directions.TopToBottom;
         UniTask _nextTask = _previous.PlayFeedbacksUniTask(_position);
-        
+
         //두 피드백이 모두 끝날때까지 기다림
         if (_previousTask.Status != UniTaskStatus.Succeeded || _nextTask.Status != UniTaskStatus.Succeeded)
             await UniTask.WhenAll(_previousTask, _nextTask);

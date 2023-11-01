@@ -126,7 +126,7 @@ PrefabInstance:
     - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
       propertyPath: m_fontSize
-      value: 18
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
@@ -137,7 +137,7 @@ PrefabInstance:
     - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
       propertyPath: m_fontSizeMax
-      value: 50
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
@@ -284,15 +284,76 @@ PrefabInstance:
     - {fileID: 7564249115675779440, guid: 80bfe45188010ac4ab4f1006037e6192, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6134545920251337981, guid: 80bfe45188010ac4ab4f1006037e6192,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 241384424102059733}
   m_SourcePrefab: {fileID: 100100000, guid: 80bfe45188010ac4ab4f1006037e6192, type: 3}
+--- !u!1 &3428944276829465551 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6134545920251337981, guid: 80bfe45188010ac4ab4f1006037e6192,
+    type: 3}
+  m_PrefabInstance: {fileID: 8841770738770802482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &241384424102059733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3428944276829465551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69beb381e244f92449b8c4cf954630e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TrackedObjects:
+  - rid: 5612260326636781570
+  references:
+    version: 2
+    RefIds:
+    - rid: 5612260326636781570
+      type: {class: TrackedUGuiGraphic, ns: UnityEngine.Localization.PropertyVariants.TrackedObjects,
+        asm: Unity.Localization}
+      data:
+        m_Target: {fileID: 3726436483753041833}
+        m_TrackedProperties:
+          items:
+          - rid: 5612260326636781571
+          - rid: 5612260326636781572
+        m_UpdateType: 0
+    - rid: 5612260326636781571
+      type: {class: FloatTrackedProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties,
+        asm: Unity.Localization}
+      data:
+        m_PropertyPath: m_fontSize
+        m_VariantData:
+        - localeIdentifier:
+            m_Code: en
+          value: 30
+        - localeIdentifier:
+            m_Code: ko
+          value: 40
+    - rid: 5612260326636781572
+      type: {class: FloatTrackedProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties,
+        asm: Unity.Localization}
+      data:
+        m_PropertyPath: m_fontSizeMax
+        m_VariantData:
+        - localeIdentifier:
+            m_Code: en
+          value: 30
+        - localeIdentifier:
+            m_Code: ko
+          value: 40
 --- !u!114 &3726436483753041833 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
     type: 3}
   m_PrefabInstance: {fileID: 8841770738770802482}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3428944276829465551}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
