@@ -42,7 +42,14 @@ public class DIContainer
 
     public void Register<T>(T _type, string _key = "")
     {
+        if (_objects.TryGetValue(GetKey(typeof(T), _key), out _))
+        {
+            Debug.Log($"{PREFIX} {_type} Already Registered");
+            return;
+        }
+        
         _objects.Add(GetKey(typeof(T), _key), _type);
+        Debug.Log($"{PREFIX} {_type} is Registered");
     }
 
     private static string GetKey(Type _type, string _key = "")

@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CharacterSelect : MonoBehaviour
+public class CharacterSelect : DIMono
 {
     private const int NOT_READIED  = -2;
     private const int NOT_SELECTED = -1;
@@ -27,7 +27,9 @@ public class CharacterSelect : MonoBehaviour
     [SerializeField] private int             lastSelectedIndex = -1;
     [SerializeField] private int             lockOnIndex       = -2;
 
-    private void Start()
+    [Inject] private PlayData playData;
+    
+    public override void Initialize()
     {
         EventBus.Subscribe<CharacterSelectEvent>(OnCharacterSelect);
         EventBus.Subscribe<ButtonPressedAction>(OnButtonPressed);
@@ -92,7 +94,7 @@ public class CharacterSelect : MonoBehaviour
 
         //입력을 막는다.
         EventSystem.current.enabled = false;
-
+        
         //로딩
         EventBus.Publish(new ButtonPressedAction("LoadGame"));
     }
@@ -126,6 +128,9 @@ public class CharacterSelect : MonoBehaviour
         characters[lockOnIndex].readyText.text = isMultiplayer ?
             $"P{_selectorID} Ready" :
             "Ready";
+
+        playData.characterData = characters[lockOnIndex].playerData;
+        playData.characterIndex = lockOnIndex;
     }
 
     private void UnReady(int _selectorID, bool _clear = false)

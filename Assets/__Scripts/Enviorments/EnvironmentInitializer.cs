@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using MoreMountains.Feedbacks;
+using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,6 +15,7 @@ public class EnvironmentInitializer : MonoBehaviour
 {
     private                  MapTheme?  _currentTheme;
     [SerializeField] private GameObject bossRoomEntrance;
+    [Inject]         private Settings   settings;
 
     private const string DATA_DIRECTORY = "Datasets";
 
@@ -21,7 +24,20 @@ public class EnvironmentInitializer : MonoBehaviour
         (MapData _playMap, MapData _bossMap) = EscalateMap();
         _playMap.GetComponent<MMF_Player>().PlayFeedbacks();
         _bossMap.GetComponent<MMF_Player>().PlayFeedbacksInReverse();
+
+        StartCoroutine(CameraSettings());
+        
         EventBus.Publish(new PlayMapChangedEvent(_playMap, _bossMap));
+    }
+
+    private IEnumerator CameraSettings()
+    {
+        yield return new WaitForSeconds(.1f);
+        
+        DIContainer.Inject(this);
+
+        SettingData.Resolution _resolution = SettingData.Graphic.ResolutionList[settings.settingData.graphic.resolutionIndex];
+        settings.SetResolution(_resolution.width, _resolution.height);
     }
 
     //기본 배치 개수

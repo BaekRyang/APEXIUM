@@ -4,15 +4,17 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 public class Settings : MonoBehaviour
 {
-    [Inject] private SettingData   _settingData;
+    [Inject] public SettingData   settingData;
     [Inject] private CameraManager _cameraManager;
 
     private void Start()
     {
         DIContainer.Inject(this);
+        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -26,7 +28,7 @@ public class Settings : MonoBehaviour
 
     public void SaveSettingToFile()
     {
-        SettingData.Save(_settingData);
+        SettingData.Save(settingData);
     }
 
     public void SetResolution(int _width, int _height)
@@ -60,6 +62,20 @@ public class Settings : MonoBehaviour
     {
         _cameraManager.mainVirtualCamera.m_Lens.OrthographicSize = _orthographicSize;
     }
+    
+    public static int GetRefreshRateByIndex(int _index) => _index switch
+    {
+        0 => 30,
+        1 => 60,
+        2 => 75,
+        3 => 120,
+        4 => 144,
+        5 => 180,
+        6 => 240,
+        7 => 300,
+        8 => -1,
+        _ => throw new ArgumentOutOfRangeException()
+    };
 }
 
 [Serializable]
@@ -159,6 +175,10 @@ public class SettingData
         SettingData _settingData = Load();
 
         Graphic.ResolutionList[_settingData.graphic.resolutionIndex].ApplyResolution(_settingData);
+        Application.targetFrameRate = Settings.GetRefreshRateByIndex(_settingData.graphic.frameRate);
+        QualitySettings.vSyncCount  = _settingData.graphic.useVsync ? 1 : 0;
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_settingData.general.LocalizationIndex];
+        //그래픽 세팅 불러오기
     }
 
     public static void Save(SettingData _settingData) =>

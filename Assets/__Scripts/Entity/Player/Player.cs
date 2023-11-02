@@ -77,10 +77,22 @@ public class Player : MonoBehaviour, IEntity
             _playerInput.uiInputModule = EventSystem.current.GetComponent<InputSystemUIInputModule>();
     }
 
+    private InjectObj _injectObj = new();
+
     void Start()
     {
-        DIContainer.Inject(this);
-        Initialize(DataManager.GetCharacterData("Astro"));
+        _injectObj.CheckAndInject(this);
+    }
+
+    public void SetPlayerData(PlayerData _playerData)
+    {
+        _injectObj.CheckAndInject(this);
+        Initialize(_playerData);
+    }
+
+    public void SetPlayData(int _dataIndex)
+    {
+        //아직 사용 안함
     }
 
     private void Update()
@@ -102,8 +114,8 @@ public class Player : MonoBehaviour, IEntity
                                              {
                                                  colorKeys = new[]
                                                              {
-                                                                 new GradientColorKey(new Color(.5f,.2f,.2f), 0),
-                                                                 new GradientColorKey(Color.red,                                                                               1)
+                                                                 new GradientColorKey(new Color(.5f, .2f, .2f), 0),
+                                                                 new GradientColorKey(Color.red,                1)
                                                              }
                                              };
         _statusFeedback.PlayFeedbacks();

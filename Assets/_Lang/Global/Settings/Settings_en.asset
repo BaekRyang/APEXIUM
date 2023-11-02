@@ -90,6 +90,14 @@ MonoBehaviour:
     m_Localized: Localization
     m_Metadata:
       m_Items: []
+  - m_Id: 14858590843490304
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14858603090857984
+    m_Localized: Back to Main
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

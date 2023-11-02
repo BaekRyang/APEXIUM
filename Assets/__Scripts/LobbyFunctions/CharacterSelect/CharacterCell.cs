@@ -6,16 +6,18 @@ using UnityEngine.UI;
 
 public class CharacterCell : MonoBehaviour
 {
-    public Button button;
-    public int    index;
-    public int    selectedID;
+    [SerializeField] public Button button;
+    [SerializeField] public int    index;
+    [SerializeField] public int    selectedID;
 
-    public Image      lockOnImage;
-    public GameObject ready;
-    public TMP_Text   readyText;
+    [SerializeField] public Image      lockOnImage;
+    [SerializeField] public GameObject ready;
+    [SerializeField] public TMP_Text   readyText;
 
-    public List<int> lockedID = new();
+    [SerializeField] public List<int> lockedID = new();
     
+    [SerializeField] public PlayerData playerData;
+
     private void Start()
     {
         GetData();
@@ -45,7 +47,7 @@ public class CharacterCell : MonoBehaviour
 public class CharacterSelectEvent
 {
     public int index;
-    public int selectorID;
+    public int selectorID; //멀티플레이 기준사용
     
     public CharacterSelectEvent(int _index, int _selectorID)
     {

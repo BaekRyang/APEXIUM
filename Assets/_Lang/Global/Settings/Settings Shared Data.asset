@@ -87,6 +87,14 @@ MonoBehaviour:
     m_Key: Localization
     m_Metadata:
       m_Items: []
+  - m_Id: 14858590843490304
+    m_Key: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14858603090857984
+    m_Key: BackToMain
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

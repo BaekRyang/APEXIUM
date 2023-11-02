@@ -136,6 +136,11 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
+      propertyPath: m_fontStyle
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260962586111223963, guid: 80bfe45188010ac4ab4f1006037e6192,
+        type: 3}
       propertyPath: m_fontSizeMax
       value: 30
       objectReference: {fileID: 0}

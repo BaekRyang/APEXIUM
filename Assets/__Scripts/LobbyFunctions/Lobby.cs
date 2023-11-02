@@ -20,7 +20,7 @@ public class Lobby : MonoBehaviour
     [SerializeField] private InputSystemUIInputModule inputSystemUiInputModule;
 
     [SerializeField] private MMF_Player _currentMMF;
-    [SerializeField] private MMF_Player _previousMMF;
+    [SerializeField] private MMF_Player _nextMMF;
 
     private void Start()
     {
@@ -78,7 +78,7 @@ public class Lobby : MonoBehaviour
 
     private void BackToPrevious()
     {
-        LerpToScene(_currentMMF, _previousMMF);
+        LerpToScene(_currentMMF, _nextMMF);
     }
 
     private void Entrance()
@@ -120,21 +120,21 @@ public class Lobby : MonoBehaviour
         LerpToScene(_previousPlayer, _nextPlayer);
     }
 
-    private async void LerpToScene(MMF_Player _current, MMF_Player _previous)
+    private async void LerpToScene(MMF_Player _current, MMF_Player _next)
     {
         inputSystemUiInputModule.enabled = false;
 
-        _currentMMF  = _previous;
-        _previousMMF = _current;
+        _currentMMF  = _next;
+        _nextMMF = _current;
 
         Vector3 _position = transform.position;
 
         _current.Direction = MMFeedbacks.Directions.BottomToTop;
         UniTask _previousTask = _current.PlayFeedbacksUniTask(_position);
 
-        _previous.gameObject.SetActive(true);
-        _previous.Direction = MMFeedbacks.Directions.TopToBottom;
-        UniTask _nextTask = _previous.PlayFeedbacksUniTask(_position);
+        _next.gameObject.SetActive(true);
+        _next.Direction = MMFeedbacks.Directions.TopToBottom;
+        UniTask _nextTask = _next.PlayFeedbacksUniTask(_position);
 
         //두 피드백이 모두 끝날때까지 기다림
         if (_previousTask.Status != UniTaskStatus.Succeeded || _nextTask.Status != UniTaskStatus.Succeeded)

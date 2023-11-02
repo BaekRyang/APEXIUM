@@ -15,6 +15,8 @@ public class UI_SettingDropdown : DIMono
     [DoNotSerialize]
     [Inject] private SettingData settingData;
 
+    [Inject] private Settings _settings;
+
     [SerializeField] private SettingValueList settingValueList;
 
     [SerializeField] private TMP_Text settingNameText;
@@ -31,7 +33,7 @@ public class UI_SettingDropdown : DIMono
 
     private void OnDestroy() => _subscribeObject.UnsubscribeAll();
 
-    public int GetValue() => settingValueList switch
+    private int GetValue() => settingValueList switch
     {
         SettingValueList.Resolution     => settingData.graphic.resolutionIndex,
         SettingValueList.FrameRate      => settingData.graphic.frameRate,
@@ -46,11 +48,16 @@ public class UI_SettingDropdown : DIMono
         {
             case SettingValueList.Resolution:
                 settingData.graphic.resolutionIndex = _value;
-                SettingData.Graphic.ResolutionList[_value].ApplyResolution(settingData);
+                SettingData.Resolution _resolution = SettingData.Graphic.ResolutionList[_value];
+                _resolution.ApplyResolution(settingData);
+
+                if (_settings == null)
+                    break;
+                _settings.SetResolution(_resolution.width, _resolution.height);
                 break;
             case SettingValueList.FrameRate:
                 settingData.graphic.frameRate = _value;
-                Application.targetFrameRate   = GetRefreshRateByIndex(_value);
+                Application.targetFrameRate   = Settings.GetRefreshRateByIndex(_value);
 
                 Debug.Log($"FrameRate: {Application.targetFrameRate}");
                 break;
@@ -61,7 +68,6 @@ public class UI_SettingDropdown : DIMono
             case SettingValueList.Localization:
                 settingData.general.LocalizationIndex = _value;
                 LocalizationSettings.SelectedLocale   = LocalizationSettings.AvailableLocales.Locales[_value];
-                EventBus.Publish(new LocalizationChangedEvent(LocalizationSettings.SelectedLocale.LocaleName));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -92,16 +98,24 @@ public class UI_SettingDropdown : DIMono
         switch (settingValueList)
         {
             case SettingValueList.FrameRate:
-                _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
+                LocalizationSettings.SelectedLocaleChanged += _ =>
                 {
                     _optionLocalizeTable.Clear();
                     AddLocalizeDict("Unlimited");
                     _dropdown.options[^1].text = _optionLocalizeTable["Unlimited"];
-                });
+                };
+
+                // _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
+                // {
+                //     _optionLocalizeTable.Clear();
+                //     AddLocalizeDict("Unlimited");
+                //     _dropdown.options[^1].text = _optionLocalizeTable["Unlimited"];
+                // });
+
                 break;
 
             case SettingValueList.FullScreenMode:
-                _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
+                LocalizationSettings.SelectedLocaleChanged += _ =>
                 {
                     _optionLocalizeTable.Clear();
                     AddLocalizeDict("Unlimited");
@@ -113,7 +127,21 @@ public class UI_SettingDropdown : DIMono
                     _dropdown.options[2].text = _optionLocalizeTable["Windowed"];
 
                     _dropdown.captionText.text = _dropdown.options[_dropdown.value].text;
-                });
+                };
+
+                // _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
+                // {
+                //     _optionLocalizeTable.Clear();
+                //     AddLocalizeDict("Unlimited");
+                //     AddLocalizeDict("Exclusive Fullscreen");
+                //     AddLocalizeDict("Fullscreen Window");
+                //     AddLocalizeDict("Windowed");
+                //     _dropdown.options[0].text = _optionLocalizeTable["Exclusive Fullscreen"];
+                //     _dropdown.options[1].text = _optionLocalizeTable["Fullscreen Window"];
+                //     _dropdown.options[2].text = _optionLocalizeTable["Windowed"];
+                //
+                //     _dropdown.captionText.text = _dropdown.options[_dropdown.value].text;
+                // });
                 break;
 
             default:
@@ -163,35 +191,10 @@ public class UI_SettingDropdown : DIMono
                         _dropdown.AddOptions(_tmpList);
                     }
 
-                    EventBus.Publish(new LocalizationChangedEvent(LocalizationSettings.SelectedLocale.LocaleName));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-    }
-
-    private int GetRefreshRateByIndex(int _index) => _index switch
-    {
-        0 => 30,
-        1 => 60,
-        2 => 75,
-        3 => 120,
-        4 => 144,
-        5 => 180,
-        6 => 240,
-        7 => 300,
-        8 => -1,
-        _ => throw new ArgumentOutOfRangeException()
-    };
-}
-
-public class LocalizationChangedEvent
-{
-    public string localeName;
-
-    public LocalizationChangedEvent(string _localeName)
-    {
-        localeName = _localeName;
     }
 }
