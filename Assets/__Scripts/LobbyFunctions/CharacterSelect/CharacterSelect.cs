@@ -38,6 +38,12 @@ public class CharacterSelect : DIMono
             GetCharacterCells();
     }
 
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<CharacterSelectEvent>(OnCharacterSelect);
+        EventBus.Unsubscribe<ButtonPressedAction>(OnButtonPressed);
+    }
+
     private void OnButtonPressed(ButtonPressedAction _obj)
     {
         if (_obj.ButtonName == "Back")

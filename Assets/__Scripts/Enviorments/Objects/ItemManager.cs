@@ -37,15 +37,15 @@ public class ItemManager : MonoBehaviour
         MakeItems();
     }
 
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<ItemSpawnEvent>(InstantiateItemHandler);
+    }
+
     private void MakeItems()
     {
         foreach (Item _itemListItem in itemList.items)
             _items.Add(_itemListItem.id, _itemListItem);
-    }
-
-    private void OnDisable()
-    {
-        EventBus.Unsubscribe<ItemSpawnEvent>(InstantiateItemHandler);
     }
 
     private void InstantiateItemHandler(ItemSpawnEvent _event)

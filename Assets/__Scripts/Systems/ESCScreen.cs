@@ -5,6 +5,8 @@ using MoreMountains.Feedbacks;
 using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ESCScreen : MonoBehaviour
 {
@@ -12,46 +14,75 @@ public class ESCScreen : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private CanvasGroup screen;
     [SerializeField] private Settings    settings;
-    [SerializeField] private MMF_Player  contentsPlayer, settingsPlayer, confirmPlayer;
+    [SerializeField] private MMF_Player  contentsPlayer, settingsPlayer, confirmPlayer, exitPlayer;
 
     private bool IsOpened => screen.interactable;
     Coroutine    _coroutine;
 
-    private void Start()
+    private void OnEnable()
     {
         EventBus.Subscribe<ButtonPressedAction>(OnButtonPressed);
-        playerInput.actions["Cancel"].performed += _ => OnESC();
+        playerInput.actions["Cancel"].performed += OnESC;
     }
 
-    private void OnESC()
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<ButtonPressedAction>(OnButtonPressed);
+        playerInput.actions["Cancel"].performed -= OnESC;
+    }
+
+    private void OnESC(InputAction.CallbackContext _)
     {
         if (_coroutine != null)
             return;
 
         if (IsOpened)
+        {
             settings.gameObject.SetActive(false);
+            confirmPlayer.gameObject.SetActive(false);
+        }
+        else
+        {
+            contentsPlayer.gameObject.SetActive(true);
+            contentsPlayer.Direction = MMFeedbacks.Directions.TopToBottom;
+            contentsPlayer.PlayFeedbacks();
+        }
 
-        _coroutine     = StartCoroutine(TransitUI(!IsOpened));
-        Time.timeScale = IsOpened ? 0 : 1;
-
+        _coroutine = StartCoroutine(TransitUI(!IsOpened));
     }
 
-    private void OnButtonPressed(ButtonPressedAction _obj)
+    private async void OnButtonPressed(ButtonPressedAction _obj)
     {
         switch (_obj.ButtonName)
         {
             case "Resume":
                 StartCoroutine(TransitUI(false));
                 break;
-            case "Setting":
+            case "Settings":
                 LerpMMFPlayer(contentsPlayer, settingsPlayer);
+                EventBus.Publish(new ButtonPressedAction("General"));
                 break;
             case "BackToMain":
+                confirmPlayer.gameObject.SetActive(true);
+                confirmPlayer.Direction = MMFeedbacks.Directions.TopToBottom;
                 confirmPlayer.PlayFeedbacks();
                 break;
 
-            case "Back":
+            case "Settings_Back":
                 LerpMMFPlayer(settingsPlayer, contentsPlayer);
+                break;
+
+            case "Exit_Yes":
+                exitPlayer.GetComponent<Image>().raycastTarget = true;
+                await exitPlayer.PlayFeedbacksUniTask(exitPlayer.transform.position);
+                SceneManager.LoadScene("Lobby");
+                break;
+
+            case "Exit_No":
+                confirmPlayer.Direction = MMFeedbacks.Directions.BottomToTop;
+                await confirmPlayer.PlayFeedbacksUniTask(confirmPlayer.transform.position);
+                confirmPlayer.gameObject.SetActive(false);
+
                 break;
         }
     }

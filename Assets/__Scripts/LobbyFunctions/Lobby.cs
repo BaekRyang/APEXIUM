@@ -35,6 +35,11 @@ public class Lobby : MonoBehaviour
         // multiplayerUI.gameObject.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<ButtonPressedAction>(OnButtonPressed);
+    }
+
     private void OnButtonPressed(ButtonPressedAction _obj)
     {
         switch (_obj.ButtonName)

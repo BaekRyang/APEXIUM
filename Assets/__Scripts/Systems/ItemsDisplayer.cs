@@ -12,7 +12,7 @@ public class ItemsDisplayer : MonoBehaviour
     [Inject] private ItemManager _itemManager;
 
     private void OnEnable()  => EventBus.Subscribe<UpdateItemEvent>(OnItemUpdated);
-    private void OnDisable() => EventBus.Subscribe<UpdateItemEvent>(OnItemUpdated);
+    private void OnDisable() => EventBus.Unsubscribe<UpdateItemEvent>(OnItemUpdated);
     private void Start()     => DIContainer.Inject(this);
 
     private void OnItemUpdated(UpdateItemEvent _e)
