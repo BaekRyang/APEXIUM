@@ -57,8 +57,11 @@ public class EnemySpawner : MonoBehaviour
 
         while (true)
         {
-            if (!doSpawn)
+            if (!doSpawn || !gameObject.activeSelf)
+            {
+                Debug.Log("Interrupted");
                 return;
+            }
 
             if (currentEnemies >= MAX_ENEMIES)
                 continue;

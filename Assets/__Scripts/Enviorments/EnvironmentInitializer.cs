@@ -38,6 +38,7 @@ public class EnvironmentInitializer : MonoBehaviour
 
         SettingData.Resolution _resolution = SettingData.Graphic.ResolutionList[settings.settingData.graphic.resolutionIndex];
         settings.SetResolution(_resolution.width, _resolution.height);
+        settings.gameObject.SetActive(false);
     }
 
     //기본 배치 개수

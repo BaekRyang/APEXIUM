@@ -38,7 +38,7 @@ public class CharacterSelect : DIMono
             GetCharacterCells();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         EventBus.Unsubscribe<CharacterSelectEvent>(OnCharacterSelect);
         EventBus.Unsubscribe<ButtonPressedAction>(OnButtonPressed);

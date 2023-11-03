@@ -40,14 +40,18 @@ public class DIContainer
 
     private Dictionary<string, object> _objects = new();
 
-    public void Register<T>(T _type, string _key = "")
+    public void Register<T>(T _type, string _key = "", bool _override = false)
     {
         if (_objects.TryGetValue(GetKey(typeof(T), _key), out _))
         {
             Debug.Log($"{PREFIX} {_type} Already Registered");
-            return;
+            if (!_override)
+                return;
+            
+            _objects.Remove(GetKey(typeof(T), _key));
+            Debug.Log($"{PREFIX} Try to Override {_type}");
         }
-        
+
         _objects.Add(GetKey(typeof(T), _key), _type);
         Debug.Log($"{PREFIX} {_type} is Registered");
     }

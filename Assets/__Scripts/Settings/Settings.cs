@@ -14,7 +14,6 @@ public class Settings : MonoBehaviour
     private void Start()
     {
         DIContainer.Inject(this);
-        gameObject.SetActive(false);
     }
 
     /// <summary>

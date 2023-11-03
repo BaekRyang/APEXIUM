@@ -1,8 +1,9 @@
+using System;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-public class PlayerObjectController
+public class PlayerObjectController : IDisposable
 {
     [Inject("PlayerPrefab")] private GameObject    playerPrefab;
     [Inject]                 private MapManager    _mapManager;
@@ -18,20 +19,21 @@ public class PlayerObjectController
 
     ~PlayerObjectController()
     {
-        EventBus.Unsubscribe<PlayerEnterEvent>(PlayerEnterEventHandler);
+        ReleaseUnmanagedResources();
     }
 
     private void PlayerEnterEventHandler(PlayerEnterEvent _eventData)
     {
         Debug.Log("PlayerEnterEventHandler");
+
         //임시사용
-        
+
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             injectObj.CheckAndInject(this);
 
             Debug.Log("PlayerEnterEventHandler : " + _eventData.PlayerID);
-            Player     _player                = InstantiatePlayer(_eventData.PlayerID, _mapManager.GetSpawnLocation());
+            Player _player = InstantiatePlayer(_eventData.PlayerID, _mapManager.GetSpawnLocation());
             _player.SetPlayerData(_playData.characterData); //캐릭터 설정
             Debug.Log($"<color=purple>Player Data Injected</color> - by {_playData.characterData.name}");
             _player.currentMap = _mapManager.GetMap(MapType.Normal);
@@ -51,5 +53,17 @@ public class PlayerObjectController
     public void DestroyPlayer(Player _targetPlayer)
     {
         GameObject.Destroy(_targetPlayer.gameObject);
+    }
+
+    private void ReleaseUnmanagedResources()
+    {
+        Debug.Log("PlayerObjectController Destroyed");
+        EventBus.Unsubscribe<PlayerEnterEvent>(PlayerEnterEventHandler);
+    }
+
+    public void Dispose()
+    {
+        ReleaseUnmanagedResources();
+        GC.SuppressFinalize(this);
     }
 }

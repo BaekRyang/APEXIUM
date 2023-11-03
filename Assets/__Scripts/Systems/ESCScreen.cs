@@ -75,6 +75,7 @@ public class ESCScreen : MonoBehaviour
             case "Exit_Yes":
                 exitPlayer.GetComponent<Image>().raycastTarget = true;
                 await exitPlayer.PlayFeedbacksUniTask(exitPlayer.transform.position);
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
                 SceneManager.LoadScene("Lobby");
                 break;
 

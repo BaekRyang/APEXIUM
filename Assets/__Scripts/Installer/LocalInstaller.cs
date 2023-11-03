@@ -1,4 +1,5 @@
-﻿using Cinemachine;
+﻿using System;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -26,7 +27,8 @@ public class LocalInstaller : MonoBehaviour
         _container.Register(new PlayerManager().Initialize());
         _container.Register(client);
 
-        _container.Register(settings);
+        DIContainer.Global.Register(settings, _override: true);
+        
         _container.Register(cameraManager);
         _container.Register(mapManager);
         _container.Register(blackBoard,       "BlackBoard");
@@ -35,5 +37,10 @@ public class LocalInstaller : MonoBehaviour
         _container.Register(objectPoolManager);
         _container.Register(itemManager);
         
+    }
+
+    private void OnDisable()
+    {
+        (DIContainer.Local.GetValue(typeof(PlayerManager), "") as PlayerManager)?.Dispose();
     }
 }

@@ -7,15 +7,13 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [Serializable]
-public class PlayerManager
+public class PlayerManager : IDisposable
 {
     private PlayerObjectController _playerObjectController;
 
     public int playerID = -1;
 
     [DoNotSerialize] private Dictionary<int, Player> _players = new();
-
-    public PlayerManager() { }
 
     public PlayerManager Initialize()
     {
@@ -78,6 +76,11 @@ public class PlayerManager
         else
             Debug.Log("All Players are Disconnected");
     }
-    
-    
+
+    public void Dispose()
+    {
+        Debug.Log("PlayerManager Destroyed");
+        _playerObjectController?.Dispose();
+        _players                = null;
+    }
 }

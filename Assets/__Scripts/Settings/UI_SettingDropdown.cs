@@ -14,11 +14,8 @@ public class UI_SettingDropdown : DIMono
 {
     [DoNotSerialize]
     [Inject] private SettingData settingData;
-
     [Inject] private Settings _settings;
-
     [SerializeField] private SettingValueList settingValueList;
-
     [SerializeField] private TMP_Text settingNameText;
 
     private SubscribeObject _subscribeObject = new();
