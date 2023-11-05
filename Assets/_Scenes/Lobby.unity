@@ -3436,17 +3436,17 @@ PrefabInstance:
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 7067344861484810152, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -3456,7 +3456,7 @@ PrefabInstance:
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Interactable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -3471,7 +3471,7 @@ PrefabInstance:
     - target: {fileID: 8823487608335443269, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4078,7 +4078,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: e0d1f5789d417e94b987a630a188d661,
+      objectReference: {fileID: 21300000, guid: af1236dee224ef949856d6756b891a78,
         type: 3}
     - target: {fileID: 7792149487197744283, guid: fcec887cb72508541891f34b19cd012e,
         type: 3}
@@ -5449,17 +5449,17 @@ PrefabInstance:
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 7067344861484810152, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -5469,7 +5469,7 @@ PrefabInstance:
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Interactable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -5484,7 +5484,7 @@ PrefabInstance:
     - target: {fileID: 8823487608335443269, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9043,17 +9043,17 @@ PrefabInstance:
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 2347469576027473304, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.050980393
       objectReference: {fileID: 0}
     - target: {fileID: 7067344861484810152, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -9063,7 +9063,7 @@ PrefabInstance:
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_Interactable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7618833792168502326, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
@@ -9078,7 +9078,7 @@ PrefabInstance:
     - target: {fileID: 8823487608335443269, guid: 6c34afc3508faf8488200ea27507bbd4,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

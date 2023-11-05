@@ -20,11 +20,15 @@ public struct FloatPair
 }
 
 [Serializable]
-public abstract class State : IState
+public abstract class State
 {
     [SerializeField] [Inject] protected PlayerManager _playerManager;
     
     [SerializeField] protected EnemyAI enemyAI;
+    
+    protected static readonly int IsWalk   = Animator.StringToHash("IsWalk");
+    protected static readonly int Attack   = Animator.StringToHash("Attack");
+    protected static readonly int IsAttack = Animator.StringToHash("IsAttack");
 
     public State Initialize(EnemyAI _enemyAI)
     {
@@ -38,8 +42,8 @@ public abstract class State : IState
     [SerializeField] protected string stateName = "NULL";
 
     public abstract void Enter();
-    public abstract void Execute();
-    public abstract void Exit();
+    public abstract    void Execute();
+    public abstract    void Exit();
 
     private const float CLIFF_DETECT_DISTANCE = 50f;
 
@@ -163,7 +167,7 @@ public class SWander : State
 
                 enemyAI.targetDirection.Normalize();
 
-                enemyAI.animator.SetBool("IsWalk", true);
+                enemyAI.animator.SetBool(IsWalk, true);
                 enemyAI.cachedTransform.position += enemyAI.targetDirection * (Time.deltaTime * enemyAI.enemyBase.stats.Speed);
                 break;
 
@@ -178,7 +182,7 @@ public class SWander : State
                     return;
                 }
 
-                enemyAI.animator.SetBool("IsWalk", false);
+                enemyAI.animator.SetBool(IsWalk, false);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -193,8 +197,9 @@ public class SWander : State
 
 public class SChase : State
 {
-    private const float   CHASE_DIRECTION_CHANGE_DELAY = .5f;
-    private       UniTask _changeDirectionTask;
+    private const             float   CHASE_DIRECTION_CHANGE_DELAY = .5f;
+    private                   UniTask _changeDirectionTask;
+
 
     public override void Enter()
     {
@@ -232,7 +237,7 @@ public class SChase : State
         if (_changeDirectionTask.Status != UniTaskStatus.Pending)
             _changeDirectionTask = ChangeDirectionToTarget();
 
-        enemyAI.animator.SetBool("IsWalk", true);
+        enemyAI.animator.SetBool(IsWalk, true);
         Move(enemyAI);
     }
 
@@ -249,21 +254,21 @@ public class SChase : State
 
 public class SAttack : State
 {
-    [SerializeField] private float _lastAttackTime;
-    [SerializeField] private float _nextAttackTime;
+    [SerializeField] protected float lastAttackTime;
+    [SerializeField] protected float nextAttackTime;
 
-    private UniTask _attackTask;
+    protected               UniTask attackTask;
+
 
     public override void Enter()
     {
         stateName = "Attack";
-        enemyAI.animator.SetBool("IsAttack", true);
+        enemyAI.animator.SetBool(IsAttack, true);
     }
 
     public override void Execute()
     {
-        Debug.Log(_attackTask.Status);
-        if (_attackTask.Status == UniTaskStatus.Pending) return;
+        if (attackTask.Status == UniTaskStatus.Pending) return;
         if (enemyAI.waitForAttack) AttackDelay();
 
         (Player _targetPlayer, float _targetDistance) = PlayerInRange(enemyAI);
@@ -282,12 +287,12 @@ public class SAttack : State
             return;
         }
 
-        if (Time.time >= _nextAttackTime)
+        if (Time.time >= nextAttackTime)
         {
-            _lastAttackTime = Time.time;
-            _nextAttackTime = _lastAttackTime + 1 / enemyAI.enemyBase.stats.AttackSpeed; //공격속도에 따라 다음 공격시간 계산
+            lastAttackTime = Time.time;
+            nextAttackTime = lastAttackTime + 1 / enemyAI.enemyBase.stats.AttackSpeed; //공격속도에 따라 다음 공격시간 계산
 
-            _attackTask = AttackAnimate();
+            attackTask = AttackAnimate();
         }
     }
 
@@ -296,9 +301,9 @@ public class SAttack : State
         enemyAI.animator.SetBool("IsAttack", false);
     }
 
-    private async UniTask AttackAnimate()
+    protected async UniTask AttackAnimate()
     {
-        enemyAI.animator.SetTrigger("Attack");
+        enemyAI.animator.SetTrigger(Attack);
 
         enemyAI.animator.speed = enemyAI.enemyBase.stats.AttackSpeed * 2f;
 
@@ -309,14 +314,14 @@ public class SAttack : State
         enemyAI.animator.speed = 1;
     }
 
-    private async void AttackDelay()
+    protected async void AttackDelay()
     {
-        float _nextAttackDelay = _nextAttackTime - Time.time;
+        float _nextAttackDelay = nextAttackTime - Time.time;
 
         if (_nextAttackDelay > 0) //공격 타이밍이 이미 지나갔으면 대기할 필요가 없으므로 대기하지 않음 (음수 대기는 Exception 발생)
             await UniTask.Delay(TimeSpan.FromSeconds(_nextAttackDelay));
         else
-            Debug.Log($"{_nextAttackDelay} : {_nextAttackTime} - {Time.time}");
+            Debug.Log($"{_nextAttackDelay} : {nextAttackTime} - {Time.time}");
 
         enemyAI.waitForAttack = false;
     }

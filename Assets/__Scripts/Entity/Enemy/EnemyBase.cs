@@ -8,12 +8,13 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour, IEntity
 {
-    [SerializeField] private Collider2D _attackCollider;
-    [Inject] ObjectPoolManager _objectPoolManager;
+    [SerializeField] private BoxCollider2D     _attackCollider;
+    [SerializeField] private Vector4           _attackColliderOffsets;
+    [Inject]                 ObjectPoolManager _objectPoolManager;
 
     private const float VERTICAL_OFFSET    = .7f;
     private const float CRITICAL_FONT_SIZE = 1.05f;
-    
+
     private EnemyAI          _enemyAI;
     private MMF_Player       _damageFeedback;
     private MMF_FloatingText _floatingText;
@@ -21,33 +22,51 @@ public class EnemyBase : MonoBehaviour, IEntity
     public EnemyStats stats;
     public Animator   animator;
 
-    private EnemyData _enemyData;
-    
+    [SerializeField] private EnemyData enemyData;
+
     public event EventHandler OnEnemyHpChange;
 
     readonly InjectObj _injectObj = new();
 
+    private void Start()
+    {
+        if (enemyData == null)
+            return;
+
+        Initialize(enemyData);
+    }
+
     public void Initialize(EnemyData _importedData)
     {
-        _enemyData = _importedData;
+        enemyData = _importedData;
         _injectObj.CheckAndInject(this);
-        stats = new EnemyStats(_enemyData);
+        stats = new EnemyStats(enemyData);
 
-        GetComponent<SpriteRenderer>().sprite = _enemyData.sprite;
+        GetComponent<SpriteRenderer>().sprite = enemyData.sprite;
 
         if (!TryGetComponent(out animator))
             gameObject.AddComponent<Animator>();
 
-        animator.runtimeAnimatorController = _enemyData.animatorController;
-        
-        if (_enemyData.isBoss)
+        animator.runtimeAnimatorController = enemyData.animatorController;
+
+        if (enemyData.isBoss)
             BossHealthDisplay.Instance.SyncToBossHealthBar(this);
 
         if (!TryGetComponent(out _enemyAI))
             _enemyAI = transform.AddComponent<EnemyAI>();
 
         GetComponent<Rigidbody2D>().simulated = true;
-        GetComponent<Collider2D>().enabled    = true;
+
+        _attackColliderOffsets = enemyData.attackColliderOffsets;
+        
+        if (TryGetComponent(out PolygonCollider2D _polygonCollider2D))
+        {
+            Destroy(_polygonCollider2D);
+            gameObject.AddComponent<PolygonCollider2D>();
+        }
+
+        _attackCollider.offset = new Vector2(_attackColliderOffsets.x, _attackColliderOffsets.y);
+        _attackCollider.size   = new Vector2(_attackColliderOffsets.z, _attackColliderOffsets.w);
 
         _enemyAI.Initialize(this);
         _damageFeedback = transform.Find("DamageFeedback").GetComponent<MMF_Player>();
@@ -94,17 +113,18 @@ public class EnemyBase : MonoBehaviour, IEntity
             Knockback(_attacker, .15f);
 
         if (stats.Health <= 0)
-            Dead(_attacker);
+            Dead(_attacker, true);
     }
 
-    private async void Dead(Player _attacker)
+    public async void Dead(Player _attacker, bool _dropReward)
     {
         _enemyAI.animator.SetBool(IsDead, true);
         Destroy(_enemyAI);
         GetComponent<Rigidbody2D>().simulated = false;
         GetComponent<Collider2D>().enabled    = false;
 
-        DropReward(_attacker);
+        if (_dropReward)
+            DropReward(_attacker);
 
         //TODO: 적절한 방법이 아닌 것 같음
         if (OnEnemyHpChange?.GetInvocationList().Length > 0) //구독중이면
@@ -139,11 +159,11 @@ public class EnemyBase : MonoBehaviour, IEntity
     private async void Knockback(Player _attacker, float _knockbackForce)
     {
         Vector2 _knockbackDirection = (transform.position - _attacker.PlayerPosition).normalized;
-        
-        float _elapsedTime = 0;
-        float _duration    = 0.1f;
-        MMTweenType _tween = new(MMTween.MMTweenCurve.EaseInQuintic);
-        
+
+        float       _elapsedTime = 0;
+        float       _duration    = 0.1f;
+        MMTweenType _tween       = new(MMTween.MMTweenCurve.EaseInQuintic);
+
         while (_elapsedTime < _duration)
         {
             float _t = 1 - _tween.Evaluate(_elapsedTime / _duration);
@@ -157,14 +177,13 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     public virtual void Attack()
     {
-        
         List<Collider2D> _colliders = new();
         Physics2D.OverlapCollider(_attackCollider, new ContactFilter2D()
                                                    {
-                                                         useLayerMask = true,
-                                                         layerMask = LayerMask.GetMask("Player")
+                                                       useLayerMask = true,
+                                                       layerMask    = LayerMask.GetMask("Player")
                                                    }, _colliders);
-        
+
         Debug.Log($"Captured colliders: {_colliders.Count}");
         foreach (Collider2D _player in _colliders)
         {

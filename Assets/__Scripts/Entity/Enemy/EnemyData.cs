@@ -8,6 +8,7 @@ public class EnemyData : ScriptableObject
 
     [Space] [Header("Stats")]
     public EnemyStats stats;
+    public Vector4 attackColliderOffsets;
 
     [Space] [Header("Is Boss")]
     public bool isBoss;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -92,9 +93,9 @@ public class EnemyAI : MonoBehaviour
         if (_stunned || _dazed) return;
         animator.SetBool(IsAttacked, false);
 
-        CurrentState.Execute();
+        CurrentState?.Execute();
 
-        //지금 animation의 state가 Attack이면 return;
+        //지금 animation의 state가 Attack이면 return
         if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
 
         FlipEntity();
@@ -123,5 +124,48 @@ public class EnemyAI : MonoBehaviour
         animator.SetTrigger(Attacked);
         _dazed    = true;
         _dazeTime = DAZED_DURATION;
+    }
+
+    private bool  _explosionOnContact;
+    private float _explosionStartTime;
+
+    public void LaunchToPlayer()
+    {
+        animator.speed = 1;
+
+        Rigidbody2D _rigidbody2D = GetComponent<Rigidbody2D>();
+        _rigidbody2D.velocity = targetPlayer.transform.position - transform.position + Vector3.up * 10;
+        _explosionOnContact   = true;
+        _explosionStartTime   = Time.time;
+    }
+
+    private void OnTriggerEnter2D(Collider2D _other)
+    {
+        if (!_explosionOnContact) return;
+
+        if (_other.CompareTag("Player"))
+        {
+            Debug.Log("PlayerExplosion");
+
+            animator.SetBool("DoExplosion", true);
+            animator.SetBool("IsWalk", false);
+            enemyBase.Dead(null, false);
+            currentState = null;
+        }
+        else if (_other.CompareTag("Floor") && Time.time - _explosionStartTime > 0.1f)
+        {
+            Debug.Log("FloorExplosion");
+            animator.SetBool("DoExplosion", true);
+            animator.SetBool("IsWalk",      false);
+            currentState = null;
+            StartCoroutine(ToDead());
+        }
+    }
+
+    private IEnumerator ToDead()
+    {
+        Debug.Log("DoCoroutine");
+        yield return new WaitForSeconds(0.1f);
+        enemyBase.Dead(null, false);
     }
 }

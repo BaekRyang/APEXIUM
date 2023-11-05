@@ -31,6 +31,7 @@ MonoBehaviour:
     attackType: 0
     attackRange: 4
     stopWhenAttack: 1
+  attackColliderOffsets: {x: 0, y: 0, z: 4.5, w: 3}
   isBoss: 0
   sprite: {fileID: 21300000, guid: 0109a63181e90394f8795d1a902338e2, type: 3}
   animatorController: {fileID: 9100000, guid: 47e9fea6f6d85d043bffc6fd3b056290, type: 2}

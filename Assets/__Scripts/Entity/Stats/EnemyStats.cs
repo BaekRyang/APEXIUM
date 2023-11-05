@@ -5,7 +5,8 @@ using UnityEngine;
 public enum EnemyAttackType
 {
     Normal,
-    Aura
+    Throw,
+    Aura,
 }
 
 public enum EliteType

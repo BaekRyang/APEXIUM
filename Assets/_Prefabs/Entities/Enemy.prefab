@@ -558,6 +558,7 @@ MonoBehaviour:
     attackRange: 0
     stopWhenAttack: 0
   animator: {fileID: 0}
+  enemyData: {fileID: 11400000, guid: 4d4fffc0978526d4fbd20ff1136a133b, type: 2}
 --- !u!114 &-8639249466388217110
 MonoBehaviour:
   m_ObjectHideFlags: 0
