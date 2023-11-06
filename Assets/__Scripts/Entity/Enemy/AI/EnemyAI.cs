@@ -133,6 +133,8 @@ public class EnemyAI : MonoBehaviour
     {
         animator.speed = 1;
 
+        enemyBase.stats.canDazed = enemyBase.stats.canStun = enemyBase.stats.canKnockback = false;
+        
         Rigidbody2D _rigidbody2D = GetComponent<Rigidbody2D>();
         _rigidbody2D.velocity = targetPlayer.transform.position - transform.position + Vector3.up * 10;
         _explosionOnContact   = true;

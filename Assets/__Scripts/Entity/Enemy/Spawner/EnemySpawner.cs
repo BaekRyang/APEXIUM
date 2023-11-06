@@ -63,9 +63,6 @@ public class EnemySpawner : MonoBehaviour
                 return;
             }
 
-            if (currentEnemies >= MAX_ENEMIES)
-                continue;
-
             int _spawnCount = Mathf.RoundToInt(DEFAULT_SPAWN_ENEMIES_ONCE_COUNT * DifficultyManager.NowDifficulty * SPAWN_ENEMIES_DIFFICULTY_MULTIPLIER);
 
             SpawnEnemies(_spawnCount);
@@ -87,16 +84,18 @@ public class EnemySpawner : MonoBehaviour
 
     private async UniTask SpawnEnemy(float _delay = 0)
     {
+        if (currentEnemies >= MAX_ENEMIES) return;
+        
         Player _randomPlayer = _playerManager.GetRandomPlayer();
-        if (_randomPlayer.currentMap.MapType is not MapType.Normal) 
+        if (_randomPlayer.currentMap.MapType is not MapType.Normal)
             return;
 
         await UniTask.Delay(TimeSpan.FromSeconds(_delay));
 
-        EnemyData _enemyData   = GetRandomEnemy(_randomPlayer.currentMap.MapType);
-        if (_enemyData is null) 
+        EnemyData _enemyData = GetRandomEnemy(_randomPlayer.currentMap.MapType);
+        if (_enemyData is null)
             return;
-        
+
         EnemyBase _enemyObject = _objectPoolManager.GetObject<EnemyBase>(false);
 
         _enemyObject.transform.position = MapManager.GetRandomPositionNearPlayer(_randomPlayer);
@@ -108,8 +107,8 @@ public class EnemySpawner : MonoBehaviour
 
     private EnemyData GetRandomEnemy(MapType _mapType)
     {
-        return _mapType == MapType.Normal ?
-            _playMap.spawnableEnemies.Count > 0 ? _playMap.spawnableEnemies[UnityEngine.Random.Range(0, _spawnableEnemies.Count)] : null :
-            _bossMap.spawnableEnemies.Count > 0 ? _bossMap.spawnableEnemies[UnityEngine.Random.Range(0, _spawnableEnemies.Count)] : null;
+        List<EnemyData> _targetData = _mapType == MapType.Normal ? _playMap.spawnableEnemies : _bossMap.spawnableEnemies;
+
+        return _targetData.Count > 0 ? _targetData[UnityEngine.Random.Range(0, _targetData.Count)] : null;
     }
 }

@@ -58,7 +58,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         GetComponent<Rigidbody2D>().simulated = true;
 
         _attackColliderOffsets = enemyData.attackColliderOffsets;
-        
+
         if (TryGetComponent(out PolygonCollider2D _polygonCollider2D))
         {
             Destroy(_polygonCollider2D);
@@ -109,8 +109,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
         GetDamage(_damage);
 
-        if (stats.canKnockback)
-            Knockback(_attacker, .15f);
+        Knockback(_attacker, .15f);
 
         if (stats.Health <= 0)
             Dead(_attacker, true);
@@ -158,6 +157,9 @@ public class EnemyBase : MonoBehaviour, IEntity
 
     private async void Knockback(Player _attacker, float _knockbackForce)
     {
+        if (!stats.canKnockback)
+            return;
+
         Vector2 _knockbackDirection = (transform.position - _attacker.PlayerPosition).normalized;
 
         float       _elapsedTime = 0;
