@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Feedbacks;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -48,6 +47,7 @@ public class ESCScreen : MonoBehaviour
             contentsPlayer.PlayFeedbacks();
         }
 
+        Time.timeScale = IsOpened ? 1 : 0;
         _coroutine = StartCoroutine(TransitUI(!IsOpened));
     }
 

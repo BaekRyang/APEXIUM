@@ -22,16 +22,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9faee3add20bf8c4dbd17700a4be7001
-    m_Address: Assets/_Sprites/Items/HP1.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: feeb617575a5c3b4e89c813cf872372a
-    m_Address: "Assets/_Sprites/Items/\uAD11\uC11D.png"
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8f641571bc87c8d4896e687699a789c9
     m_Address: Assets/_RenderTexures
     m_ReadOnly: 0

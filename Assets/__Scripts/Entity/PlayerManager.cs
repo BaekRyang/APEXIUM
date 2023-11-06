@@ -79,7 +79,6 @@ public class PlayerManager : IDisposable
 
     public void Dispose()
     {
-        Debug.Log("PlayerManager Destroyed");
         _playerObjectController?.Dispose();
         _players                = null;
     }

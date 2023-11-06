@@ -5,12 +5,13 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-    [Inject] public SettingData   settingData;
+    [Inject] public  SettingData   settingData;
     [Inject] private CameraManager _cameraManager;
-
+    
     private void Start()
     {
         DIContainer.Inject(this);
@@ -61,7 +62,7 @@ public class Settings : MonoBehaviour
     {
         _cameraManager.mainVirtualCamera.m_Lens.OrthographicSize = _orthographicSize;
     }
-    
+
     public static int GetRefreshRateByIndex(int _index) => _index switch
     {
         0 => 30,
@@ -174,9 +175,10 @@ public class SettingData
         SettingData _settingData = Load();
 
         Graphic.ResolutionList[_settingData.graphic.resolutionIndex].ApplyResolution(_settingData);
-        Application.targetFrameRate = Settings.GetRefreshRateByIndex(_settingData.graphic.frameRate);
-        QualitySettings.vSyncCount  = _settingData.graphic.useVsync ? 1 : 0;
+        Application.targetFrameRate         = Settings.GetRefreshRateByIndex(_settingData.graphic.frameRate);
+        QualitySettings.vSyncCount          = _settingData.graphic.useVsync ? 1 : 0;
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_settingData.general.LocalizationIndex];
+
         //그래픽 세팅 불러오기
     }
 

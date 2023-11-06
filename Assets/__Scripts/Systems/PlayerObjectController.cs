@@ -22,6 +22,8 @@ public class PlayerObjectController : IDisposable
         ReleaseUnmanagedResources();
     }
 
+    
+    
     private void PlayerEnterEventHandler(PlayerEnterEvent _eventData)
     {
         Debug.Log("PlayerEnterEventHandler");
