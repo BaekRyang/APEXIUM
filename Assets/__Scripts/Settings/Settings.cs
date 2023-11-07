@@ -31,10 +31,11 @@ public class Settings : MonoBehaviour
         SettingData.Save(settingData);
     }
 
-    public void SetResolution(int _width, int _height)
+    public void SetTransitionCameraResolution(int _width, int _height)
     {
+        if (!_cameraManager) return;
         //TODO: 이거 여기서 하는게 아니라 카메라 매니저로 넘겨야 함
-
+        
         for (int _index = 0; _index < 2; _index++)
         {
             Camera _cams = _cameraManager.transitionCameras[_index];
@@ -104,8 +105,6 @@ public class SettingData
         public void ApplyResolution(SettingData _settingData)
         {
             Screen.SetResolution(width, height, _settingData.graphic.fullScreenMode);
-            Debug.LogError($"Resolution => : {Graphic.ResolutionList[_settingData.graphic.resolutionIndex]}");
-            Debug.LogError($"Now Value  => : {Screen.currentResolution}");
         }
     }
 

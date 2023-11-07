@@ -1,16 +1,19 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Slider))]
-public class UI_SettingSlider : DIMono
+public class UI_SettingSlider : DIMono, IDeselectHandler, ISelectHandler
 {
     [Inject]         private SettingData       _settingData;
     [SerializeField] private SettingValueFloat settingValueFloat;
     [SerializeField] private TMP_Text          settingNameText;
     [SerializeField] private TMP_Text          labelText;
+    private                  Slider            _slider;
+    private                  Navigation        _copyNavigation;
 
     public enum SettingValueFloat
     {
@@ -54,7 +57,7 @@ public class UI_SettingSlider : DIMono
         _localizeStringEvent.SetTable($"Settings");
         _localizeStringEvent.SetEntry($"{settingValueFloat}");
         
-        Slider _slider = GetComponent<Slider>();
+        _slider = GetComponent<Slider>();
 
         //값을 소수점 2째자리까지만 표시하고 설정에 업데이트
         _slider.onValueChanged.AddListener(_f =>
@@ -64,5 +67,18 @@ public class UI_SettingSlider : DIMono
             SetValue(_roundedValue);
         });
         _slider.value = GetValue();
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        Navigation _tmpNav = _slider.navigation;
+        _copyNavigation = _tmpNav;
+
+        _tmpNav.selectOnLeft = _tmpNav.selectOnRight = null;
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        _slider.navigation = _copyNavigation;
     }
 }

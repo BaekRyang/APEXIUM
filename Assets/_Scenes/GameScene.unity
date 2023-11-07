@@ -6528,7 +6528,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441309224}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -8835,6 +8835,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Size
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9058795514757891082, guid: daee98525d9aee44dacb53e9c6602939,
+        type: 3}
+      propertyPath: settingValueList
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15346,6 +15351,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9058795514757891082, guid: daee98525d9aee44dacb53e9c6602939,
+        type: 3}
+      propertyPath: settingValueList
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24995,6 +25005,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Size
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9058795514757891082, guid: daee98525d9aee44dacb53e9c6602939,
+        type: 3}
+      propertyPath: settingValueList
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -51,7 +51,7 @@ public class UI_SettingDropdown : DIMono
 
                 if (_settings == null)
                     break;
-                _settings.SetResolution(_resolution.width, _resolution.height);
+                _settings.SetTransitionCameraResolution(_resolution.width, _resolution.height);
                 break;
             case SettingValueList.FrameRate:
                 settingData.graphic.frameRate = _value;

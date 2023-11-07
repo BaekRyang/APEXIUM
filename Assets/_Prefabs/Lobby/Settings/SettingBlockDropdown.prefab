@@ -121,15 +121,21 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 374130271996255855}
-  m_Template: {fileID: 0}
-  m_CaptionText: {fileID: 0}
+  m_Template: {fileID: 1660049810189712705}
+  m_CaptionText: {fileID: 5738145488162991468}
   m_CaptionImage: {fileID: 0}
   m_Placeholder: {fileID: 0}
-  m_ItemText: {fileID: 0}
+  m_ItemText: {fileID: 801138318416367369}
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options: []
+    m_Options:
+    - m_Text: Item A
+      m_Image: {fileID: 0}
+    - m_Text: Item B
+      m_Image: {fileID: 0}
+    - m_Text: Item C
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -158,7 +164,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2951207097697390820}
   - component: {fileID: 4035996840422648321}
-  - component: {fileID: 330950258456105925}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -210,10 +215,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_HighlightedColor: {r: 1, g: 0.5254902, b: 0.5254902, a: 1}
+    m_PressedColor: {r: 0.7019608, g: 0.8078432, b: 1, a: 1}
+    m_SelectedColor: {r: 0.6431373, g: 0.5882353, b: 1, a: 1}
+    m_DisabledColor: {r: 0.25490198, g: 0.25490198, b: 0.25490198, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -236,35 +241,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
---- !u!114 &330950258456105925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 672643642280029259}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4726331412583303083}
-          m_TargetAssemblyTypeName: AutoScrollDropdown, Assembly-CSharp
-          m_MethodName: MoveScrollToTarget
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &813262133252453670
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,6 +900,7 @@ GameObject:
   - component: {fileID: 983278901930647382}
   - component: {fileID: 8831999117514661761}
   - component: {fileID: 8030853429107485939}
+  - component: {fileID: 6938942684371166468}
   m_Layer: 5
   m_Name: Template
   m_TagString: Untagged
@@ -1020,6 +997,19 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6938942684371166468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958339215477917231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01b0576cdd7dd444a932cc534851ed9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollSpeed: 10
 --- !u!1 &4247177373842241087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,7 +1075,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Option A
+  m_text: Item A
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ee40649fd60f4dd44a1b68f49c747eeb, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: cfe9d636286541348a19aacc6223d131, type: 2}
