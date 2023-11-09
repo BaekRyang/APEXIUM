@@ -257,6 +257,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a72876a65dc48448b248ef977b7fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 3668726701600070369}
+  _currentMMF: {fileID: 646915264963771256}
   settingType: 0
 --- !u!225 &3668726701600070369
 CanvasGroup:
@@ -378,7 +380,7 @@ MonoBehaviour:
         Chance: 100
         DisplayColor: {r: 0, g: 0, b: 0, a: 1}
         Timing:
-          TimescaleMode: 0
+          TimescaleMode: 1
           ExcludeFromHoldingPauses: 0
           ContributeToTotalDuration: 1
           InitialDelay: 0
@@ -494,5 +496,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eea296de402cb6e48a02a8244a45fa48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  left: {fileID: 0}
-  right: {fileID: 0}
+  parentLabel: {fileID: 0}

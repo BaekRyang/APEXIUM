@@ -32,6 +32,7 @@ public class Lobby : MonoBehaviour
         settingsUI.gameObject.SetActive(false);
         foregroundUI.gameObject.SetActive(false);
 
+        Time.timeScale = 1;
         // multiplayerUI.gameObject.SetActive(false);
     }
 

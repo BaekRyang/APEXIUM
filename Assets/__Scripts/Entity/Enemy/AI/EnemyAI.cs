@@ -126,8 +126,9 @@ public class EnemyAI : MonoBehaviour
         _dazeTime = DAZED_DURATION;
     }
 
-    private bool  _explosionOnContact;
-    private float _explosionStartTime;
+    private                 bool  _explosionOnContact;
+    private                 float _explosionStartTime;
+    private static readonly int   DoExplosion = Animator.StringToHash("DoExplosion");
 
     public void LaunchToPlayer()
     {
@@ -149,16 +150,16 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.Log("PlayerExplosion");
 
-            animator.SetBool("DoExplosion", true);
-            animator.SetBool("IsWalk", false);
+            animator.SetBool(DoExplosion, true);
+            animator.SetBool(IsWalk, false);
             enemyBase.Dead(null, false);
             currentState = null;
         }
         else if (_other.CompareTag("Floor") && Time.time - _explosionStartTime > 0.1f)
         {
             Debug.Log("FloorExplosion");
-            animator.SetBool("DoExplosion", true);
-            animator.SetBool("IsWalk",      false);
+            animator.SetBool(DoExplosion, true);
+            animator.SetBool(IsWalk,      false);
             currentState = null;
             StartCoroutine(ToDead());
         }

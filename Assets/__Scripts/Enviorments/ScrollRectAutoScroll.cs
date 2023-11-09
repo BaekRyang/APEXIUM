@@ -7,12 +7,12 @@ using UnityEngine.UI;
 public class ScrollRectAutoScroll : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private float scrollSpeed = 10f;
-    private                  bool  _mouseOver;
+    [SerializeField] private                  bool  _mouseOver;
 
     private readonly List<Selectable> _selectables = new();
 
-    private ScrollRect _scrollRect;
-    private Vector2    _nextScrollPosition = Vector2.up;
+    [SerializeField] private ScrollRect _scrollRect;
+    [SerializeField] private Vector2    _nextScrollPosition = Vector2.up;
 
     private void OnEnable()
     {
@@ -48,7 +48,7 @@ public class ScrollRectAutoScroll : MonoBehaviour, IPointerEnterHandler, IPointe
 
             case false:
                 //해당 위치로 Lerp 스크롤
-                _scrollRect.normalizedPosition = Vector2.Lerp(_scrollRect.normalizedPosition, _nextScrollPosition, scrollSpeed * Time.deltaTime);
+                _scrollRect.normalizedPosition = Vector2.Lerp(_scrollRect.normalizedPosition, _nextScrollPosition, scrollSpeed * Time.unscaledDeltaTime);
                 break;
         }
     }

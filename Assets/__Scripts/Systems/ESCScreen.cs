@@ -63,25 +63,27 @@ public class ESCScreen : MonoBehaviour
                 EventBus.Publish(new ButtonPressedAction("General"));
                 break;
             case "BackToMain":
+                contentsPlayer.GetComponent<CanvasGroup>().interactable = false;
                 confirmPlayer.gameObject.SetActive(true);
-                confirmPlayer.Direction = MMFeedbacks.Directions.TopToBottom;
-                confirmPlayer.PlayFeedbacks();
+                LerpMMFPlayer(contentsPlayer, confirmPlayer);
                 break;
 
-            case "Settings_Back":
+            case "Back":
                 LerpMMFPlayer(settingsPlayer, contentsPlayer);
                 break;
 
             case "Exit_Yes":
                 exitPlayer.GetComponent<Image>().raycastTarget = true;
                 await exitPlayer.PlayFeedbacksUniTask(exitPlayer.transform.position);
-                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                await UniTask.Delay(TimeSpan.FromSeconds(1f), DelayType.UnscaledDeltaTime);
                 SceneManager.LoadScene("Lobby");
                 break;
 
             case "Exit_No":
-                confirmPlayer.Direction = MMFeedbacks.Directions.BottomToTop;
-                await confirmPlayer.PlayFeedbacksUniTask(confirmPlayer.transform.position);
+                contentsPlayer.GetComponent<CanvasGroup>().interactable = true;
+                LerpMMFPlayer(confirmPlayer, contentsPlayer);
+                // confirmPlayer.Direction = MMFeedbacks.Directions.BottomToTop;
+                // await confirmPlayer.PlayFeedbacksUniTask(confirmPlayer.transform.position);
                 confirmPlayer.gameObject.SetActive(false);
 
                 break;
@@ -123,6 +125,7 @@ public class ESCScreen : MonoBehaviour
 
         screen.alpha = _end;
 
-        _coroutine = null;
+        _coroutine     = null;
+        Time.timeScale = _isOpen ? 0 : 1;
     }
 }
