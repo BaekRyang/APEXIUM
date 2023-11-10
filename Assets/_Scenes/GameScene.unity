@@ -731,7 +731,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10.098773
+  orthographic size: 18.723621
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7532,7 +7532,7 @@ Transform:
   m_GameObject: {fileID: 843371608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30, y: 32.15702, z: -10}
+  m_LocalPosition: {x: 30, y: 32.348476, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7617,7 +7617,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 0.098772645
+  orthographic size: 8.72362
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -23652,17 +23652,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingData:
-    general:
-      LocalizationIndex: 0
     graphic:
-      useVsync: 0
-      fullScreenMode: 0
-      resolutionIndex: 0
-      frameRate: 0
+      _useVsync: 0
+      _fullScreenMode: 0
+      _resolutionIndex: 0
+      _frameRate: 0
     sound:
-      masterVolume: 0
-      bgmVolume: 0
-      sfxVolume: 0
+      _audioMixer: {fileID: 0}
   settings: {fileID: 0}
 --- !u!1 &2111224284
 GameObject:

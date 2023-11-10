@@ -4747,6 +4747,9 @@ MonoBehaviour:
   settingData:
     sound:
       _audioMixer: {fileID: 0}
+      _masterVolume: 0
+      _bgmVolume: 0
+      _sfxVolume: 0
   settings: {fileID: 1054043194}
 --- !u!1 &753179062
 GameObject:

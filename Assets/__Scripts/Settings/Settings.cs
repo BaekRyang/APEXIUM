@@ -108,6 +108,7 @@ public class SettingData
 
         public void ApplyResolution(FullScreenMode _fullScreenMode)
         {
+            Debug.LogError($"{_fullScreenMode}");
             Screen.SetResolution(width, height, _fullScreenMode);
         }
     }
@@ -150,9 +151,15 @@ public class SettingData
             get => _resolutionIndex;
             set
             {
+                bool _doNotUpdateResolution = _resolutionIndex == value;
+
                 _resolutionIndex = value;
+                if (_doNotUpdateResolution)
+                    return;
+
                 ResolutionValue _resolution = ResolutionList[value];
-                _resolution.ApplyResolution(FullScreenMode);
+                _resolution.ApplyResolution(Screen.fullScreenMode);
+
                 EventBus.Publish(new ResolutionChanged(_resolution));
             }
         }
@@ -202,9 +209,9 @@ public class SettingData
             }
         }
 
-        private float _masterVolume;
-        private float _bgmVolume;
-        private float _sfxVolume;
+        public float _masterVolume;
+        public float _bgmVolume;
+        public float _sfxVolume;
 
         public float MasterVolume
         {
@@ -245,8 +252,8 @@ public class SettingData
         public void ApplyVolume()
         {
             AudioMixer.SetFloat("Master", GetLogVolume(MasterVolume));
-            AudioMixer.SetFloat("BGM", GetLogVolume(BGMVolume));
-            AudioMixer.SetFloat("SFX", GetLogVolume(SFXVolume));
+            AudioMixer.SetFloat("BGM",    GetLogVolume(BGMVolume));
+            AudioMixer.SetFloat("SFX",    GetLogVolume(SFXVolume));
         }
     }
 
@@ -282,12 +289,6 @@ public class SettingData
     {
         Graphic.Init();
         SettingData _settingData = Load();
-
-        Graphic.ResolutionList[_settingData.graphic.ResolutionIndex].ApplyResolution(_settingData.graphic.FullScreenMode);
-        Application.targetFrameRate         = Settings.GetRefreshRateByIndex(_settingData.graphic.FrameRate);
-        QualitySettings.vSyncCount          = _settingData.graphic.UseVsync ? 1 : 0;
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_settingData.general.LocalizationIndex];
-        
         _settingData.sound.ApplyVolume();
     }
 
