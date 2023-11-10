@@ -24,9 +24,9 @@ public class UI_SettingSlider : DIMono, IDeselectHandler, ISelectHandler
 
     public float GetValue() => settingValueFloat switch
     {
-        SettingValueFloat.MasterVolume => _settingData.sound.masterVolume,
-        SettingValueFloat.BGMVolume    => _settingData.sound.bgmVolume,
-        SettingValueFloat.SFXVolume    => _settingData.sound.sfxVolume,
+        SettingValueFloat.MasterVolume => _settingData.sound.MasterVolume,
+        SettingValueFloat.BGMVolume    => _settingData.sound.BGMVolume,
+        SettingValueFloat.SFXVolume    => _settingData.sound.SFXVolume,
         _                              => 0
     };
 
@@ -35,13 +35,13 @@ public class UI_SettingSlider : DIMono, IDeselectHandler, ISelectHandler
         switch (settingValueFloat)
         {
             case SettingValueFloat.MasterVolume:
-                _settingData.sound.masterVolume = _value;
+                _settingData.sound.MasterVolume = _value;
                 break;
             case SettingValueFloat.BGMVolume:
-                _settingData.sound.bgmVolume = _value;
+                _settingData.sound.BGMVolume = _value;
                 break;
             case SettingValueFloat.SFXVolume:
-                _settingData.sound.sfxVolume = _value;
+                _settingData.sound.SFXVolume = _value;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

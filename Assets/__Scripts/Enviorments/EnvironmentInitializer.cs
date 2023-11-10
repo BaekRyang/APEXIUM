@@ -36,7 +36,7 @@ public class EnvironmentInitializer : MonoBehaviour
         
         DIContainer.Inject(this);
 
-        SettingData.Resolution _resolution = SettingData.Graphic.ResolutionList[settings.settingData.graphic.resolutionIndex];
+        SettingData.ResolutionValue _resolution = SettingData.Graphic.ResolutionList[settings.settingData.graphic.ResolutionIndex];
         settings.SetTransitionCameraResolution(_resolution.width, _resolution.height);
         settings.gameObject.SetActive(false);
     }

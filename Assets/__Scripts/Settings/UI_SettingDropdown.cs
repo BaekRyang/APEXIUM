@@ -33,9 +33,9 @@ public class UI_SettingDropdown : DIMono
 
     private int GetValue() => settingValueList switch
     {
-        SettingValueList.Resolution     => settingData.graphic.resolutionIndex,
-        SettingValueList.FrameRate      => settingData.graphic.frameRate,
-        SettingValueList.FullScreenMode => (int)settingData.graphic.fullScreenMode,
+        SettingValueList.Resolution     => settingData.graphic.ResolutionIndex,
+        SettingValueList.FrameRate      => settingData.graphic.FrameRate,
+        SettingValueList.FullScreenMode => (int)settingData.graphic.FullScreenMode,
         SettingValueList.Localization   => settingData.general.LocalizationIndex,
         _                               => throw new ArgumentOutOfRangeException()
     };
@@ -45,27 +45,16 @@ public class UI_SettingDropdown : DIMono
         switch (settingValueList)
         {
             case SettingValueList.Resolution:
-                settingData.graphic.resolutionIndex = _value;
-                SettingData.Resolution _resolution = SettingData.Graphic.ResolutionList[_value];
-                _resolution.ApplyResolution(settingData);
-
-                if (_settings == null)
-                    break;
-                _settings.SetTransitionCameraResolution(_resolution.width, _resolution.height);
+                settingData.graphic.ResolutionIndex = _value;
                 break;
             case SettingValueList.FrameRate:
-                settingData.graphic.frameRate = _value;
-                Application.targetFrameRate   = Settings.GetRefreshRateByIndex(_value);
-
-                Debug.Log($"FrameRate: {Application.targetFrameRate}");
+                settingData.graphic.FrameRate = _value;
                 break;
             case SettingValueList.FullScreenMode:
-                settingData.graphic.fullScreenMode = (FullScreenMode)(_value > 1 ? 3 : _value);
-                Screen.fullScreenMode              = settingData.graphic.fullScreenMode;
+                settingData.graphic.FullScreenMode = (FullScreenMode)(_value > 1 ? 3 : _value);
                 break;
             case SettingValueList.Localization:
                 settingData.general.LocalizationIndex = _value;
-                LocalizationSettings.SelectedLocale   = LocalizationSettings.AvailableLocales.Locales[_value];
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -102,14 +91,6 @@ public class UI_SettingDropdown : DIMono
                     AddLocalizeDict("Unlimited");
                     _dropdown.options[^1].text = _optionLocalizeTable["Unlimited"];
                 };
-
-                // _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
-                // {
-                //     _optionLocalizeTable.Clear();
-                //     AddLocalizeDict("Unlimited");
-                //     _dropdown.options[^1].text = _optionLocalizeTable["Unlimited"];
-                // });
-
                 break;
 
             case SettingValueList.FullScreenMode:
@@ -126,23 +107,6 @@ public class UI_SettingDropdown : DIMono
 
                     _dropdown.captionText.text = _dropdown.options[_dropdown.value].text;
                 };
-
-                // _subscribeObject.Subscribe<LocalizationChangedEvent>(_ =>
-                // {
-                //     _optionLocalizeTable.Clear();
-                //     AddLocalizeDict("Unlimited");
-                //     AddLocalizeDict("Exclusive Fullscreen");
-                //     AddLocalizeDict("Fullscreen Window");
-                //     AddLocalizeDict("Windowed");
-                //     _dropdown.options[0].text = _optionLocalizeTable["Exclusive Fullscreen"];
-                //     _dropdown.options[1].text = _optionLocalizeTable["Fullscreen Window"];
-                //     _dropdown.options[2].text = _optionLocalizeTable["Windowed"];
-                //
-                //     _dropdown.captionText.text = _dropdown.options[_dropdown.value].text;
-                // });
-                break;
-
-            default:
                 break;
         }
 

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Audio;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
@@ -11,7 +14,7 @@ public class Settings : MonoBehaviour
 {
     [Inject] public  SettingData   settingData;
     [Inject] private CameraManager _cameraManager;
-    
+
     private void Start()
     {
         DIContainer.Inject(this);
@@ -34,8 +37,9 @@ public class Settings : MonoBehaviour
     public void SetTransitionCameraResolution(int _width, int _height)
     {
         if (!_cameraManager) return;
+
         //TODO: 이거 여기서 하는게 아니라 카메라 매니저로 넘겨야 함
-        
+
         for (int _index = 0; _index < 2; _index++)
         {
             Camera _cams = _cameraManager.transitionCameras[_index];
@@ -87,14 +91,14 @@ public class SettingData
     public Sound   sound   = new();
 
     [Serializable]
-    public struct Resolution
+    public struct ResolutionValue
     {
         public readonly int width, height;
 
-        public Resolution(UnityEngine.Resolution res)
+        public ResolutionValue(Resolution _resolution)
         {
-            width  = res.width;
-            height = res.height;
+            width  = _resolution.width;
+            height = _resolution.height;
         }
 
         public override string ToString()
@@ -102,42 +106,148 @@ public class SettingData
             return $"{width}x{height}";
         }
 
-        public void ApplyResolution(SettingData _settingData)
+        public void ApplyResolution(FullScreenMode _fullScreenMode)
         {
-            Screen.SetResolution(width, height, _settingData.graphic.fullScreenMode);
+            Screen.SetResolution(width, height, _fullScreenMode);
         }
     }
 
     [Serializable]
     public class General
     {
-        public int LocalizationIndex;
+        private int _localizationIndex;
+
+        public int LocalizationIndex
+        {
+            get => _localizationIndex;
+            set
+            {
+                _localizationIndex                  = value;
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[value];
+            }
+        }
     }
 
     [Serializable]
     public class Graphic
     {
-        public bool           useVsync;
-        public FullScreenMode fullScreenMode;
-        public int            resolutionIndex;
-        public int            frameRate;
+        private bool           _useVsync;
+        private FullScreenMode _fullScreenMode;
+        private int            _resolutionIndex;
+        private int            _frameRate;
 
-        private static List<Resolution> _resolutionList;
+        private static List<ResolutionValue> _resolutionList;
 
         public static void Init()
         {
-            _resolutionList = Screen.resolutions.Select(_res => new Resolution(_res)).Distinct().ToList();
+            _resolutionList = Screen.resolutions.Select(_res => new ResolutionValue(_res)).Distinct().ToList();
         }
 
-        public static List<Resolution> ResolutionList => _resolutionList;
+        public static List<ResolutionValue> ResolutionList => _resolutionList;
+
+        public int ResolutionIndex
+        {
+            get => _resolutionIndex;
+            set
+            {
+                _resolutionIndex = value;
+                ResolutionValue _resolution = ResolutionList[value];
+                _resolution.ApplyResolution(FullScreenMode);
+                EventBus.Publish(new ResolutionChanged(_resolution));
+            }
+        }
+
+        public int FrameRate
+        {
+            get => _frameRate;
+            set
+            {
+                _frameRate                  = value;
+                Application.targetFrameRate = Settings.GetRefreshRateByIndex(value);
+            }
+        }
+
+        public FullScreenMode FullScreenMode
+        {
+            get => _fullScreenMode;
+            set
+            {
+                _fullScreenMode       = value;
+                Screen.fullScreenMode = value;
+            }
+        }
+
+        public bool UseVsync
+        {
+            get => _useVsync;
+            set
+            {
+                _useVsync                  = value;
+                QualitySettings.vSyncCount = value ? 1 : 0;
+            }
+        }
     }
 
     [Serializable]
     public class Sound
     {
-        public float masterVolume;
-        public float bgmVolume;
-        public float sfxVolume;
+        [SerializeField] [JsonIgnore] private AudioMixer _audioMixer;
+
+        [JsonIgnore] public AudioMixer AudioMixer
+        {
+            get
+            {
+                _audioMixer ??= Addressables.LoadAssetAsync<AudioMixer>("Assets/Audio.mixer").WaitForCompletion();
+                return _audioMixer;
+            }
+        }
+
+        private float _masterVolume;
+        private float _bgmVolume;
+        private float _sfxVolume;
+
+        public float MasterVolume
+        {
+            get => _masterVolume;
+            set
+            {
+                _masterVolume = value;
+
+                AudioMixer.SetFloat("Master", GetLogVolume(value));
+            }
+        }
+
+        public float BGMVolume
+        {
+            get => _bgmVolume;
+            set
+            {
+                _bgmVolume = value;
+                AudioMixer.SetFloat("BGM", GetLogVolume(value));
+            }
+        }
+
+        public float SFXVolume
+        {
+            get => _sfxVolume;
+            set
+            {
+                _sfxVolume = value;
+                AudioMixer.SetFloat("SFX", GetLogVolume(value));
+            }
+        }
+
+        private float GetLogVolume(float _volume)
+        {
+            return _volume > 0 ? Mathf.Log10(_volume) * 20 : -80;
+        }
+
+        public void ApplyVolume()
+        {
+            AudioMixer.SetFloat("Master", GetLogVolume(MasterVolume));
+            AudioMixer.SetFloat("BGM", GetLogVolume(BGMVolume));
+            AudioMixer.SetFloat("SFX", GetLogVolume(SFXVolume));
+        }
     }
 
     public static SettingData Load()
@@ -173,12 +283,12 @@ public class SettingData
         Graphic.Init();
         SettingData _settingData = Load();
 
-        Graphic.ResolutionList[_settingData.graphic.resolutionIndex].ApplyResolution(_settingData);
-        Application.targetFrameRate         = Settings.GetRefreshRateByIndex(_settingData.graphic.frameRate);
-        QualitySettings.vSyncCount          = _settingData.graphic.useVsync ? 1 : 0;
+        Graphic.ResolutionList[_settingData.graphic.ResolutionIndex].ApplyResolution(_settingData.graphic.FullScreenMode);
+        Application.targetFrameRate         = Settings.GetRefreshRateByIndex(_settingData.graphic.FrameRate);
+        QualitySettings.vSyncCount          = _settingData.graphic.UseVsync ? 1 : 0;
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_settingData.general.LocalizationIndex];
-
-        //그래픽 세팅 불러오기
+        
+        _settingData.sound.ApplyVolume();
     }
 
     public static void Save(SettingData _settingData) =>

@@ -20,7 +20,7 @@ public class UI_SettingCheckBox : DIMono
 
     public bool GetValue() => settingValueBoolean switch
     {
-        SettingValueBoolean.UseVsync => _settingData.graphic.useVsync,
+        SettingValueBoolean.UseVsync => _settingData.graphic.UseVsync,
         _                            => throw new ArgumentOutOfRangeException()
     };
 
@@ -29,8 +29,7 @@ public class UI_SettingCheckBox : DIMono
         switch (settingValueBoolean)
         {
             case SettingValueBoolean.UseVsync:
-                _settingData.graphic.useVsync = _value;
-                QualitySettings.vSyncCount = _value ? 1 : 0;
+                _settingData.graphic.UseVsync = _value;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
