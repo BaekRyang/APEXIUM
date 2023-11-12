@@ -4,25 +4,24 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 버튼 입력을 통한 네비게이션을 자동으로 설정해주는 스크립트
+/// 버튼의 네비게이션 맵을 Explicit으로 전부 설정해주지 않고
+/// 자동으로 주변의 요소를 파악하여 버튼을 이어준다.
+/// </summary>
 public class NavigatorSetter : MonoBehaviour
 {
-    [SerializeField] private Transform        parentLabel;
-    private                  Transform        left, right;
-    private                  List<Selectable> _leftSelectables;
-    private                  List<Selectable> _rightSelectables;
+    [SerializeField] private Transform parentLabel;
 
     private void Awake()
     {
-        left  = transform.Find("Left");
-        right = transform.Find("Right");
+        var _leftSelectables  = transform.Find("Left").GetComponentsInChildren<Selectable>().ToList();
+        var _rightSelectables = transform.Find("Right").GetComponentsInChildren<Selectable>().ToList();
 
-        _leftSelectables  = left.GetComponentsInChildren<Selectable>().ToList();
-        _rightSelectables = right.GetComponentsInChildren<Selectable>().ToList();
-
-        List<Selectable> _removeLeft = _leftSelectables.FindAll(_selectable => _selectable is Slider);
+        var _removeLeft = _leftSelectables.FindAll(_selectable => _selectable is Slider);
         foreach (Selectable _targetSelectable in _removeLeft) _leftSelectables.Remove(_targetSelectable);
 
-        List<Selectable> _removeRight = _rightSelectables.FindAll(_selectable => _selectable is Slider);
+        var _removeRight = _rightSelectables.FindAll(_selectable => _selectable is Slider);
         foreach (Selectable _targetSelectable in _removeRight) _rightSelectables.Remove(_targetSelectable);
 
         if (_leftSelectables.Count + _rightSelectables.Count == 0)
@@ -79,13 +78,14 @@ public class NavigatorSetter : MonoBehaviour
     {
         for (int _i = 0; _i < _sliderList.Count; _i++)
         {
-            Selectable _selectable = _sliderList[_i];
+            Selectable _selectable       = _sliderList[_i];
+            var        _leftSelectables1 = transform.Find("Left").GetComponentsInChildren<Selectable>().ToList();
             _selectable.navigation = new Navigation
                                      {
                                          mode          = Navigation.Mode.Explicit,
                                          selectOnLeft  = null,
-                                         selectOnUp    = _leftSelectables[(_i - 1 + _leftSelectables.Count) % _leftSelectables.Count],
-                                         selectOnDown  = _leftSelectables[(_i     + 1)                      % _leftSelectables.Count],
+                                         selectOnUp    = _leftSelectables1[(_i - 1 + _leftSelectables1.Count) % _leftSelectables1.Count],
+                                         selectOnDown  = _leftSelectables1[(_i     + 1)                      % _leftSelectables1.Count],
                                          selectOnRight = null
                                      };
         }

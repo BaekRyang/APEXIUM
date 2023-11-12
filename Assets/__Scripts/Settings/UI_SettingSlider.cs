@@ -15,7 +15,7 @@ public class UI_SettingSlider : DIMono, IDeselectHandler, ISelectHandler
     private                  Slider            _slider;
     private                  Navigation        _copyNavigation;
 
-    public enum SettingValueFloat
+    private enum SettingValueFloat
     {
         MasterVolume,
         BGMVolume,

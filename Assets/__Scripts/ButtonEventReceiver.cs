@@ -5,19 +5,8 @@ using UnityEngine;
 
 public class ButtonEventReceiver : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup _canvasGroup;
-    [SerializeField] private MMF_Player  _currentMMF;
-
-    [Serializable]
-    public enum SettingType
-    {
-        General,
-        Graphic,
-        Sound,
-        Controls,
-    }
-
-    [SerializeField] private SettingType settingType;
+    private CanvasGroup _canvasGroup;
+    private MMF_Player  _currentMMF;
 
     private void OnEnable()
     {
@@ -33,44 +22,33 @@ public class ButtonEventReceiver : MonoBehaviour
 
     private async void OnButtonPressed(ButtonPressedAction _obj)
     {
-        try {
-            bool _targetIsMe = _obj.ButtonName == gameObject.name;
-            Debug.Log($"{_obj.ButtonName} is {gameObject.name}? {_targetIsMe}\ntargetIsMe : {_targetIsMe}, canvasGroup.interactable : {_canvasGroup.interactable}");
+        bool _targetIsMe = _obj.ButtonName == gameObject.name;
 
-            //대상이 난데, 이미 내가 활성화 되어있으면 무시
-            if (_targetIsMe && _canvasGroup.interactable) return;
+        //대상이 난데, 이미 내가 활성화 되어있으면 무시
+        if (_targetIsMe && _canvasGroup.interactable) return;
 
-            //null check
-            if (_currentMMF != null)
-            {
-                switch (_targetIsMe)
-                {
-                    //내가 대상이 아닌데 활성화 되어있으면 사라지게
-                    case false when _canvasGroup.interactable: 
-                        _currentMMF.Direction = MMFeedbacks.Directions.BottomToTop;
-                        _currentMMF.PlayFeedbacks();
-                        break;
-
-                    //내가 대상이면 나타나게
-                    case true:
-                        await UniTask.Delay(TimeSpan.FromSeconds(0.1f), DelayType.UnscaledDeltaTime);
-                        _currentMMF.Direction = MMFeedbacks.Directions.TopToBottom;
-                        _currentMMF.PlayFeedbacks(); 
-                        break;
-                }
-
-            
-            }
-        
-            _canvasGroup.interactable   = _targetIsMe;
-            _canvasGroup.blocksRaycasts = _targetIsMe;
-            Debug.Log($"{_obj.ButtonName} is {gameObject.name}? {_targetIsMe}");
-            
-        }
-        catch (Exception e)
+        //null check
+        if (_currentMMF != null)
         {
-            Console.WriteLine(e);
+            switch (_targetIsMe)
+            {
+                //내가 대상이 아닌데 활성화 되어있으면 사라지게
+                case false when _canvasGroup.interactable: 
+                    _currentMMF.Direction = MMFeedbacks.Directions.BottomToTop;
+                    _currentMMF.PlayFeedbacks();
+                    break;
+
+                //내가 대상이면 나타나게
+                case true:
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.1f), DelayType.UnscaledDeltaTime);
+                    _currentMMF.Direction = MMFeedbacks.Directions.TopToBottom;
+                    _currentMMF.PlayFeedbacks(); 
+                    break;
+            }
         }
+        
+        _canvasGroup.interactable   = _targetIsMe;
+        _canvasGroup.blocksRaycasts = _targetIsMe;
         
     }
 }

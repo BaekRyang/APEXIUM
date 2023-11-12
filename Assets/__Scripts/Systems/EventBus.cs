@@ -2,31 +2,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class StaticVar<T> where T : new()
-{
-    private static T _value = new();
-    public static  T GetValue() => _value;
-}
-
 public static class EventBus
 {
-    private static Dictionary<Type, List<Delegate>> EventTable = new();
+    private static readonly Dictionary<Type, List<Delegate>> EventTable = new();
 
-    public static void PublishOne<T>(Action<T> _settingFunc) where T : new()
-    {
-        var a = StaticVar<T>.GetValue();
-        _settingFunc(a);
-        Publish(a);
-    }
+    //이벤트 재귀호출시에 사용하는 임시 테이블
+    //해당 깊이의 이벤트 리스트를 갖는다.
+    //이벤트 호출시 해당 이벤트에서 테이블을 수정하는 경우가 발생할 수 있기 떄문에
+    //이벤트 호출시에는 임시 테이블에 복사해서 사용한다.
+    private static readonly Dictionary<int, List<Delegate>> TempTable = new();
 
-    private static Dictionary<int, List<Delegate>> TempTable = new();
-    private static int                             currentPublishDepth;
+    //이벤트 재귀호출시에 사용하는 깊이값
+    private static int CurrentPublishDepth;
 
     public static void Publish<T>(params T[] _data)
     {
-        //TempTable.Add(currentDepth, EventTable[typeof(T)]);
-
-        var _type = typeof(T);
+        Type _type = typeof(T);
 
         if (!EventTable.ContainsKey(_type))
         {
@@ -34,16 +25,21 @@ public static class EventBus
             return;
         }
 
-        if (TempTable.ContainsKey(currentPublishDepth) == false)
-            TempTable.Add(currentPublishDepth, new List<Delegate>(100));
+        if (!TempTable.ContainsKey(CurrentPublishDepth))
+            TempTable.Add(CurrentPublishDepth, new List<Delegate>(100));
 
-        var _tempList = TempTable[currentPublishDepth];
+        List<Delegate> _tempList = TempTable[CurrentPublishDepth];
         _tempList.Clear();
         _tempList.AddRange(EventTable[typeof(T)]);
 
-        currentPublishDepth++;
+        //TODO : 이 방식이 더 좋은거 같은데
+        // List<Delegate> _fixedTempList = new List<Delegate>(EventTable[typeof(T)]);
 
-        foreach (var _action in _tempList)
+        CurrentPublishDepth++;
+
+        //여기서 이벤트 테이블 수정이 발생한다면 오류가 발생하기 때문에
+        //임시 테이블을 사용한다.
+        foreach (Delegate _action in _tempList)
         {
             foreach (T _x in _data)
             {
@@ -52,7 +48,7 @@ public static class EventBus
             }
         }
 
-        currentPublishDepth--;
+        CurrentPublishDepth--;
     }
 
     public static Action Subscribe<T>(Action<T> _action)
