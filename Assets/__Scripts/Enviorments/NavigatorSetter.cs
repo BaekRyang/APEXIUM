@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -62,9 +63,7 @@ public class NavigatorSetter : MonoBehaviour
                                                selectOnRight = null
                                            };
         }
-
-        //삭제한 슬라이더들의 인덱스가 기존의 버튼과 1:1 대응이 되기 때문에
-        //해당 조건을 바탕으로 슬라이더의 위아래 네비게이션을 다른 슬라이더의 버튼으로 설정해준다.
+        
         SetSliderNavigation(_removeLeft);
         SetSliderNavigation(_removeRight);
 
@@ -76,18 +75,18 @@ public class NavigatorSetter : MonoBehaviour
     /// </summary>
     private void SetSliderNavigation(IReadOnlyList<Selectable> _sliderList)
     {
-        for (int _i = 0; _i < _sliderList.Count; _i++)
+        foreach (Selectable _selectable in _sliderList)
         {
-            Selectable _selectable       = _sliderList[_i];
-            var        _leftSelectables1 = transform.Find("Left").GetComponentsInChildren<Selectable>().ToList();
+            Selectable _selectButton = _selectable.transform.parent.parent.GetComponent<Selectable>();
+            
             _selectable.navigation = new Navigation
-                                     {
-                                         mode          = Navigation.Mode.Explicit,
-                                         selectOnLeft  = null,
-                                         selectOnUp    = _leftSelectables1[(_i - 1 + _leftSelectables1.Count) % _leftSelectables1.Count],
-                                         selectOnDown  = _leftSelectables1[(_i     + 1)                      % _leftSelectables1.Count],
-                                         selectOnRight = null
-                                     };
+                            {
+                                mode          = Navigation.Mode.Explicit,
+                                selectOnLeft  = null,
+                                selectOnUp    = _selectButton,
+                                selectOnDown  = _selectButton,
+                                selectOnRight = null
+                            };
         }
     }
 }

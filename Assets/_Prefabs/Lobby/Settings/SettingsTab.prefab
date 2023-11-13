@@ -178,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 6638737844373134542, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}
       propertyPath: m_Navigation.m_Mode
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6638737844373134542, guid: 80bfe45188010ac4ab4f1006037e6192,
         type: 3}

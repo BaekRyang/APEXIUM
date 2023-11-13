@@ -789,8 +789,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.8, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -40}
+  m_AnchoredPosition: {x: 2.5, y: 0}
+  m_SizeDelta: {x: -5, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &673501996941434895
 CanvasRenderer:
@@ -848,10 +848,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 33.5
   m_fontSizeBase: 40
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -973,26 +973,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 28
-      objectReference: {fileID: 0}
-    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
-        type: 3}
-      propertyPath: m_fontSizeMax
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
-        type: 3}
-      propertyPath: m_fontSizeMin
-      value: 28
-      objectReference: {fileID: 0}
-    - target: {fileID: 794873493934808168, guid: 1eb23f6dc65058248a4129d2820213b1,
-        type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4480594233440499991, guid: 1eb23f6dc65058248a4129d2820213b1,
         type: 3}
       propertyPath: m_Pivot.x
