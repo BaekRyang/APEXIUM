@@ -130,8 +130,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -151,8 +151,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -172,8 +172,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -193,8 +193,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -214,8 +214,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -235,8 +235,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -256,8 +256,8 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -277,15 +277,36 @@ TextureImporter:
         y: 0
         width: 60
         height: 60
-      alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2aae5fdc839496349b6de3165674e7be
+      spriteID: 8962841ca1456644bb1592f9a359b70c
       internalID: 1694031522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spider explosion 1_8
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 60
+        height: 60
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb1ede28687609f4c8ba13f8b5f54958
+      internalID: -453320242
       vertices: []
       indices: 
       edges: []
@@ -309,6 +330,7 @@ TextureImporter:
       spider explosion 1_5: 205919152
       spider explosion 1_6: -938854334
       spider explosion 1_7: 1694031522
+      spider explosion 1_8: -453320242
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

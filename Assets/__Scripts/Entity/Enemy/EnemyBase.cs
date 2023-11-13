@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour, IEntity
 {
+    [SerializeField] private GameObject        corpsePrefab;
+    
     [SerializeField] private BoxCollider2D     _attackCollider;
     [SerializeField] private Vector4           _attackColliderOffsets;
     [Inject]                 ObjectPoolManager _objectPoolManager;
@@ -109,7 +111,7 @@ public class EnemyBase : MonoBehaviour, IEntity
 
         GetDamage(_damage);
 
-        Knockback(_attacker, .15f);
+        Knockback(_attacker, 6.5f);
 
         if (stats.Health <= 0)
             Dead(_attacker, true);
@@ -145,7 +147,13 @@ public class EnemyBase : MonoBehaviour, IEntity
                          new ItemSpawnEvent(PickupType.Exp,      GameManager.GetRandomCapsuleReward(PickupType.Exp)      / 2, _position, _attacker));
     }
 
-    private void PlaceCorpse() { }
+    private void PlaceCorpse()
+    {
+        //Pool 작업 필요
+        var _corpseObject = Instantiate(corpsePrefab, transform.position, transform.rotation);
+        _corpseObject.transform.localScale = transform.localScale;
+        _corpseObject.GetComponent<SpriteRenderer>().sprite = GetComponent<SpriteRenderer>().sprite;
+    }
 
     private void GetDamage(int _damage)
     {
@@ -169,7 +177,7 @@ public class EnemyBase : MonoBehaviour, IEntity
         while (_elapsedTime < _duration)
         {
             float _t = 1 - _tween.Evaluate(_elapsedTime / _duration);
-            transform.Translate(_knockbackDirection * (_knockbackForce * _t));
+            transform.Translate(_knockbackDirection * (_knockbackForce * _t * Time.deltaTime));
             _elapsedTime += Time.deltaTime;
             await UniTask.Yield();
         }

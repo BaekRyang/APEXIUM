@@ -538,7 +538,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0dc30dfdc072874182eb621a36377f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  corpsePrefab: {fileID: 6290005279379259483, guid: 16a624e603ad4f341a65c61bbb75273d,
+    type: 3}
   _attackCollider: {fileID: 1041677503775074948}
+  _attackColliderOffsets: {x: 0, y: 0, z: 0, w: 0}
   stats:
     isLocalPlayer: 0
     health: 100
