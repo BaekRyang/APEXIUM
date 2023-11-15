@@ -1,0 +1,1 @@
+{"id":0,"name":"first_aid_kit","rarity":0,"sprite":"Assets/_Sprites/Items/아이템 20개.png","statValues":[{"statType":"MaxHealth","calculationType":"Multiply","value":1.1}],"hasSpecialEffect":false}

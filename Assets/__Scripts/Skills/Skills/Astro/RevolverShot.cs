@@ -50,7 +50,10 @@ public class RevolverShot : AttackableSkill
             if (_hitCollider.CompareTag("Enemy"))
             {
                 (int _damage, bool _critical) = GetDamage();
-                _hitCollider.GetComponent<EnemyBase>().Attacked(_damage, _critical, STUN_DURATION, Player);
+                EnemyBase _targetEnemy = _hitCollider.GetComponent<EnemyBase>();
+                _targetEnemy.Attacked(_damage, _critical, STUN_DURATION, Player);
+                
+                Player.Controller._onAttackHit?.Invoke(_targetEnemy);
             }
         }
 

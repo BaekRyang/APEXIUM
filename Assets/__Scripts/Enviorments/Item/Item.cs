@@ -15,6 +15,7 @@ public enum ItemRarity
 [Serializable]
 public enum ChangeableStatsTypes
 {
+    Health,
     MaxHealth,
     AttackDamage,
     Speed,
@@ -39,5 +40,6 @@ public class Item
 
     [Space(20)]
     [SerializeField] public List<StatModifier> statValues;
-    [SerializeField] public List<Effect> effect;
+
+    [SerializeField] public bool hasSpecialEffect;
 }

@@ -19,7 +19,8 @@ public class Stats
         get => health;
         set
         {
-            health = value;
+            health = Mathf.Clamp(value, 0, maxHealth); //0과 최대 체력 사이의 값으로 제한한다.
+            
             if (isLocalPlayer) UpdatableUIElements.UpdateValue("HP", health, maxHealth);
         }
     }

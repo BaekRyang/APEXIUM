@@ -21,26 +21,29 @@ public class Items
 
     public void AddItem(int _itemID)
     {
-        if (!_items.TryGetValue(_itemID, out _))
-            _items.Add(_itemID, 1);
-        else
+        bool _alreadyHasItem = false;
+        if (_items.TryGetValue(_itemID, out _))
+        {
             _items[_itemID] += 1;
+            _alreadyHasItem =  true;
+        }
+        else
+            _items.Add(_itemID, 1);
 
-        var _itemStatsMods = _itemManager.GetItem(_itemID).statValues;
-
+        List<StatModifier> _itemStatsMods = _itemManager.GetItem(_itemID).statValues;
         if (_itemStatsMods.Count > 0)
         {
             foreach (StatModifier _itemStatMod in _itemStatsMods)
                 _owner.Stats.ApplyStats(_itemStatMod);
         }
 
-        var _itemEffectList = _itemManager.GetItem(_itemID).effect;
-
-        if (_itemEffectList.Count > 0)
+        if (!_alreadyHasItem)
         {
-            foreach (Effect _itemEffect in _itemEffectList)
+            switch (_itemID)
             {
-                //이벤트 적용
+                case 0:
+                    _owner._onAttacked += _ => FirstAidKit.Effect(_owner, _items);
+                    break;
             }
         }
 
@@ -75,6 +78,7 @@ public class UpdateItemEvent
     public int   ChangeAmount;
 
     private UpdateItemEvent() { }
+
     public UpdateItemEvent(Items _item, int _itemID, int _changeAmount)
     {
         Item = _item;

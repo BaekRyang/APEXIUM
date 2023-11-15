@@ -25,7 +25,6 @@ public class ItemManager : MonoBehaviour
     public Item GetItem(int _itemID)
     {
         if (_items.TryGetValue(_itemID, out Item _item)) return _item;
-
         Debug.Log($"<color=red>ItemManager</color> : {_itemID} is not exist!");
         return null;
     }

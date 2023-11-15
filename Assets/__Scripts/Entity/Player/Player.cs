@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -8,6 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour, IEntity
 {
@@ -18,21 +20,20 @@ public class Player : MonoBehaviour, IEntity
 
     private PlayerController _playerController;
     private PlayerStats      _stats;
+    public  Items            items;
     private bool             _isImmune;
-    public  Vector3          PlayerPosition => transform.position;
 
     public readonly Dictionary<SkillTypes, Skill> skills = new();
 
     private MMF_Player       _statusFeedback;
     private MMF_FloatingText _floatingText;
 
-    public Animator         _animator;
-    public PlayerController Controller => _playerController;
+    public Animator _animator;
+    public PlayMap  currentMap;
 
-    public PlayerStats Stats => _stats;
-    public PlayMap     currentMap;
-
-    public Items items;
+    public Vector3          PlayerPosition => transform.position;
+    public PlayerController Controller     => _playerController;
+    public PlayerStats      Stats          => _stats;
 
     public                  bool dead;
     private static readonly int  IsDead = Animator.StringToHash("IsDead");
@@ -44,7 +45,7 @@ public class Player : MonoBehaviour, IEntity
                      isLocalPlayer = true
                  };
 
-        items = new Items(this);
+        items       = new Items(this);
 
         _playerController      = gameObject.AddComponent<PlayerController>().Initialize(this);
         Controller.playerStats = _stats;
@@ -121,15 +122,22 @@ public class Player : MonoBehaviour, IEntity
         _statusFeedback.PlayFeedbacks();
     }
 
-    public void Attacked(int _damage, float _stunDuration, EnemyBase _attacker)
+    public Func<EnemyBase, bool> _onAttacked;
+    public Func<EnemyBase, bool> _onHealthChanged;
+    public void Attacked(int _damage, EnemyBase _attacker)
     {
         if (_isImmune || dead) return;
 
+        bool? _isInterrupt = _onAttacked?.Invoke(_attacker);
+        if (_isInterrupt is true) return;
+
         PlayStatusFeedback(_damage.ToString());
         bool _stillAlive = HealthChange(-_damage);
-
-        if (_stillAlive) return; //아래는 죽었을때 이벤트 처리
-        Die(_attacker);
+        
+        if (_stillAlive) //아직 살았으면 체력이 변했을때 이벤트 처리
+            _onHealthChanged?.Invoke(_attacker);
+        else //죽었을때 이벤트 처리
+            Die(_attacker);
     }
 
     private bool HealthChange(int _damage)
@@ -139,8 +147,13 @@ public class Player : MonoBehaviour, IEntity
         return Stats.Health > 0; //체력이 0이하면 false 반환
     }
 
+    public Func<bool> _onDead;
+
     private void Die(EnemyBase _attacker)
     {
+        bool? _isInterrupt = _onDead?.Invoke();
+        if (_isInterrupt is true) return;
+
         dead = true;                       //죽었음을 표시
         Controller.SetControllable(false); //이동 불가
 

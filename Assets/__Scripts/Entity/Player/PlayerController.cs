@@ -270,13 +270,20 @@ public class PlayerController : MonoBehaviour
 
     // }
 
+    public Action<InteractableObject> _onInteract;
+
     private void CheckInteraction()
     {
         if (!input.interact || !Controllable) return;
 
         foreach (Collider2D _collider in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Interactable")))
             if (_collider.TryGetComponent(out InteractableObject _interactableObject))
+            {
                 _interactableObject.Interact(_player);
+
+                if (_interactableObject is BossRoomEntrance) continue;
+                _onInteract?.Invoke(_interactableObject);
+            }
     }
 
     //바닥 착지시 실행할 Action
@@ -286,11 +293,11 @@ public class PlayerController : MonoBehaviour
     private void ApplyLandingDamage()
     {
         Debug.Log($"Timer : {fallTimer}");
-        if (fallTimer - .5f <= 0) 
+        if (fallTimer - .5f <= 0)
             return;
         int _damage = (int)(fallTimer * 10);
 
-        _player.Attacked(_damage, 0, null);
+        _player.Attacked(_damage, null);
     }
 
     public void AddLandingAction(Action _pAction)
@@ -317,9 +324,13 @@ public class PlayerController : MonoBehaviour
 
 #region MoveAction
 
+    public Action _onMove;
+
     private void Move()
     {
         if (!Controllable) return;
+
+        _onMove?.Invoke();
 
         _rigidbody2D.velocity = new(input.horizontal * Speed, _rigidbody2D.velocity.y);
         _player._animator.SetBool(IsWalk, input.horizontal != 0);
@@ -348,6 +359,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int   jumpCount;
     [SerializeField] private float jumpBuffer;     //Buffering Time
     [SerializeField] private float jumpGraceTimer; //Coyote Time
+
+    public Action _onJump;
 
     private void Jump(bool _forced = false)
     {
@@ -390,6 +403,8 @@ public class PlayerController : MonoBehaviour
 
             previousLadderPos = ladderPos.x;
         }
+
+        _onJump?.Invoke();
 
         //실제 점프 및 점프관련 애니메이션 실행
         _rigidbody2D.velocity = new(_rigidbody2D.velocity.x, _jumpHeight);
@@ -536,16 +551,16 @@ public class PlayerController : MonoBehaviour
 
 #region Gravity
 
-    [SerializeField] private float   fallTimer    = 0; //낙뎀 타이머
-    [SerializeField] private float   maxFallSpeed = 20;
+    [SerializeField] private float fallTimer    = 0; //낙뎀 타이머
+    [SerializeField] private float maxFallSpeed = 20;
 
     private void ClampVelocity()
     {
         //하강속도 제한
         if (_rigidbody2D.velocity.y < -maxFallSpeed * .9f)
         {
-            fallTimer        += Time.deltaTime;
-            
+            fallTimer += Time.deltaTime;
+
             Vector2 _clampVelocity = _rigidbody2D.velocity;
             _clampVelocity.y      = -maxFallSpeed;
             _rigidbody2D.velocity = _clampVelocity;
@@ -572,6 +587,9 @@ public class PlayerController : MonoBehaviour
     //TODO: 임시 변수
     private bool _hasItem = false;
 
+    public Action            _onAttackExecute;
+    public Action<EnemyBase> _onAttackHit;
+
     private void UseSkill()
     {
         if (input.itemSkill && _hasItem) //아이템 스킬은 언제나 사용가능
@@ -585,7 +603,13 @@ public class PlayerController : MonoBehaviour
         {
             if (!IsSkillButtonPressed(_skillTypes) || !_player.skills[_skillTypes].IsReady) continue;
             if (_player.skills[_skillTypes] is IUseable _usableSkill)
+            {
                 _usableSkill.Play();
+
+                if (_player.skills[_skillTypes] is AttackableSkill)
+                    _onAttackExecute?.Invoke();
+            }
+
             break;
         }
     }

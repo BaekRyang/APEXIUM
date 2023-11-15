@@ -18,9 +18,9 @@ public class PlayerStats : Stats
     [SerializeField] protected float criticalChance;
     [SerializeField] protected float criticalDamage;
 
-    private Dictionary<ChangeableStatsTypes, float> _basicStat       = new();
-    private Dictionary<ChangeableStatsTypes, float> _statAddSum      = new();
-    private Dictionary<ChangeableStatsTypes, float> _statMultipliers = new();
+    private Dictionary<ChangeableStatsTypes, float> _basicStat       = new(); //초기 스텟값
+    private Dictionary<ChangeableStatsTypes, float> _statAddSum      = new(); //스텟에 더해지는 값들의 합
+    private Dictionary<ChangeableStatsTypes, float> _statMultipliers = new(); //스텟에 곱해지는 값들의 합
 
     public PlayerStats(PlayerStats _other)
     {
@@ -145,6 +145,7 @@ public class PlayerStats : Stats
         //type에 따라 각 값을 리턴한다
         return type switch
         {
+            ChangeableStatsTypes.Health         => Health,
             ChangeableStatsTypes.MaxHealth      => MaxHealth,
             ChangeableStatsTypes.AttackDamage   => AttackDamage,
             ChangeableStatsTypes.Speed          => Speed,
@@ -169,6 +170,9 @@ public class PlayerStats : Stats
         //type에 따라 각 값을 설정한다 형변환도 적절하게한다
         switch (type)
         {
+            case ChangeableStatsTypes.Health:
+                Health += (int)v; //체력값의 변화는 증감으로만 사용
+                break;
             case ChangeableStatsTypes.MaxHealth:
                 MaxHealth = (int)v;
                 break;
@@ -214,6 +218,13 @@ public class PlayerStats : Stats
     {
         double _targetValue = _basicStat[_mod.statType];
         float  _value       = _mod.value;
+
+        //체력 변화는 값을 저장해서 사용하지 않음
+        if (_mod.statType == ChangeableStatsTypes.Health)
+        {
+            SetValue(_mod.statType, _isRevert ? -_value : _value);
+            return;
+        }
 
         switch (_mod.calculationType)
         {
