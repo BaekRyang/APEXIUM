@@ -40,6 +40,4 @@ public class Item
 
     [Space(20)]
     [SerializeField] public List<StatModifier> statValues;
-
-    [SerializeField] public bool hasSpecialEffect;
 }

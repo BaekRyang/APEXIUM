@@ -201,6 +201,8 @@ public class EnemyBase : MonoBehaviour, IEntity
                 _playerComponent.Attacked(_enemyAI.enemyBase.stats.AttackDamage, _enemyAI.enemyBase);
         }
     }
+
+    public void Stun(float _stunDuration) => _enemyAI.Stun(_stunDuration);
 }
 
 public class EEnemyHpChange

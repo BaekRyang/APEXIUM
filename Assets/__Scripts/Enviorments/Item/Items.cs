@@ -44,6 +44,9 @@ public class Items
                 case 0:
                     _owner._onAttacked += _ => FirstAidKit.Effect(_owner, _items);
                     break;
+                case 4:
+                    _owner.Controller._onAttackHit += _targetEnemy => StunGranade.Effect(_targetEnemy, _items);
+                    break;
             }
         }
 
