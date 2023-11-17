@@ -19,12 +19,11 @@ public class ItemDataEditor : Editor
         new EnumTypeConverter<CalculationType>()
     };
 
-
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        var _itemData = target as ItemData;
+        ItemData _itemData = target as ItemData;
 
         if (_itemData == null) return;
 
@@ -58,11 +57,22 @@ public class ItemDataEditor : Editor
 
             foreach (string _file in Directory.GetFiles(_location))
             {
+                //안에 있는 모든 파일 전부 탐색하므로 json 파일만 탐색
+                if (!_file.EndsWith(".json"))
+                    continue;
+                
                 string _json = File.ReadAllText(_file);
 
-                Item _item = JsonConvert.DeserializeObject<Item>(_json, _converters);
-
-                _itemData.items.Add(_item);
+                try //Serialize가 가능한 경우만 추가
+                {
+                    Item _item = JsonConvert.DeserializeObject<Item>(_json, _converters);
+                    _itemData.items.Add(_item);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                    Debug.Log($"<color=red>ItemDataLoader</color> : {_file} is not valid json file!");
+                }
             }
         }
     }

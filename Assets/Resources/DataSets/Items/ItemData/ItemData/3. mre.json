@@ -1,0 +1,1 @@
+{"id":3,"name":"mre","rarity":0,"sprite":"Assets/_Sprites/Items/Layer 4.png","statValues":[{"statType":"MaxHealth","calculationType":"Multiply","value":1.1},{"statType":"Health","calculationType":"Multiply","value":1.1}]}
