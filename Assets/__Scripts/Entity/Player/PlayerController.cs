@@ -588,7 +588,7 @@ public class PlayerController : MonoBehaviour
     private bool _hasItem = false;
 
     public Action            _onAttackExecute;
-    public Action<EnemyBase> _onAttackHit;
+    public Action<EnemyBase, float, bool> _onAttackHit;
 
     private void UseSkill()
     {

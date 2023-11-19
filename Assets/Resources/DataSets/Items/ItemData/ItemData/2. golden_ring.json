@@ -1,1 +1,0 @@
-{"id":2,"name":"golden_ring","rarity":0,"sprite":"Assets/_Sprites/Items/Layer 3.png","statValues":[{"statType":"CriticalChance","calculationType":"Add","value":5.0},{"statType":"CriticalDamage","calculationType":"Add","value":10.0}]}

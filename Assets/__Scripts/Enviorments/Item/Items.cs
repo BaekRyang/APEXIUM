@@ -45,7 +45,16 @@ public class Items
                     _owner._onAttacked += _ => FirstAidKit.Effect(_owner, _items);
                     break;
                 case 4:
-                    _owner.Controller._onAttackHit += _targetEnemy => StunGranade.Effect(_targetEnemy, _items);
+                    _owner.Controller._onAttackHit += (_enemy, _, _) => StunGrenade.Effect(_enemy, _items);
+                    break;
+                case 5:
+                    _owner._onAttacked += _ => ToePopper.Effect(_owner, _items);
+                    break;
+                case 6:
+                    _owner.Controller._onAttackHit += (_enemy, _, _) => FrostGrenade.Effect(_enemy, _items);
+                    break;
+                case 8:
+                    _owner.Controller._onAttackHit += (_enemy, _damage, _) => Scouter.Effect(_enemy, _damage, _owner, _items);
                     break;
             }
         }

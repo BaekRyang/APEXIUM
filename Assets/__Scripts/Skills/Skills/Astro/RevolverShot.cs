@@ -53,7 +53,7 @@ public class RevolverShot : AttackableSkill
                 EnemyBase _targetEnemy = _hitCollider.GetComponent<EnemyBase>();
                 _targetEnemy.Attacked(_damage, _critical, STUN_DURATION, Player);
                 
-                Player.Controller._onAttackHit?.Invoke(_targetEnemy);
+                Player.Controller._onAttackHit?.Invoke(_targetEnemy, _damage, _critical);
             }
         }
 

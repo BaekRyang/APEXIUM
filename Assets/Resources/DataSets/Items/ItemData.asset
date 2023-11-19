@@ -49,7 +49,33 @@ MonoBehaviour:
       calculationType: 1
       value: 1.1
   - id: 4
-    name: stun_granade
+    name: stun_grenade
     rarity: 0
     sprite: {fileID: 21300000, guid: c28f6aefa1c97d0479a2785d56feb1ce, type: 3}
+    statValues: []
+  - id: 5
+    name: toe_poper
+    rarity: 0
+    sprite: {fileID: 21300000, guid: 8e4e8bd69a8c2d94da3a7c2178bc2b84, type: 3}
+    statValues: []
+  - id: 6
+    name: frost_grenade
+    rarity: 0
+    sprite: {fileID: 21300000, guid: 5f5f56289cad1834abd6d5c5beacb989, type: 3}
+    statValues: []
+  - id: 7
+    name: scope
+    rarity: 0
+    sprite: {fileID: 21300000, guid: 8ab204ac801326e42a2ce8c57a17feff, type: 3}
+    statValues:
+    - statType: 11
+      calculationType: 0
+      value: 0.05
+    - statType: 12
+      calculationType: 0
+      value: 0.07
+  - id: 8
+    name: scouter
+    rarity: 0
+    sprite: {fileID: 21300000, guid: 05942db608313da46acfeb5287ced533, type: 3}
     statValues: []

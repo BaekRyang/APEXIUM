@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour, IEntity
 {
+    public Dictionary<string, (bool,float)> itemData = new();
+    
     [SerializeField] private GameObject        corpsePrefab;
     
     [SerializeField] private BoxCollider2D     _attackCollider;
