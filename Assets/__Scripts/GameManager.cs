@@ -91,5 +91,18 @@ public static class GameManager
     }
 
 #endregion
-    
+
+    public static int GetRandomItemIdxFromRarity(ItemRarity _rarityFromChestType)
+    {
+        ItemManager.ItemListByRarity.TryGetValue(_rarityFromChestType, out var _itemList);
+        if (_itemList is { Count: > 0 })
+        {
+            int _randomItemIdxFromRarity = _itemList[Random.Range(0, _itemList.Count)];
+            Debug.Log($"<color=red>GetRandomItemIdxFromRarity</color> : {_rarityFromChestType} / {_randomItemIdxFromRarity}");
+            return _randomItemIdxFromRarity;
+        }
+
+        Debug.LogError($"<color=red>GetRandomItemIdxFromRarity</color> : {_rarityFromChestType} is not exist!");
+        return 0;
+    }
 }

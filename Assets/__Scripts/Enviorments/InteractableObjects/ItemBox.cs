@@ -52,12 +52,12 @@ public class ItemBox : InteractableObject
 
     private int GetRandomItem(ChestType _chestType)
     {
-        Debug.Log($"<color=red>GetRandomItem</color> : {GameManager.GetRarityFromChestType(_chestType)}");
+        ItemRarity _rarityFromChestType = GameManager.GetRarityFromChestType(_chestType);
+        Debug.Log($"<color=red>GetRandomItem</color> : {_rarityFromChestType}");
 
-        int itemIdx;
-        
-        // return Random.Range(0, 100);
-        return 0;
+        int itemIdx = GameManager.GetRandomItemIdxFromRarity(_rarityFromChestType);
+
+        return itemIdx;
     }
     
 

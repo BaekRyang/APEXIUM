@@ -22,6 +22,8 @@ public class ItemManager : MonoBehaviour
     [SerializeField] private ItemData              itemList;
     private readonly         Dictionary<int, Item> _items = new();
 
+    public static readonly Dictionary<ItemRarity, List<int>> ItemListByRarity = new();
+
     public Item GetItem(int _itemID)
     {
         if (_items.TryGetValue(_itemID, out Item _item)) return _item;
@@ -33,6 +35,12 @@ public class ItemManager : MonoBehaviour
     {
         EventBus.Subscribe<ItemSpawnEvent>(InstantiateItemHandler);
 
+        ItemListByRarity.Clear();
+        ItemListByRarity.Add(ItemRarity.Common, new List<int>());
+        ItemListByRarity.Add(ItemRarity.Uncommon, new List<int>());
+        ItemListByRarity.Add(ItemRarity.Rare, new List<int>());
+        ItemListByRarity.Add(ItemRarity.Epic, new List<int>());
+        
         MakeItems();
     }
 
@@ -44,7 +52,11 @@ public class ItemManager : MonoBehaviour
     private void MakeItems()
     {
         foreach (Item _itemListItem in itemList.items)
+        {
             _items.Add(_itemListItem.id, _itemListItem);
+            
+            ItemListByRarity[_itemListItem.rarity].Add(_itemListItem.id);
+        }
     }
 
     private void InstantiateItemHandler(ItemSpawnEvent _event)
@@ -89,7 +101,7 @@ public class ItemManager : MonoBehaviour
         _pickup.transform.localScale = Vector3.one * GetPickupSize((PickupSize)_size);
         _pickup.gameObject.SetActive(true);
 
-        if (_pickup.pickupType is PickupType.Resource) 
+        if (_pickup.pickupType is PickupType.Resource)
             _pickup.SetRigidbodyState(true);
 
         return _pickup;

@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class ItemsDisplayer : MonoBehaviour
 {
     [SerializeField] private GameObject                         itemPrefab;
-    private readonly         Dictionary<int, (Image, TMP_Text)> _items = new();
+    private readonly         Dictionary<int, (Image, TMP_Text)> _items         = new();
+    private const            int                                MAX_ITEM_COUNT = 50;
 
     [Inject] private ItemManager _itemManager;
 
@@ -34,11 +35,17 @@ public class ItemsDisplayer : MonoBehaviour
 
             return;
         }
-        
+
         //아이템이 추가되었을 때
 
         if (_itemAmount == 1) //해당 아이템이 새로 추가되었을 때
         {
+            if (_items.Count >= MAX_ITEM_COUNT) //최대 개수를 넘어섰을 때
+            {
+                Debug.Log("<color=red>ItemsDisplayer</color> : Item count is over the limit.");
+                return;
+            }
+            
             //새로 만들고 이미지 지정
             GameObject _itemObject = Instantiate(itemPrefab, transform);
 
