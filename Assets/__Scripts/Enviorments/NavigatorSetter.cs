@@ -66,8 +66,6 @@ public class NavigatorSetter : MonoBehaviour
         
         SetSliderNavigation(_removeLeft);
         SetSliderNavigation(_removeRight);
-
-        Debug.Log($"<color=yellow>NavigatorSetter</color> : {gameObject.name} is set. Left:{_leftSelectables.Count}, Right:{_rightSelectables.Count}");
     }
 
     /// <summary>

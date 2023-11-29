@@ -185,7 +185,12 @@ public class EnemyBase : MonoBehaviour, IEntity
         }
     }
 
-    private void LevelUp(object _sender, EventArgs _args) { }
+    private void LevelUp(object _sender, EventArgs _args)
+    {
+        stats.MaxHealth += Mathf.RoundToInt(stats.MaxHealth * 0.15f);
+        stats.Health += Mathf.RoundToInt(stats.MaxHealth * 0.15f);
+        stats.AttackDamage += Mathf.RoundToInt(stats.AttackDamage * 0.1f);
+    }
 
     public virtual void Attack()
     {
