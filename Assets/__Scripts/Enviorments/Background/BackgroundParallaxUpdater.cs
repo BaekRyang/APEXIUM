@@ -5,15 +5,21 @@ using UnityEngine;
 public class BackgroundParallaxUpdater : MonoBehaviour
 {
     [SerializeField] [Inject] private PlayerManager _playerManager;
-    
-    private Dictionary<Transform, Vector2> _backgrounds;
-    [Inject] private MapManager                         _mapManager;
+
+    private          Dictionary<Transform, Vector2> _backgrounds;
+    [Inject] private MapManager                     _mapManager;
 
     private void Awake()
     {
         _backgrounds = new Dictionary<Transform, Vector2>();
         foreach (Transform _child in transform)
-            _backgrounds.Add(_child.transform, _child.GetComponent<SpriteRenderer>().sprite.GetResolution());
+        {
+            SpriteRenderer _spriteRenderer = _child.GetComponent<SpriteRenderer>();
+            _backgrounds.Add(_child.transform, _spriteRenderer.sprite.GetResolution());
+            _spriteRenderer.sortingOrder = _child.GetSiblingIndex() - transform.childCount;
+        }
+        
+        
     }
 
     private void Start()
@@ -41,7 +47,6 @@ public class BackgroundParallaxUpdater : MonoBehaviour
             _backgroundTransform.position =
                 Tools.Remap(
                     _refPlayer.transform.position,
-                    
                     new[] { Vector2.zero, _spriteSize },
                     new[] { Vector2.zero, _totalSize }
                 );

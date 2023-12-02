@@ -55,24 +55,28 @@ public class MapManager : MonoBehaviour
 
     public Vector2 GetSpawnLocation()
     {
-        //TODO : 임시로 맵 중앙에 스폰
-        Vector2 _mapCenter     = currentMap.GetSize / 2;
-        Vector2 _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
-        return _spawnPosition;
+        return GetSpawnLocation(currentMap);
     }
     
     public static Vector2 GetSpawnLocation(PlayMap _currentMap)
     {
-        //TODO : 임시로 맵 중앙에 스폰
-        Vector2 _mapCenter     = _currentMap.GetSize / 2;
-        Vector2 _spawnPosition = Physics2D.RaycastAll(_mapCenter, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
+        Vector2 _targetPosition;
+        // {
+        //     //TODO : 임시로 맵 중앙에 스폰
+        //     _mapCenter = _currentMap.GetSize / 2;
+        // }
+        {
+            _targetPosition =  GetRandomPositionInMap(_currentMap, new Vector2(10, 10));
+        }
+        
+        Vector2 _spawnPosition = Physics2D.RaycastAll(_targetPosition, Vector2.down, 200, LayerMask.GetMask("Floor"))[^1].point;
         return _spawnPosition;
     }
 
-    public static Vector2 GetRandomPositionInMap(MapData _mapData, Vector2 _padding)
+    public static Vector2 GetRandomPositionInMap(PlayMap _mapData, Vector2 _padding)
     {
-        float _yOffset = _mapData.currentMap.GetMapSize().y;
-        var   _points  = _mapData.currentMap.GetComponent<PolygonCollider2D>().points;
+        float _yOffset = _mapData.GetMapSize().y;
+        var   _points  = _mapData.GetComponent<PolygonCollider2D>().points;
 
         var _rightTopPoint = _points.OrderByDescending(_point => _point.x)
                                     .ThenByDescending(_point => _point.y)

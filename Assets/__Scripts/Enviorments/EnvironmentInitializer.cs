@@ -165,7 +165,7 @@ public class EnvironmentInitializer : MonoBehaviour
         {
             if (Tools.LoopLimit(ref _loopCnt)) break;
 
-            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject, _outlineOffset);
+            Vector2 _randomPositionInMap = MapManager.GetRandomPositionInMap(_mapObject.currentMap, _outlineOffset);
 
             if (_randomPositionInMap.y < 10)
             {
