@@ -18,13 +18,14 @@ public class ItemsDisplayer : MonoBehaviour
 
     private void OnItemUpdated(UpdateItemEvent _e)
     {
-        int   _itemID       = _e.ItemID;
+        int _itemID = _e.ItemID;
+        Debug.Log($"<color=blue>ItemsDisplayer</color> : {_itemID} is updated.");
         Items _updatedItems = _e.Item;
-        _updatedItems.GetItems().TryGetValue(_itemID, out int _itemAmount);
 
+        int _targetItemAmount = _updatedItems.GetItemAmount(_itemID);
         if (_e.ChangeAmount < 0) //아이템이 삭제되었을 때
         {
-            if (_itemAmount == 0) //아이템이 모두 삭제되었을 때
+            if (_targetItemAmount == 0) //아이템이 모두 삭제되었을 때
             {
                 //오브젝트 삭제후 딕셔너리에서도 삭제
                 Destroy(_items[_itemID].Item1.gameObject);
@@ -37,15 +38,15 @@ public class ItemsDisplayer : MonoBehaviour
         }
 
         //아이템이 추가되었을 때
-
-        if (_itemAmount == 1) //해당 아이템이 새로 추가되었을 때
+        Debug.Log($"<color=blue>ItemsDisplayer</color> : {_itemID} is added. {_targetItemAmount}");
+        if (_targetItemAmount == 1) //해당 아이템이 새로 추가되었을 때
         {
             if (_items.Count >= MAX_ITEM_COUNT) //최대 개수를 넘어섰을 때
             {
                 Debug.Log("<color=red>ItemsDisplayer</color> : Item count is over the limit.");
                 return;
             }
-            
+
             //새로 만들고 이미지 지정
             GameObject _itemObject = Instantiate(itemPrefab, transform);
 

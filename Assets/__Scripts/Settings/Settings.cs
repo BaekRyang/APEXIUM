@@ -108,7 +108,6 @@ public class SettingData
 
         public void ApplyResolution(FullScreenMode _fullScreenMode)
         {
-            Debug.LogError($"{_fullScreenMode}");
             Screen.SetResolution(width, height, _fullScreenMode);
         }
     }

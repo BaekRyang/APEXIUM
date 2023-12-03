@@ -75,7 +75,7 @@ public class MapManager : MonoBehaviour
 
     public static Vector2 GetRandomPositionInMap(PlayMap _mapData, Vector2 _padding)
     {
-        float _yOffset = _mapData.GetMapSize().y;
+        float _yOffset = _mapData.MapSize.y;
         var   _points  = _mapData.GetComponent<PolygonCollider2D>().points;
 
         var _rightTopPoint = _points.OrderByDescending(_point => _point.x)
@@ -91,6 +91,7 @@ public class MapManager : MonoBehaviour
             y: _rightTopPoint.y - _padding.y + _yOffset);
 
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint);
+        Debug.Log(_everyContactPoints.Count);
         Vector2 _randomPoint        = _everyContactPoints[Random.Range(0, _everyContactPoints.Count)];
 
         Debug.DrawLine(_randomTopPoint, _randomPoint, Color.red, 10f);

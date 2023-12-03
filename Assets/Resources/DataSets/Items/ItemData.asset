@@ -25,7 +25,7 @@ MonoBehaviour:
     statValues:
     - statType: 5
       calculationType: 0
-      value: 12
+      value: 0.12
   - id: 2
     name: golden_ring
     rarity: 0
@@ -33,10 +33,10 @@ MonoBehaviour:
     statValues:
     - statType: 11
       calculationType: 0
-      value: 5
+      value: 0.05
     - statType: 12
       calculationType: 0
-      value: 10
+      value: 0.1
   - id: 3
     name: mre
     rarity: 0

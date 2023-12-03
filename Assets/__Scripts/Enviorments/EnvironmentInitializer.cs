@@ -69,7 +69,7 @@ public class EnvironmentInitializer : MonoBehaviour
         MapData _bossMap = LoadMap((MapTheme)_currentTheme, MapType.Boss);
         _bossMap.currentMap.SetEntranceOffset();
         _bossMap.transform.root.position = //기존 맵 왼쪽에 붙여준다. (너무 가까우면 카메라 트랜지션에 보일 수있으므로 약간 떨어뜨림)
-            new Vector3(-(_bossMap.currentMap.GetSize.x + 5), 0, 0);
+            new Vector3(-(_bossMap.currentMap.MapSize.x + 5), 0, 0);
 
         return (_normalMap, _bossMap);
     }

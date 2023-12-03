@@ -8,23 +8,33 @@ using UnityEngine.Tilemaps;
 [Serializable]
 public class PlayMap : MonoBehaviour
 {
-    [SerializeField] private   MapType           mapType;
-    [SerializeField] private   int               level;
-    [SerializeField] private   int               mapIndex;
-    [SerializeField] private   Vector2           mapSize;
-    [SerializeField] private   PolygonCollider2D boundCollider;
-    [SerializeField] public    Transform         bossRoomEntrance;
-    [SerializeField] protected Vector2           entrancePositionOffset;
+    private   MapType           _mapType;
+    private   int               _level;
+    private   int               _mapIndex;
+    private   Vector2           _mapSize;
+    private   PolygonCollider2D _boundCollider;
+    public    Transform         bossRoomEntrance;
+    protected Vector2           entrancePositionOffset;
 
-    public Vector2           GetEntranceOffset => entrancePositionOffset;
-    public int               GetLevel          => level;
-    public int               GetIndex          => mapIndex;
-    public string            GetName           => $"{level}-{mapIndex}";
-    public Vector2           GetSize           => mapSize;
-    public PolygonCollider2D GetBound          => boundCollider;
-    public MapType           MapType           => mapType;
+    public Vector2 EntranceOffset => entrancePositionOffset;
+    public int     Level          => _level;
+    public int     Index          => _mapIndex;
+    public string  Name           => $"{_level}-{_mapIndex}";
 
-    public Vector2 GetMapSize()
+    public Vector2 MapSize
+    {
+        get
+        {
+            if (_mapSize == Vector2.zero)
+                _mapSize = GetMapSize();
+            return _mapSize;
+        }
+    }
+
+    public PolygonCollider2D Bound   => _boundCollider;
+    public MapType           MapType => _mapType;
+
+    private Vector2 GetMapSize()
     {
         //모든 타일맵의 localBounds.size 중 가장 큰 값을 저장
         Vector3 _size = Vector3.zero;
@@ -38,18 +48,18 @@ public class PlayMap : MonoBehaviour
     }
 
     public Vector2 GetMapCenterPosition() =>
-        (Vector2)transform.position + new Vector2(mapSize.x / 2, -mapSize.y / 2);
+        (Vector2)transform.position + new Vector2(_mapSize.x / 2, -_mapSize.y / 2);
 
 #if UNITY_EDITOR
     public void Initialize()
     {
-        mapSize = GetMapSize();
+        _mapSize = GetMapSize();
         Transform _cachedTransform = transform;
-        _cachedTransform.position = new Vector3(0, mapSize.y);
+        _cachedTransform.position = new Vector3(0, _mapSize.y);
 
-        if (boundCollider == null)
+        if (_boundCollider == null)
         {
-            boundCollider = gameObject.AddComponent<PolygonCollider2D>();
+            _boundCollider = gameObject.AddComponent<PolygonCollider2D>();
             SetBoundCollider();
         }
         else
@@ -98,14 +108,14 @@ public class PlayMap : MonoBehaviour
 
     private void SetBoundCollider()
     {
-        boundCollider.isTrigger = true;
-        boundCollider.SetPath(0, new[]
-                                 {
-                                     new Vector2(0,         -mapSize.y),
-                                     new Vector2(mapSize.x, -mapSize.y),
-                                     new Vector2(mapSize.x, 0),
-                                     new Vector2(0,         0)
-                                 });
+        _boundCollider.isTrigger = true;
+        _boundCollider.SetPath(0, new[]
+                                  {
+                                      new Vector2(0,          -_mapSize.y),
+                                      new Vector2(_mapSize.x, -_mapSize.y),
+                                      new Vector2(_mapSize.x, 0),
+                                      new Vector2(0,          0)
+                                  });
     }
 
     public Tilemap GetTilemap(string _name) => transform.Find(_name).GetComponent<Tilemap>();
@@ -118,7 +128,7 @@ public class PlayMap : MonoBehaviour
         bossRoomEntrance = _bossRoomEntrance.transform;
         entrancePositionOffset = (Vector2)bossRoomEntrance.position //문의 위치(월드좌표)
                                - (Vector2)transform.position        //맵의 위치(월드좌표)
-                               + new Vector2(0, GetSize.y);         //해당 오프셋은 맵의 피벗인 왼쪽 위 기준이므로
+                               + new Vector2(0, MapSize.y);         //해당 오프셋은 맵의 피벗인 왼쪽 위 기준이므로
 
         //왼쪽 아래 기준으로 바꿔줘야함 (맵의 높이만큼 더해줌)
     }

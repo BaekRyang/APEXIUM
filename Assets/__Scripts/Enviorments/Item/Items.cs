@@ -94,6 +94,8 @@ public class UpdateItemEvent
     public UpdateItemEvent(Items _item, int _itemID, int _changeAmount)
     {
         Item = _item;
+        ItemID = _itemID;
+        ChangeAmount = _changeAmount;
     }
 
     //TODO : 이렇게 써도 된다면 다른 이벤트들도 이렇게 써도 되는거 아닌가?

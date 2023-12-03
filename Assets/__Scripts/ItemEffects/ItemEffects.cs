@@ -28,6 +28,7 @@ public class FirstAidKit : ItemEffects
 
         float _remainHealthPercent = (float)_ownerStats.Health / _ownerStats.MaxHealth;
         Debug.Log($"<color=blue>Remain Health Percent : {_remainHealthPercent}</color> - {_itemAmount}");
+        Debug.Log($"<color=blue> {0.1f + _itemAmount * STACK_EFFECT_HEALTH}");
         if (_remainHealthPercent < 0.1f + _itemAmount * STACK_EFFECT_HEALTH)
             _ownerStats.Health += (int)(_ownerStats.MaxHealth * (_itemAmount * STACK_HEAL_AMOUNT));
         return false;

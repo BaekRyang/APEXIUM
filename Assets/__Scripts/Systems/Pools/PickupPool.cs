@@ -47,12 +47,15 @@ public class PickupPool : MonoBehaviour
         {
             if (_availablePickupCount <= 0)
                 InstantiatePickupObject(_pickupType, _value);
-            
-            return _pickupPools[_pickupType]
-                  .Select(_pickup => _pickup)                       //Pool안에 Pickup Component를
-                  .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
-                  .Take(1)
-                  .ToList();
+
+            List<Pickup> _pickup = _pickupPools[_pickupType]
+                                  .Select(_pickup => _pickup)                       //Pool안에 Pickup Component를
+                                  .Where(_pickup => !_pickup.gameObject.activeSelf) //사용 가능한 것 만
+                                  .Take(1)
+                                  .ToList();
+            InitializePickupObject(_pickupType, _value, _pickup[0].gameObject);
+
+            return _pickup;
         }
 
         if (_availablePickupCount < _value) //풀에 픽업이 부족하면
@@ -79,7 +82,13 @@ public class PickupPool : MonoBehaviour
     private void InstantiatePickupObject(PickupType _pickupType, int _id = -1)
     {
         Debug.Log($"<color=green>Instantiate {_pickupType} / id : {_id}</color>");
-        GameObject     _pickup               = Instantiate(pickupPrefab, _pickupPoolTransforms[_pickupType]);
+        GameObject _pickup          = Instantiate(pickupPrefab, _pickupPoolTransforms[_pickupType]);
+        Pickup     _pickupComponent = InitializePickupObject(_pickupType, _id, _pickup);
+        _pickupPools[_pickupType].Add(_pickupComponent);
+    }
+
+    private Pickup InitializePickupObject(PickupType _pickupType, int _id, GameObject _pickup)
+    {
         SpriteRenderer _pickupSpriteRenderer = _pickup.GetComponent<SpriteRenderer>();
 
         Pickup _pickupComponent = _pickup.GetComponent<Pickup>();
@@ -96,7 +105,7 @@ public class PickupPool : MonoBehaviour
         InitializePickupObject(_pickupType, _pickup, _pickupComponent, _pickupSpriteRenderer);
 
         _pickup.SetActive(false);
-        _pickupPools[_pickupType].Add(_pickupComponent);
+        return _pickupComponent;
     }
 
     private static void InitializePickupObject(PickupType _pickupType, GameObject _pickup, Pickup _pickupComponent, SpriteRenderer _pickupSpriteRenderer)
