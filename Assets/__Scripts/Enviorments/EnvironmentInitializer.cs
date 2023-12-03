@@ -77,7 +77,7 @@ public class EnvironmentInitializer : MonoBehaviour
     private MapData LoadMap(MapTheme _theme, MapType _mapType)
     {
         string _mapDirectory = $"{DATA_DIRECTORY}/MapData/{_mapType}/{_theme}";
-        Debug.Log(_mapDirectory);
+        Debug.Log(_mapDirectory);   
         var _mapData = Resources.LoadAll<GameObject>(_mapDirectory);
         if (_mapData.Length == 0)
         {
@@ -86,6 +86,7 @@ public class EnvironmentInitializer : MonoBehaviour
         }
 
         GameObject _selectedMapData = _mapData[Random.Range(0, _mapData.Length)];
+        
         if (_selectedMapData != null)
         {
             GameObject _map = Instantiate(_selectedMapData);

@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public enum MapType
 {
@@ -32,6 +34,17 @@ public class MapManager : MonoBehaviour
     private void OnDisable()
     {
         EventBus.Unsubscribe<PlayMapChangedEvent>(OnMapChanged);
+    }
+
+    private void Update()
+    {
+
+        if (Input.GetMouseButton(0))
+        {
+            Vector2 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var a              = GetEveryContactPoints(_mousePosition);
+            Debug.DrawLine(_mousePosition, a[0], Color.red, 10f);
+        }
     }
 
     private void OnMapChanged(PlayMapChangedEvent _playMapData)
@@ -113,7 +126,7 @@ public class MapManager : MonoBehaviour
         Vector2 _randomTopPoint = new(Random.Range(_rightTopPoint.x, _leftTopPoint.x), _rightTopPoint.y + _yOffset);
 
         var     _everyContactPoints = GetEveryContactPoints(_randomTopPoint, 40);
-        Vector2 _randomPoint        = _everyContactPoints[Random.Range(0, _everyContactPoints.Count)];
+        Vector2 _randomPoint        = _everyContactPoints[0];
 
         Debug.DrawLine(_randomTopPoint, _randomPoint, Color.green, 10f);
         return _randomPoint;

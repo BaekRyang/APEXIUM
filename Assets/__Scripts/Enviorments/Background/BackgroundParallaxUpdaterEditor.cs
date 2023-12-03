@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(BackgroundParallaxUpdater))]
 public class BackgroundParallaxUpdaterEditor : Editor
 {
@@ -27,9 +28,10 @@ public class BackgroundParallaxUpdaterEditor : Editor
                 if (!_child.TryGetComponent(out BackgroundParallaxObject _parallaxObject))
                     _child.AddComponent<BackgroundParallaxObject>();
 
-                _parallaxObject.layerIndex = _child.GetSiblingIndex();
+                _parallaxObject.layerIndex     = _child.GetSiblingIndex();
                 _parallaxObject.spriteRenderer = _parallaxObject.GetComponent<SpriteRenderer>();
             }
         }
     }
 }
+#endif

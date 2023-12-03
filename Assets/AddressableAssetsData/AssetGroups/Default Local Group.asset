@@ -142,6 +142,51 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5284c1afd26406247a612ef7f1f37ae2
+    m_Address: DataSets/MapData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb1c591ed3c18144fb4268f54a13bb8b
+    m_Address: DataSets/MapData/Normal/Spring
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d055d03667bcdf4593ce2645fd8285b
+    m_Address: DataSets/MapData/Normal/Fall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81fcebf45c6ea6743af3f10de81849e4
+    m_Address: DataSets/MapData/Normal/Summer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0364c8581c7640479b02c723b3f879b
+    m_Address: DataSets/MapData/Normal/Winter
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8799e1eaec1ecc548aec218dc40ecfc8
+    m_Address: DataSets/MapData/Boss/Fall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9dddcad1858e4a40bb746e441d983f1
+    m_Address: DataSets/MapData/Boss/Spring
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed4d00b476017dd44bbc66313a096704
+    m_Address: DataSets/MapData/Boss/Summer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7ccc13482cdf03418e33a4844600662
+    m_Address: DataSets/MapData/Boss/Winter
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: bfde5c5c16c689a40a7039beb5c8d71b, type: 2}
   m_SchemaSet:
